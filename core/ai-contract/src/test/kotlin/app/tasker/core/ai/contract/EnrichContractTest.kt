@@ -135,7 +135,8 @@ class EnrichContractTest {
     @Test
     fun `route defaults follow the tech plan`() {
         assertThat(EnrichRoute.PATH).isEqualTo(AiRoute.ENRICH.path)
-        assertThat(EnrichRoute.defaultSettings).isEqualTo(RouteSettings("claude-opus-5-5", "low", 4_096, fallbacks = true))
+        assertThat(EnrichRoute.defaultSettings)
+            .isEqualTo(RouteSettings("anthropic/claude-opus-5.5", "low", 4_096, zeroDataRetention = true))
         assertThat(AiRoute.SPLIT.defaultSettings.effort).isEqualTo("medium")
         assertThat(AiRoute.SUMMARIZE_SOURCE.defaultSettings.effort).isEqualTo("medium")
         assertThat(AiRoute.entries.filter { it.defaultSettings.effort == "low" })

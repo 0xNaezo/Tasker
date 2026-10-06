@@ -36,7 +36,7 @@ import org.robolectric.RobolectricTestRunner
 class EnrichmentWorkTest {
     private val env = AiTestEnv()
     private val dir: File = Files.createTempDirectory("vault").toFile()
-    private val keys = ApiKeyStore(testVault(dir)).also { runBlocking { it.save("sk-ant-test") } }
+    private val keys = ApiKeyStore(testVault(dir)).also { runBlocking { it.save("sk-or-v1-test") } }
     private val gateway = FakeGateway()
     private val provider = gatewayProvider(env, keys, direct = gateway)
     private val scheduler = FakeScheduler()
@@ -128,7 +128,7 @@ class EnrichmentWorkTest {
         listener.onCommitted(queued)
         assertThat(scheduler.enqueued.get()).isEqualTo(1)
 
-        keys.save("sk-ant-test")
+        keys.save("sk-or-v1-test")
         env.settings.update { it.copy(ai = it.ai.copy(enabled = false)) }
         listener.onCommitted(queued)
         assertThat(scheduler.enqueued.get()).isEqualTo(1)

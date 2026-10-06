@@ -1,12 +1,14 @@
 package app.tasker.tools.aieval
 
-import app.tasker.core.ai.claude.ClaudeRouteRunner
-import app.tasker.core.ai.claude.createClient
 import app.tasker.core.ai.contract.EnrichRequest
 import app.tasker.core.ai.contract.EnrichResponse
 import app.tasker.core.ai.contract.EnrichRoute
 import app.tasker.core.ai.contract.RouteResult
 import app.tasker.core.ai.contract.RouteSettings
+import app.tasker.core.ai.openrouter.OpenRouterRouteRunner
+import app.tasker.core.ai.openrouter.openRouterTimeouts
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.LocalDate
@@ -15,13 +17,14 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import kotlin.system.exitProcess
 import kotlin.time.TimeSource
+import kotlinx.coroutines.runBlocking
 
 /**
- * Manual quality eval of `/v1/enrich` (tech plan §17.6). Every case is a real, paid Claude call, so it runs
- * by hand when the prompt or the model changes, never in CI:
+ * Manual quality eval of `/v1/enrich` (tech plan §17.6). Every case is a real, paid model call through OpenRouter,
+ * so it runs by hand when the prompt or the model changes, never in CI:
  *
  * ```
- * ANTHROPIC_API_KEY=... ./gradlew :tools:ai-eval:run --args="--limit 20"
+ * OPENROUTER_API_KEY=... ./gradlew :tools:ai-eval:run --args="--limit 20"
  * ```
  */
 fun main(args: Array<String>) {
@@ -32,22 +35,23 @@ fun main(args: Array<String>) {
         System.err.println(EvalOptions.USAGE)
         exitProcess(EXIT_USAGE)
     }
-    val apiKey = System.getenv("ANTHROPIC_API_KEY")?.takeIf { it.isNotBlank() } ?: run {
-        System.err.println("ANTHROPIC_API_KEY is not set. The eval makes paid Claude API calls.")
+    val apiKey = System.getenv("OPENROUTER_API_KEY")?.trim()?.takeIf { it.isNotEmpty() } ?: run {
+        System.err.println("OPENROUTER_API_KEY is not set. The eval makes paid model calls through OpenRouter.")
         exitProcess(EXIT_USAGE)
     }
     val dataset = EvalDataset.load(options.dataset)
     val cases = dataset.select(options.language, options.limit)
     println("Running ${cases.size} cases of ${dataset.meta.version} with ${options.settings}, ${options.concurrency} at a time")
 
-    val client = createClient(apiKey)
+    val http = HttpClient(OkHttp) { openRouterTimeouts() }
     val outcomes = try {
-        val runner = ClaudeRouteRunner(client, options.settings)
-        EvalRunner(runner::enrich, options.concurrency).run(dataset.meta, cases) { done, outcome ->
+        val runner = OpenRouterRouteRunner(http, apiKey, options.settings)
+        // Each worker thread waits for its own call; the runner's retries and timeouts apply per case.
+        EvalRunner({ request -> runBlocking { runner.enrich(request) } }, options.concurrency).run(dataset.meta, cases) { done, outcome ->
             println("[$done/${cases.size}] ${outcome.case.id} ${status(outcome.result)} ${outcome.latencyMs} ms")
         }
     } finally {
-        client.close()
+        http.close()
     }
 
     val date = LocalDate.ofInstant(SystemTimeSource.clock.instant(), ZoneOffset.UTC)
@@ -113,7 +117,7 @@ data class EvalOptions(
               --model <id>          default ${EnrichRoute.defaultSettings.model}
               --effort <level>      default ${EnrichRoute.defaultSettings.effort}; one of ${RouteSettings.EFFORTS}
               --max-tokens <n>      default ${EnrichRoute.defaultSettings.maxTokens}
-              --no-fallbacks        turn off server-side fallbacks
+              --no-zdr              allow endpoints without zero data retention
               --concurrency <n>     parallel calls, default $DEFAULT_CONCURRENCY
               --language <ru|uk|en> only cases of one language
               --limit <n>           only the first n cases
@@ -130,7 +134,7 @@ data class EvalOptions(
                     "--model" -> settings = settings.copy(model = value(queue, flag))
                     "--effort" -> settings = settings.copy(effort = value(queue, flag))
                     "--max-tokens" -> settings = settings.copy(maxTokens = number(queue, flag).toLong())
-                    "--no-fallbacks" -> settings = settings.copy(fallbacks = false)
+                    "--no-zdr" -> settings = settings.copy(zeroDataRetention = false)
                     "--concurrency" -> options = options.copy(concurrency = number(queue, flag))
                     "--language" -> options = options.copy(language = value(queue, flag))
                     "--limit" -> options = options.copy(limit = number(queue, flag))

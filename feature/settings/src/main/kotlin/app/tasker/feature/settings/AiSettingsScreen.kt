@@ -267,7 +267,7 @@ private fun KeyDialog(onDismiss: () -> Unit, onSave: (String, (KeyError?) -> Uni
     var key by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<KeyError?>(null) }
     var saving by remember { mutableStateOf(false) }
-    val warning = key.isNotBlank() && !ApiKeyStore.looksLikeAnthropicKey(key)
+    val warning = key.isNotBlank() && !ApiKeyStore.looksLikeOpenRouterKey(key)
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.settings_ai_key)) },
@@ -282,7 +282,7 @@ private fun KeyDialog(onDismiss: () -> Unit, onSave: (String, (KeyError?) -> Uni
                     },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    placeholder = { Text("sk-ant-…") },
+                    placeholder = { Text("sk-or-…") },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrectEnabled = false),
                     isError = error != null,

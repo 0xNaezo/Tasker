@@ -79,11 +79,11 @@ class AiControllerTest {
         assertThat(state().isActive).isFalse()
         assertThat(scheduler.enqueued.get()).isEqualTo(0)
 
-        controller.saveApiKey("  sk-ant-api03-secret  ")
+        controller.saveApiKey("  sk-or-v1-secret  ")
 
         assertThat(state().hasApiKey).isTrue()
         assertThat(state().isActive).isTrue()
-        assertThat(keys.get()).isEqualTo("sk-ant-api03-secret")
+        assertThat(keys.get()).isEqualTo("sk-or-v1-secret")
         assertThat(scheduler.enqueued.get()).isEqualTo(1)
     }
 
@@ -119,7 +119,7 @@ class AiControllerTest {
     @Test
     fun `turning AI off cancels the queue and the work, filled fields keep their AI mark`() = runTest {
         setUp(settings = AiTestEnv.AI_ON)
-        controller.saveApiKey("sk-ant-test")
+        controller.saveApiKey("sk-or-v1-test")
         val filled = env.add("подготовить отчёт")
         val waiting = env.add("позвонить в банк")
         env.ai.apply(filled.id, checkNotNull(env.ai.job(filled.id)).textHash, AiFill(estimate = Estimate.L))
@@ -143,7 +143,7 @@ class AiControllerTest {
     @Test
     fun `turning AI on again needs no new consent`() = runTest {
         setUp(settings = AiTestEnv.AI_ON)
-        controller.saveApiKey("sk-ant-test")
+        controller.saveApiKey("sk-or-v1-test")
         controller.setEnabled(false)
         val enqueued = scheduler.enqueued.get()
 
@@ -191,7 +191,7 @@ class AiControllerTest {
     fun `the key is stored encrypted and deleted with one call`() = runTest {
         setUp(settings = AiTestEnv.AI_ON)
 
-        controller.saveApiKey("sk-ant-api03-very-secret")
+        controller.saveApiKey("sk-or-v1-very-secret")
 
         val stored = dir.listFiles().orEmpty().filter { it.isFile }
         assertThat(stored).isNotEmpty()
@@ -209,21 +209,22 @@ class AiControllerTest {
     fun `malformed keys are rejected`() = runTest {
         setUp(settings = AiTestEnv.AI_ON)
 
-        for (bad in listOf("", "   ", "sk-ant- api", "sk-ant-\napi", "x".repeat(ApiKeyStore.MAX_LENGTH + 1))) {
-            assertThat(runCatching { controller.saveApiKey(bad) }.exceptionOrNull()).isInstanceOf(IllegalArgumentException::class.java)
+        val bad = listOf("", "   ", "sk-or- v1", "sk-or-\nv1", "sk-or-v1-ключ", "x".repeat(ApiKeyStore.MAX_LENGTH + 1))
+        for (key in bad) {
+            assertThat(runCatching { controller.saveApiKey(key) }.exceptionOrNull()).isInstanceOf(IllegalArgumentException::class.java)
         }
         assertThat(keys.get()).isNull()
-        // Other formats than sk-ant-… are accepted (gateways, new key types).
+        // Other formats than sk-or-… are accepted (new key types).
         controller.saveApiKey("custom-key-123")
         assertThat(keys.get()).isEqualTo("custom-key-123")
-        assertThat(ApiKeyStore.looksLikeAnthropicKey("custom-key-123")).isFalse()
-        assertThat(ApiKeyStore.looksLikeAnthropicKey(" sk-ant-api03-x")).isTrue()
+        assertThat(ApiKeyStore.looksLikeOpenRouterKey("custom-key-123")).isFalse()
+        assertThat(ApiKeyStore.looksLikeOpenRouterKey(" sk-or-v1-x")).isTrue()
     }
 
     @Test
     fun `connection check sends a fixed text and maps the answer`() = runTest {
         setUp(settings = AiTestEnv.AI_ON)
-        controller.saveApiKey("sk-ant-test")
+        controller.saveApiKey("sk-or-v1-test")
         env.add("секретный проект")
 
         direct.fallback = success(EnrichResponse(estimate = "S"))
@@ -248,7 +249,7 @@ class AiControllerTest {
         assertThat(controller.checkConnection()).isEqualTo(ConnectionCheck.Failed(FailureKind.AUTH))
         assertThat(direct.requests).isEmpty()
 
-        controller.saveApiKey("sk-ant-test")
+        controller.saveApiKey("sk-or-v1-test")
         assertThat(controller.checkConnection()).isEqualTo(ConnectionCheck.Ok)
         assertThat(direct.requests).hasSize(1)
     }

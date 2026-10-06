@@ -5,7 +5,7 @@ plugins {
 }
 
 // Manual AI quality eval (tech plan §17.6). It costs money: run it by hand, never in CI.
-//   ANTHROPIC_API_KEY=... ./gradlew :tools:ai-eval:run --args="--limit 20"
+//   OPENROUTER_API_KEY=... ./gradlew :tools:ai-eval:run --args="--limit 20"
 // The unit tests run in CI without network: they check the dataset and the report maths.
 application {
     mainClass = "app.tasker.tools.aieval.EvalMainKt"
@@ -13,7 +13,9 @@ application {
 
 dependencies {
     implementation(project(":core:ai-contract"))
-    implementation(project(":core:ai-claude"))
+    implementation(project(":core:ai-openrouter"))
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.kotlinx.coroutines.core)
 }
 
 tasks.named<JavaExec>("run") {

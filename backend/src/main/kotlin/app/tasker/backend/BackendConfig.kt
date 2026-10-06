@@ -2,6 +2,7 @@ package app.tasker.backend
 
 import app.tasker.core.ai.contract.AiRoute
 import app.tasker.core.ai.contract.RouteSettings
+import app.tasker.core.ai.openrouter.OpenRouter
 import java.net.URI
 import java.net.URISyntaxException
 import java.net.URLDecoder
@@ -25,8 +26,8 @@ data class DatabaseSettings(
 class BackendConfig(
     val port: Int,
     val database: DatabaseSettings,
-    val anthropicApiKey: String,
-    val anthropicBaseUrl: String?,
+    val openRouterApiKey: String,
+    val openRouterBaseUrl: String,
     val installTokenSecret: String,
     val installTokenPreviousSecret: String?,
     val playPackageName: String?,
@@ -89,7 +90,11 @@ private class EnvReader(private val env: Map<String, String>) {
     fun read(): BackendConfig {
         val port = int("PORT", BackendConfig.DEFAULT_PORT, 1..MAX_PORT)
         val database = database()
-        val apiKey = required("ANTHROPIC_API_KEY")
+        val apiKey = required("OPENROUTER_API_KEY")
+        // The key goes into an HTTP header; the message never repeats the value.
+        if (apiKey != null && !apiKey.all { it in '!'..'~' }) problems += "OPENROUTER_API_KEY must be printable ASCII without spaces"
+        val baseUrl = optional("OPENROUTER_BASE_URL") ?: OpenRouter.BASE_URL
+        if (!baseUrl.startsWith("https://")) problems += "OPENROUTER_BASE_URL must start with https://"
         val secret = required("INSTALL_TOKEN_SECRET")
         if (secret != null && secret.length < BackendConfig.MIN_SECRET_LENGTH) {
             problems += "INSTALL_TOKEN_SECRET must be at least ${BackendConfig.MIN_SECRET_LENGTH} characters"
@@ -102,10 +107,6 @@ private class EnvReader(private val env: Map<String, String>) {
             problems += "DEV_INSTALL_KEY must be at least ${BackendConfig.MIN_DEV_KEY_LENGTH} characters"
         }
         if (packageName == null && devKey == null) problems += "set PLAY_PACKAGE_NAME (production) or DEV_INSTALL_KEY (dev environment)"
-        // The SDK logs full request and response bodies at these levels: task texts must never reach logs (§18.1).
-        if (optional("ANTHROPIC_LOG")?.lowercase() in setOf("debug", "info")) {
-            problems += "ANTHROPIC_LOG must be unset or 'error': higher levels log request bodies"
-        }
         val requestsPerInstall = int("DAILY_REQUESTS_PER_INSTALL", BackendConfig.DEFAULT_DAILY_REQUESTS_PER_INSTALL, 1..MAX_DAILY_REQUESTS)
         val budget = double("DAILY_BUDGET_USD", BackendConfig.DEFAULT_DAILY_BUDGET_USD)
         val routes = AiRoute.entries.associateWith(::routeSettings)
@@ -113,8 +114,8 @@ private class EnvReader(private val env: Map<String, String>) {
         return BackendConfig(
             port = port,
             database = checkNotNull(database),
-            anthropicApiKey = checkNotNull(apiKey),
-            anthropicBaseUrl = optional("ANTHROPIC_BASE_URL"),
+            openRouterApiKey = checkNotNull(apiKey),
+            openRouterBaseUrl = baseUrl,
             installTokenSecret = checkNotNull(secret),
             installTokenPreviousSecret = previousSecret,
             playPackageName = packageName,
@@ -142,27 +143,27 @@ private class EnvReader(private val env: Map<String, String>) {
         )
     }
 
-    /** ROUTE_<NAME>_MODEL / _EFFORT / _MAX_TOKENS / _FALLBACKS override the defaults of tech plan §17.4. */
+    /** ROUTE_<NAME>_MODEL / _EFFORT / _MAX_TOKENS / _ZDR override the defaults of tech plan §17.4 and ADR 0011. */
     private fun routeSettings(route: AiRoute): RouteSettings {
         val prefix = "ROUTE_${route.name}_"
         val defaults = route.defaultSettings
         val effort = optional(prefix + "EFFORT") ?: defaults.effort
         if (effort !in RouteSettings.EFFORTS) problems += "${prefix}EFFORT must be one of ${RouteSettings.EFFORTS}"
         val maxTokens = int(prefix + "MAX_TOKENS", defaults.maxTokens.toInt(), 1..RouteSettings.MAX_OUTPUT_TOKENS.toInt())
-        val fallbacks = when (val value = optional(prefix + "FALLBACKS")?.lowercase()) {
-            null -> defaults.fallbacks
+        val zeroDataRetention = when (val value = optional(prefix + "ZDR")?.lowercase()) {
+            null -> defaults.zeroDataRetention
             "true" -> true
             "false" -> false
             else -> {
-                problems += "${prefix}FALLBACKS must be true or false (was '$value')"
-                defaults.fallbacks
+                problems += "${prefix}ZDR must be true or false (was '$value')"
+                defaults.zeroDataRetention
             }
         }
         return RouteSettings(
             model = optional(prefix + "MODEL") ?: defaults.model,
             effort = effort.takeIf { it in RouteSettings.EFFORTS } ?: defaults.effort,
             maxTokens = maxTokens.toLong(),
-            fallbacks = fallbacks,
+            zeroDataRetention = zeroDataRetention,
         )
     }
 

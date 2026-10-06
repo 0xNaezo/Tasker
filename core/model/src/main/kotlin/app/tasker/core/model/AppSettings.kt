@@ -89,6 +89,7 @@ data class AiSettings(
     val isActive: Boolean get() = enabled && hasConsent
 
     companion object {
-        const val DEFAULT_MODEL = "claude-opus-5-5"
+        /** An OpenRouter model id (ADR 0011). */
+        const val DEFAULT_MODEL = "anthropic/claude-opus-5.5"
     }
 }

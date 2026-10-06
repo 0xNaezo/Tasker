@@ -12,7 +12,8 @@ application {
 
 dependencies {
     implementation(project(":core:ai-contract"))
-    implementation(project(":core:ai-claude"))
+    implementation(project(":core:ai-openrouter"))
+    implementation(libs.ktor.client.okhttp)
 
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.ktor.server.core)

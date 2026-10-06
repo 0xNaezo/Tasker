@@ -29,8 +29,8 @@ class EvalSummaryTest {
         scale = EstimateScale(15, 60, 180),
     )
 
-    /** 1000 input ($0.004) + 200 output ($0.004) + 3000 cache-read ($0.0006) tokens of claude-opus-5-5. */
-    private val usage = RouteUsage("claude-opus-5-5", inputTokens = 1000, outputTokens = 200, cacheReadTokens = 3000)
+    /** 1000 input ($0.004) + 200 output ($0.004) + 3000 cache-read ($0.0006) tokens of Claude Opus 5.5. */
+    private val usage = RouteUsage("anthropic/claude-opus-5.5", inputTokens = 1000, outputTokens = 200, cacheReadTokens = 3000)
 
     private fun case(id: String, language: String, estimate: String?, deadline: String? = null, plan: String? = null) = EvalCase(
         id = id,
@@ -131,9 +131,10 @@ class EvalSummaryTest {
     @Test
     fun `options and report file names`() {
         val options = EvalOptions.parse(
-            listOf("--model", "claude-sonnet-5-5", "--effort", "medium", "--no-fallbacks", "--limit", "20", "--language", "uk"),
+            listOf("--model", "anthropic/claude-sonnet-5.5", "--effort", "medium", "--no-zdr", "--limit", "20", "--language", "uk"),
         )
-        assertThat(options.settings).isEqualTo(RouteSettings(model = "claude-sonnet-5-5", effort = "medium", fallbacks = false))
+        assertThat(options.settings)
+            .isEqualTo(RouteSettings(model = "anthropic/claude-sonnet-5.5", effort = "medium", zeroDataRetention = false))
         assertThat(options.limit).isEqualTo(20)
         assertThat(options.language).isEqualTo("uk")
         listOf(listOf("--bogus"), listOf("--limit"), listOf("--limit", "x"), listOf("--effort", "huge"), listOf("--language", "de"))

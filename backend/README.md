@@ -2,8 +2,8 @@
 
 A small Ktor service for **Google Play builds** (tech plan §18.1). It exposes typed routes rather than a
 general-purpose LLM proxy. Prompts, schemas and answer validation come from `core/ai-contract`, and the
-Claude call goes through `core/ai-claude` (official Anthropic Java SDK). GitHub and Android Studio builds
-call Claude directly with the user's own key and don't need this service.
+model call goes through OpenRouter with `core/ai-openrouter` ([ADR 0011](../docs/adr/0011-openrouter-provider.md)).
+GitHub and Android Studio builds call OpenRouter directly with the user's own key and don't need this service.
 
 PostgreSQL holds the install registry, daily limits, token and cost accounting, and weekly metric
 aggregates. **Task texts are never stored or logged.**
@@ -47,9 +47,8 @@ names (never values) and exit code 78.
 | `DATABASE_URL` | yes | | `jdbc:postgresql://…` or `postgres://user:password@host:port/db?sslmode=require` (the PaaS form) |
 | `DATABASE_USER`, `DATABASE_PASSWORD` | | from the URL | Override the credentials in `DATABASE_URL` |
 | `DATABASE_POOL_SIZE` | | `5` | Hikari pool size |
-| `ANTHROPIC_API_KEY` | yes | | Provider key (a PaaS secret) |
-| `ANTHROPIC_BASE_URL` | | SDK default | Only for tests against a fake API |
-| `ANTHROPIC_LOG` | | unset | Must stay unset or `error`. `info` and `debug` make the SDK log request bodies, so the service refuses to start with them |
+| `OPENROUTER_API_KEY` | yes | | OpenRouter API key (a PaaS secret) |
+| `OPENROUTER_BASE_URL` | | `https://openrouter.ai/api/v1` | Another OpenRouter-compatible endpoint; `https://` only |
 | `INSTALL_TOKEN_SECRET` | yes | | HMAC key for install tokens, at least 32 characters (`openssl rand -base64 48`) |
 | `INSTALL_TOKEN_SECRET_PREVIOUS` | | | Previous key during rotation (see below) |
 | `PLAY_PACKAGE_NAME` | prod | | Application id checked in Play Integrity verdicts. Without it, only the dev key can install |
@@ -58,14 +57,15 @@ names (never values) and exit code 78.
 | `DEV_INSTALL_KEY` | dev | | Dev environment only, at least 16 characters: replaces Play Integrity via `X-Dev-Install-Key`. **Never set in prod** |
 | `DAILY_REQUESTS_PER_INSTALL` | | `200` | Requests per install per UTC day; failed calls count too |
 | `DAILY_BUDGET_USD` | | `20` | Global provider spend per UTC day |
-| `ROUTE_<ROUTE>_MODEL` | | `claude-opus-5-5` | Model per route; `<ROUTE>` is `ENRICH`, `CLASSIFY`, `SPLIT`, `NEXT_STEP`, `SIMILAR` or `SUMMARIZE_SOURCE` |
-| `ROUTE_<ROUTE>_EFFORT` | | `low` (`medium` for `SPLIT`, `SUMMARIZE_SOURCE`) | `low`, `medium`, `high`, `xhigh` or `max` |
-| `ROUTE_<ROUTE>_MAX_TOKENS` | | `4096` (`8192` for `SPLIT`, `SUMMARIZE_SOURCE`) | Includes thinking, which this model can't turn off |
-| `ROUTE_<ROUTE>_FALLBACKS` | | `true` | Server-side fallback (`fallbacks: "default"` with beta `server-side-fallback-2026-07-01`); turn off for models without it |
+| `ROUTE_<ROUTE>_MODEL` | | `anthropic/claude-opus-5.5` | OpenRouter model id per route; `<ROUTE>` is `ENRICH`, `CLASSIFY`, `SPLIT`, `NEXT_STEP`, `SIMILAR` or `SUMMARIZE_SOURCE` |
+| `ROUTE_<ROUTE>_EFFORT` | | `low` (`medium` for `SPLIT`, `SUMMARIZE_SOURCE`) | Reasoning effort: `low`, `medium`, `high`, `xhigh` or `max` |
+| `ROUTE_<ROUTE>_MAX_TOKENS` | | `4096` (`8192` for `SPLIT`, `SUMMARIZE_SOURCE`) | Includes reasoning, which this model can't turn off |
+| `ROUTE_<ROUTE>_ZDR` | | `true` | Only endpoints with zero data retention (`provider.zdr`). `false` lets the OpenRouter account's data policy decide: update the privacy policy first |
 
 The MVP serves only `/v1/enrich`. Settings for the other routes are validated now so the later versions
 (§17.3) can use them. A model change (§17.4, §17.6) takes a variable change and a restart, not an app release.
-Re-check prices in `core/ai-contract/.../ModelPricing.kt` before launch: the budget is computed from them.
+Every request also sets `provider.require_parameters`, so a model whose endpoints can't do strict structured
+output (under the ZDR setting) fails with `upstream_error` instead of answering in another format.
 
 ## Run locally
 
@@ -76,7 +76,7 @@ docker run -d --name tasker-db -p 5432:5432 \
   -e POSTGRES_USER=tasker -e POSTGRES_PASSWORD=tasker -e POSTGRES_DB=tasker postgres:17
 
 export DATABASE_URL=postgres://tasker:tasker@localhost:5432/tasker
-export ANTHROPIC_API_KEY=sk-ant-...
+export OPENROUTER_API_KEY=sk-or-...
 export INSTALL_TOKEN_SECRET="$(openssl rand -base64 48)"
 export DEV_INSTALL_KEY="$(openssl rand -hex 24)"
 ./gradlew :backend:run
@@ -125,7 +125,7 @@ Environments (§24.1): CI builds the image. **dev** has `DEV_INSTALL_KEY` and ma
   3. Set the variables above as secrets and set the health check path to `/health`.
 - **Fly.io:**
   1. Run `fly launch --dockerfile backend/Dockerfile --no-deploy`, set `internal_port = 8080` and add an HTTP check on `/health`.
-  2. Run `fly postgres attach`, which sets `DATABASE_URL`, then `fly secrets set ANTHROPIC_API_KEY=… INSTALL_TOKEN_SECRET=…`.
+  2. Run `fly postgres attach`, which sets `DATABASE_URL`, then `fly secrets set OPENROUTER_API_KEY=… INSTALL_TOKEN_SECRET=…`.
 
 Several instances can share one database: limits, budget and alerts live in it, and migrations take care
 of concurrent starts.
@@ -149,7 +149,8 @@ of concurrent starts.
 
 ## Secrets and rotation
 
-- **`ANTHROPIC_API_KEY`:** create a new key in the Anthropic Console, replace the secret, redeploy, then revoke the old key.
+- **`OPENROUTER_API_KEY`:** create a new key in the OpenRouter dashboard, replace the secret, redeploy, then delete the old
+  key. A credit limit on the key is a second safeguard next to `DAILY_BUDGET_USD`.
 - **`INSTALL_TOKEN_SECRET`:**
   1. Move the current value to `INSTALL_TOKEN_SECRET_PREVIOUS` and set a new `INSTALL_TOKEN_SECRET`, then redeploy.
      New tokens use the new key; old tokens stay valid.
@@ -163,13 +164,17 @@ of concurrent starts.
 ## Limits, cost and alerts
 
 - Each call reserves one request of the install's daily limit and checks the global daily budget. The cost
-  is computed from usage, including declined fallback attempts, and recorded after the call. Concurrent
-  in-flight calls can overshoot the budget by their own cost, which `max_tokens` bounds.
+  is what OpenRouter reports for the call (`usage.cost`), recorded after the call; a call without it is priced
+  from `core/ai-contract/.../ModelPricing.kt` (re-check those prices before launch). Concurrent in-flight
+  calls can overshoot the budget by their own cost, which `max_tokens` bounds.
+- A provider failure that nothing was billed for (408, 429, 5xx, timeout, no connection) is retried once
+  within the call; each attempt has 30 seconds.
 - Alerts are log lines with a stable prefix. Point the PaaS log alerts at them:
   - `ALERT ai_budget_warning` (WARN): 80% of the daily budget is spent. Fires once per day across instances.
   - `ALERT ai_budget_exhausted` (ERROR): the budget is spent and `/v1/enrich` answers 503 until the next UTC day. Fires once per day.
   - `ALERT ai_error_rate` (ERROR): at least 20% of the last 50 provider calls on an instance failed. Fires once per outage.
-  - `Enrich call failed with AUTH` or `BAD_REQUEST` (ERROR): check the key, billing and route settings.
+  - `Enrich call failed with AUTH` or `BAD_REQUEST` (ERROR): check the key, the OpenRouter credits, the model id
+    and whether the model has endpoints that meet `ROUTE_<ROUTE>_ZDR`.
 - Reports for the cost and monetisation decision (§17.5):
 
 ```sql
@@ -199,15 +204,18 @@ then answer 403, and so does `/v1/install`.
   paths are logged as `other`.
 - Unexpected errors are logged with exception class names and stack frames only, because exception
   messages can quote request content.
-- Check the provider's data retention terms, including Zero Data Retention (§17.4), and reflect them in
-  the privacy policy.
+- Task texts go to OpenRouter and from there to the model provider. With `ROUTE_<ROUTE>_ZDR=true` (the default)
+  OpenRouter uses only endpoints with zero data retention; for `anthropic/claude-opus-5.5` with strict
+  structured output these are Google Vertex AI endpoints. Keep logging of inputs and outputs off in the
+  OpenRouter account's privacy settings, and reflect OpenRouter's and the providers' terms in the privacy policy.
 
 ## Known limitations and unverified parts
 
 - Play Integrity has been tested only against a local fake of `decodeIntegrityToken`, not against Google.
 - The Docker image hasn't been built here because no Docker daemon was available. The build step
   (`--configure-on-demand :backend:installDist` without the Android SDK) and the distribution were run
-  locally against H2 and a fake Claude API.
+  locally against H2, before the switch to OpenRouter.
+- OpenRouter calls are tested only against a fake (Ktor `MockEngine`), not against the real API.
 - `/v1/install` has no rate limit per IP address. Every call with a token uses one unit of the Play
   Integrity API quota (10,000 a day by default). If the route is abused, enable rate limiting at the PaaS
   edge, or add Ktor's `RateLimit` plugin together with trusted `X-Forwarded-For` handling.

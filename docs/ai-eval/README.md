@@ -1,8 +1,8 @@
 # AI eval of `/v1/enrich`
 
 This is the quality check of tech plan §17.6. It runs a fixed set of task phrasings through the real
-route (prompt, schema, Claude call and validation from `core:ai-contract` and `core:ai-claude`). Each run
-writes a report to this folder.
+route: prompt, schema and validation from `core:ai-contract`, the model call through OpenRouter from
+`core:ai-openrouter` ([ADR 0011](../adr/0011-openrouter-provider.md)). Each run writes a report to this folder.
 
 ## Dataset `enrich-v1.jsonl`
 
@@ -37,19 +37,19 @@ writes a report to this folder.
 
 ## Running
 
-Each case is a paid call: about $0.01 with `claude-opus-5-5` at effort `low`, so about $2 for the whole set.
-Run it by hand after changing the prompt or the model, never in CI:
+Each case is a paid call: about $0.01 with `anthropic/claude-opus-5.5` at effort `low`, so about $2 for the
+whole set. Run it by hand after changing the prompt or the model, never in CI:
 
 ```bash
-ANTHROPIC_API_KEY=sk-ant-... ./gradlew :tools:ai-eval:run --args="--limit 20"   # smoke run
-ANTHROPIC_API_KEY=sk-ant-... ./gradlew :tools:ai-eval:run                       # full run
-ANTHROPIC_API_KEY=sk-ant-... ./gradlew :tools:ai-eval:run --args="--model claude-sonnet-5-5 --effort low"
+OPENROUTER_API_KEY=sk-or-... ./gradlew :tools:ai-eval:run --args="--limit 20"   # smoke run
+OPENROUTER_API_KEY=sk-or-... ./gradlew :tools:ai-eval:run                       # full run
+OPENROUTER_API_KEY=sk-or-... ./gradlew :tools:ai-eval:run --args="--model anthropic/claude-sonnet-5.5 --effort low"
 ```
 
-Options: `--dataset`, `--out`, `--model`, `--effort`, `--max-tokens`, `--no-fallbacks`, `--concurrency`
-(default 4), `--language ru|uk|en` and `--limit`. The report goes to `docs/ai-eval/report-<date>.md`; a
-second run on the same day writes `report-<date>-2.md`. Commit reports together with the prompt or
-model change they measure.
+Options: `--dataset`, `--out`, `--model` (an OpenRouter model id), `--effort`, `--max-tokens`, `--no-zdr`
+(also allow endpoints that keep data), `--concurrency` (default 4), `--language ru|uk|en` and `--limit`.
+The report goes to `docs/ai-eval/report-<date>.md`; a second run on the same day writes
+`report-<date>-2.md`. Commit reports together with the prompt or model change they measure.
 
 ## Metrics in the report
 
@@ -63,9 +63,9 @@ model change they measure.
 - **Dates:**
   - exact match, precision and recall for `deadlineDate`, `deadlineTime` and `planDate` after validation;
   - "dates fully correct": all three fields match.
-- **Latency:** p50 and p95 of the wall time per call (including SDK retries).
-- **Cost:** total and per call, from `ModelPricing` and the reported usage, including declined fallback
-  attempts. The report also shows the share of prompt tokens served from the prompt cache.
+- **Latency:** p50 and p95 of the wall time per call (including the runner's retries).
+- **Cost:** total and per call: the cost OpenRouter reports for each call, or the `ModelPricing` estimate
+  when a call has none. The report also shows the share of prompt tokens served from the prompt cache.
 - **Refusals and failures** by kind, and a table of every mismatched case.
 
 During the beta, the share of AI sizes corrected by users comes from app events, not from this eval.

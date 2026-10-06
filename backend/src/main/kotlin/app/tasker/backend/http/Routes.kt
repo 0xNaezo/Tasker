@@ -29,6 +29,7 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
@@ -173,12 +174,12 @@ private val UNUSABLE_OUTPUT = setOf(FailureKind.INVALID_OUTPUT, FailureKind.TRUN
 /** Failures that point at our configuration (API key, billing, model name, settings) rather than at the request. */
 private val CONFIGURATION_FAILURES = setOf(FailureKind.AUTH, FailureKind.BAD_REQUEST)
 
-/** One reserved `/v1/enrich` call: runs the engine, records outcome, tokens and cost, raises alerts. Blocking. */
+/** One reserved `/v1/enrich` call: runs the engine, records outcome, tokens and cost, raises alerts. Blocks on the database. */
 private class EnrichExecution(private val services: BackendServices) {
 
     class Executed(val result: RouteResult<EnrichResponse>, val usage: CallUsage)
 
-    fun run(installId: String, day: LocalDate, request: EnrichRequest): Executed {
+    suspend fun run(installId: String, day: LocalDate, request: EnrichRequest): Executed {
         val started = services.timeSource.markNow()
         val result = callEngine(request)
         val latencyMs = started.elapsedNow().inWholeMilliseconds
@@ -194,10 +195,10 @@ private class EnrichExecution(private val services: BackendServices) {
         }
         val callUsage = CallUsage(
             model = usage?.model ?: "none",
-            inputTokens = usage?.totalInputTokens ?: 0L,
-            outputTokens = usage?.totalOutputTokens ?: 0L,
-            cacheReadTokens = usage?.totalCacheReadTokens ?: 0L,
-            cacheCreationTokens = usage?.totalCacheCreationTokens ?: 0L,
+            inputTokens = usage?.inputTokens ?: 0L,
+            outputTokens = usage?.outputTokens ?: 0L,
+            cacheReadTokens = usage?.cacheReadTokens ?: 0L,
+            cacheCreationTokens = usage?.cacheCreationTokens ?: 0L,
             costMicroUsd = cost,
             outcome = outcomeLabel(result),
         )
@@ -205,8 +206,10 @@ private class EnrichExecution(private val services: BackendServices) {
     }
 
     /** The engine must not throw; if it does anyway, the call still ends as a recorded failure. */
-    private fun callEngine(request: EnrichRequest): RouteResult<EnrichResponse> = try {
+    private suspend fun callEngine(request: EnrichRequest): RouteResult<EnrichResponse> = try {
         services.enrichEngine.enrich(request)
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: RuntimeException) {
         log.error("Enrich engine threw {}", e.javaClass.name)
         RouteResult.Failed(FailureKind.UNKNOWN, detail = e.javaClass.simpleName)

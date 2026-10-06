@@ -13,8 +13,8 @@ sealed interface RouteResult<out T> {
     data class Success<T>(val value: T, override val usage: RouteUsage) : RouteResult<T>
 
     /**
-     * The model or a safety classifier declined (`stop_reason: "refusal"`), including after server-side
-     * fallbacks. [category] is informational (`stop_details.category`, e.g. "cyber"); may be null.
+     * The model or a safety filter declined (`finish_reason: "content_filter"`, a `refusal` message or OpenRouter
+     * moderation). [category] is informational (e.g. the provider's own finish reason, "refusal"); may be null.
      */
     data class Refused(val category: String?, override val usage: RouteUsage? = null) : RouteResult<Nothing>
 
@@ -30,13 +30,13 @@ enum class FailureKind(
     /** Worth retrying later with backoff (the app's queue keeps the task PENDING). */
     val retryable: Boolean,
 ) {
-    /** Invalid, revoked or unfunded API key, or no permission (401, 402, 403). */
+    /** Invalid, revoked or unfunded API key (no credits), or no permission (401, 402, 403). */
     AUTH(retryable = false),
 
     /** Provider rate limit (429). */
     RATE_LIMIT(retryable = true),
 
-    /** Provider overloaded or failing (529, 5xx). */
+    /** Provider overloaded or failing (5xx, or an upstream error reported in the answer). */
     OVERLOADED(retryable = true),
 
     /** No connection, timeout or interrupted transfer. */
@@ -45,19 +45,19 @@ enum class FailureKind(
     /** The request was rejected as invalid (400, 404, 413, 422) or failed local validation. */
     BAD_REQUEST(retryable = false),
 
-    /** The answer was not valid JSON for the route schema, or the stop reason was unexpected. */
+    /** The answer was not valid JSON for the route schema, or the finish reason was unexpected. */
     INVALID_OUTPUT(retryable = false),
 
-    /** `stop_reason: "max_tokens"`: thinking plus answer did not fit into `max_tokens`. */
+    /** `finish_reason: "length"`: reasoning plus answer did not fit into `max_tokens`. */
     TRUNCATED(retryable = false),
 
     UNKNOWN(retryable = false),
 }
 
 /**
- * Token usage of one call. With server-side fallbacks a single call can run several attempts:
- * the top-level fields describe the attempt that produced the returned message ([model]), and
- * [declinedAttempts] the attempts that refused before it, each billed at its own model's rates.
+ * Token usage of one call. [inputTokens] are the prompt tokens neither read from nor written to the prompt cache, so
+ * that every token is priced once. [costMicroUsd] is what the provider charged, when it reports it (OpenRouter does);
+ * otherwise [ModelPricing] estimates the cost from the tokens.
  */
 @Serializable
 data class RouteUsage(
@@ -66,12 +66,5 @@ data class RouteUsage(
     val outputTokens: Long,
     val cacheReadTokens: Long = 0,
     val cacheCreationTokens: Long = 0,
-    val declinedAttempts: List<RouteUsage> = emptyList(),
-) {
-    private val attempts: List<RouteUsage> get() = declinedAttempts + this
-
-    val totalInputTokens: Long get() = attempts.sumOf { it.inputTokens }
-    val totalOutputTokens: Long get() = attempts.sumOf { it.outputTokens }
-    val totalCacheReadTokens: Long get() = attempts.sumOf { it.cacheReadTokens }
-    val totalCacheCreationTokens: Long get() = attempts.sumOf { it.cacheCreationTokens }
-}
+    val costMicroUsd: Long? = null,
+)

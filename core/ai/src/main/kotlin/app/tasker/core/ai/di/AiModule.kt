@@ -10,12 +10,14 @@ import app.tasker.core.ai.EnrichmentCommitListener
 import app.tasker.core.ai.EnrichmentScheduler
 import app.tasker.core.ai.IntegrityTokenProvider
 import app.tasker.core.ai.MetricsSender
+import app.tasker.core.ai.OpenRouterHttpClient
 import app.tasker.core.ai.PlayIntegrityTokenProvider
 import app.tasker.core.ai.ProxyAiGateway
 import app.tasker.core.ai.ProxyGateway
 import app.tasker.core.ai.SecretVault
 import app.tasker.core.ai.TinkKeystoreAead
 import app.tasker.core.ai.WorkManagerEnrichmentScheduler
+import app.tasker.core.ai.openrouter.openRouterTimeouts
 import app.tasker.core.data.di.IoDispatcher
 import app.tasker.core.data.effects.CommitListener
 import dagger.Binds
@@ -87,6 +89,12 @@ object AiModule {
             requestTimeoutMillis = REQUEST_TIMEOUT_MS
         }
     }
+
+    /** The direct mode calls OpenRouter itself: one attempt per timeout, retries are the runner's. No logging plugin (§21). */
+    @Provides
+    @Singleton
+    @OpenRouterHttpClient
+    fun openRouterHttpClient(): HttpClient = HttpClient(OkHttp) { openRouterTimeouts() }
 
     private const val CONNECT_TIMEOUT_MS = 15_000L
     private const val SOCKET_TIMEOUT_MS = 150_000L

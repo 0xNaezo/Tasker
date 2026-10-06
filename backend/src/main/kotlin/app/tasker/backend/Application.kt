@@ -15,9 +15,12 @@ import app.tasker.backend.http.metricsRoute
 import app.tasker.backend.store.InstallStore
 import app.tasker.backend.store.MetricsStore
 import app.tasker.backend.store.UsageStore
-import app.tasker.core.ai.claude.ClaudeRouteRunner
-import app.tasker.core.ai.claude.createClient
 import app.tasker.core.ai.contract.AiRoute
+import app.tasker.core.ai.openrouter.OpenRouterOptions
+import app.tasker.core.ai.openrouter.OpenRouterRouteRunner
+import app.tasker.core.ai.openrouter.openRouterTimeouts
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStopped
 import io.ktor.server.auth.authenticate
@@ -26,8 +29,9 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.routing.routing
 import java.security.MessageDigest
 import java.time.Clock
-import java.time.Duration
 import kotlin.system.exitProcess
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource
 import org.slf4j.LoggerFactory
 
@@ -98,19 +102,21 @@ class BackendServices(
 
     companion object {
         /** The proxy answers the app within its own timeout, so provider calls get one quick retry at most. */
-        private val PROVIDER_TIMEOUT: Duration = Duration.ofSeconds(30)
+        private val PROVIDER_TIMEOUT: Duration = 30.seconds
         private const val PROVIDER_MAX_RETRIES = 1
 
-        /** Connects the database, applies migrations and creates the provider clients. */
+        /** Connects the database, applies migrations and creates the provider client. */
         fun create(config: BackendConfig, clock: Clock): BackendServices {
             val dataSource = Database.pooled(config.database)
             val database = Database(dataSource)
             Migrations(database).migrate(clock)
-            val client = createClient(
-                apiKey = config.anthropicApiKey,
-                baseUrl = config.anthropicBaseUrl,
-                timeout = PROVIDER_TIMEOUT,
-                maxRetries = PROVIDER_MAX_RETRIES,
+            // No logging plugin: task texts and the provider key must never reach logs (§18.1).
+            val http = HttpClient(OkHttp) { openRouterTimeouts(PROVIDER_TIMEOUT) }
+            val runner = OpenRouterRouteRunner(
+                http = http,
+                apiKey = config.openRouterApiKey,
+                settings = config.routeSettings(AiRoute.ENRICH),
+                options = OpenRouterOptions(baseUrl = config.openRouterBaseUrl, maxRetries = PROVIDER_MAX_RETRIES),
             )
             val integrity = config.playPackageName?.let { packageName ->
                 PlayIntegrityVerifier(packageName, GoogleAccessTokens.create(config.googleCredentialsJson), clock)
@@ -120,10 +126,10 @@ class BackendServices(
                 database = database,
                 tokens = InstallTokens(config.installTokenSecret, config.installTokenPreviousSecret, clock),
                 integrity = integrity,
-                enrichEngine = ClaudeEnrichEngine(ClaudeRouteRunner(client, config.routeSettings(AiRoute.ENRICH))),
+                enrichEngine = OpenRouterEnrichEngine(runner),
                 policy = ProxyPolicy(config.dailyRequestsPerInstall, config.dailyBudgetMicroUsd, config.devInstallKey),
                 onClose = {
-                    client.close()
+                    http.close()
                     dataSource.close()
                 },
             )

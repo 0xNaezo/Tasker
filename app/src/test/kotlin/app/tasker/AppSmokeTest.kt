@@ -111,7 +111,7 @@ class AppSmokeTest {
         compose.waitUntilAtLeastOneExists(hasText("What is sent"), TIMEOUT_MS)
         shoot("09-ai")
         compose.onNodeWithText("Agree and turn on").performClick()
-        compose.waitUntilAtLeastOneExists(hasText("Anthropic API key"), TIMEOUT_MS)
+        compose.waitUntilAtLeastOneExists(hasText("OpenRouter API key"), TIMEOUT_MS)
         compose.onNodeWithText("Add your API key to start").assertExists()
         shoot("10-ai-on")
     }

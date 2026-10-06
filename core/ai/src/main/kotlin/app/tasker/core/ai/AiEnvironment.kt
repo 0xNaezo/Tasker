@@ -4,7 +4,7 @@ import app.tasker.core.model.AiMode
 
 /**
  * What the build offers for AI (tech plan §17.2, §24.1). The access mode follows the install channel:
- * - `github` flavor (Android Studio, GitHub Releases): direct mode only, with the user's own Anthropic API key;
+ * - `github` flavor (Android Studio, GitHub Releases): direct mode only, with the user's own OpenRouter API key;
  * - `play` flavor (Google Play): proxy mode only, with an install token after a Play Integrity check.
  *
  * **Required binding.** `core:ai` declares no default: the `app` module must provide it from its flavor, e.g.

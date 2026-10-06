@@ -6,7 +6,7 @@
 
 По правилам формы «сбор» — это передача данных с устройства, а «передача третьим лицам» — передача кому-то, кроме поставщиков, которые обрабатывают данные по вашему поручению. Поэтому:
 
-- Anthropic (Claude API) и Sentry — поставщики услуг: их участие — сбор, но не передача третьим лицам;
+- OpenRouter, поставщик модели (сейчас Google Vertex AI, см. [ADR 0011](adr/0011-openrouter-provider.md)) и Sentry — поставщики услуг: их участие — сбор, но не передача третьим лицам;
 - то, что обрабатывается только на телефоне, не декларируется: календарь, голос (его распознаёт системный сервис, приложение получает текст), уведомления, экспорт и копии в папку, выбранную пользователем.
 
 ## Типы данных
@@ -15,7 +15,7 @@
 
 | Тип в форме | Что именно | Когда | Цели | Эфемерно |
 | --- | --- | --- | --- | --- |
-| App activity → Other user-generated content | Название новой задачи, найденные правилами поля, названия до пяти похожих выполненных задач | Согласие на ИИ: запрос `/v1/enrich` через наш прокси в Claude API | App functionality | Наш сервер тексты не хранит. Всё «эфемерно», только если у Anthropic действует Zero Data Retention **[проверить]** |
+| App activity → Other user-generated content | Название новой задачи, найденные правилами поля, названия до пяти похожих выполненных задач | Согласие на ИИ: запрос `/v1/enrich` через наш прокси и OpenRouter к модели Claude | App functionality | Наш сервер тексты не хранит, OpenRouter отправляет их только поставщикам с Zero Data Retention. Всё «эфемерно», только если и сам OpenRouter их не хранит **[проверить]** |
 | App activity → App interactions | Недельные итоги: время на обслуживание, исходы пунктов плана, переносы, каналы захвата, архив по TTL, дни активности | Согласие на телеметрию: `/v1/metrics` | Analytics | Нет: хранятся на сервере |
 | App info and performance → Crash logs | Тип исключения и стек вызовов | Согласие на телеметрию, в сборке с DSN Sentry | Analytics | Нет: хранятся в Sentry |
 | App info and performance → Diagnostics | Модель устройства, версия Android, версия приложения в отчёте о сбое | Вместе с отчётом о сбое | Analytics | Нет |
@@ -25,8 +25,8 @@
 
 ## Остальные вопросы формы
 
-- **Передаются ли данные третьим лицам?** Нет: Anthropic и Sentry — поставщики услуг.
-- **Шифруются ли данные при передаче?** Да: Claude API, Sentry и прокси — по HTTPS. Сборка с адресом `tasker.aiProxyUrl` не на `https://` не конфигурируется (`app/build.gradle.kts`).
+- **Передаются ли данные третьим лицам?** Нет: OpenRouter, поставщик модели и Sentry — поставщики услуг.
+- **Шифруются ли данные при передаче?** Да: прокси, OpenRouter и Sentry — по HTTPS. Сборка с адресом `tasker.aiProxyUrl` не на `https://` не конфигурируется (`app/build.gradle.kts`).
 - **Можно ли запросить удаление данных?** **[проверить]** Аккаунтов нет, данные на сервере привязаны к случайному идентификатору установки, который пользователь не видит. Нужно решить, как принимать такие запросы, и описать это в политике.
 - **Play Integrity.** Приложение запрашивает токен Play Integrity перед первым обращением к прокси. **[проверить]** раздел о Data safety в документации Play Integrity API: что Google рекомендует декларировать.
 - **Резервное копирование Android.** Последняя ежедневная копия и настройки попадают в Auto Backup ([ADR 0002](adr/0002-local-first-without-account.md)). **[проверить]** нужно ли это декларировать.
@@ -39,4 +39,4 @@
 - новое поле в `EnrichRequest` или `MetricsReport`;
 - новый SDK, который отправляет данные.
 
-Источники: [`EnrichModels.kt`](../core/ai-contract/src/main/kotlin/app/tasker/core/ai/contract/EnrichModels.kt), [`ProxyProtocol.kt`](../core/ai-contract/src/main/kotlin/app/tasker/core/ai/contract/ProxyProtocol.kt), [`CrashReporting.kt`](../app/src/main/kotlin/app/tasker/platform/CrashReporting.kt), [ADR 0004](adr/0004-crash-reports-sentry.md), [ADR 0006](adr/0006-ai-access-by-install-channel.md), [ADR 0010](adr/0010-weekly-metrics.md).
+Источники: [`EnrichModels.kt`](../core/ai-contract/src/main/kotlin/app/tasker/core/ai/contract/EnrichModels.kt), [`ProxyProtocol.kt`](../core/ai-contract/src/main/kotlin/app/tasker/core/ai/contract/ProxyProtocol.kt), [`CrashReporting.kt`](../app/src/main/kotlin/app/tasker/platform/CrashReporting.kt), [ADR 0004](adr/0004-crash-reports-sentry.md), [ADR 0006](adr/0006-ai-access-by-install-channel.md), [ADR 0010](adr/0010-weekly-metrics.md), [ADR 0011](adr/0011-openrouter-provider.md).

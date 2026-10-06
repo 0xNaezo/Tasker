@@ -13,7 +13,7 @@ android {
 dependencies {
     api(project(":core:data"))
     api(project(":core:ai-contract"))
-    implementation(project(":core:ai-claude"))
+    implementation(project(":core:ai-openrouter"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.work.runtime)

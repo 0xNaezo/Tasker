@@ -10,7 +10,7 @@ class BackendConfigTest {
 
     private val minimal = mapOf(
         "DATABASE_URL" to "postgres://tasker:p%40ss%3Aword@db.internal:6543/tasker?sslmode=require",
-        "ANTHROPIC_API_KEY" to "sk-ant-test-key",
+        "OPENROUTER_API_KEY" to "sk-or-v1-test-key",
         "INSTALL_TOKEN_SECRET" to TEST_SECRET,
         "PLAY_PACKAGE_NAME" to "app.tasker",
     )
@@ -26,9 +26,10 @@ class BackendConfigTest {
         assertThat(config.dailyRequestsPerInstall).isEqualTo(200)
         assertThat(config.dailyBudgetMicroUsd).isEqualTo(20_000_000)
         assertThat(config.devInstallKey).isNull()
+        assertThat(config.openRouterBaseUrl).isEqualTo("https://openrouter.ai/api/v1")
         assertThat(
             config.routeSettings(AiRoute.ENRICH),
-        ).isEqualTo(RouteSettings(model = "claude-opus-5-5", effort = "low", maxTokens = 4_096))
+        ).isEqualTo(RouteSettings(model = "anthropic/claude-opus-5.5", effort = "low", maxTokens = 4_096, zeroDataRetention = true))
         assertThat(config.routeSettings(AiRoute.SPLIT).effort).isEqualTo("medium")
     }
 
@@ -41,10 +42,11 @@ class BackendConfigTest {
                 "DEV_INSTALL_KEY" to TEST_DEV_KEY,
                 "DAILY_REQUESTS_PER_INSTALL" to "50",
                 "DAILY_BUDGET_USD" to "2.5",
-                "ROUTE_ENRICH_MODEL" to "claude-sonnet-5-5",
+                "OPENROUTER_BASE_URL" to "https://gateway.example.org/api/v1",
+                "ROUTE_ENRICH_MODEL" to "anthropic/claude-sonnet-5.5",
                 "ROUTE_ENRICH_EFFORT" to "medium",
                 "ROUTE_ENRICH_MAX_TOKENS" to "2048",
-                "ROUTE_ENRICH_FALLBACKS" to "false",
+                "ROUTE_ENRICH_ZDR" to "false",
                 "INSTALL_TOKEN_SECRET_PREVIOUS" to "previous-secret-previous-secret-0000",
             ),
         )
@@ -53,12 +55,14 @@ class BackendConfigTest {
         assertThat(config.database.user).isEqualTo("override-user")
         assertThat(config.dailyRequestsPerInstall).isEqualTo(50)
         assertThat(config.dailyBudgetMicroUsd).isEqualTo(2_500_000)
-        assertThat(config.routeSettings(AiRoute.ENRICH))
-            .isEqualTo(RouteSettings(model = "claude-sonnet-5-5", effort = "medium", maxTokens = 2_048, fallbacks = false))
+        assertThat(config.openRouterBaseUrl).isEqualTo("https://gateway.example.org/api/v1")
+        assertThat(config.routeSettings(AiRoute.ENRICH)).isEqualTo(
+            RouteSettings(model = "anthropic/claude-sonnet-5.5", effort = "medium", maxTokens = 2_048, zeroDataRetention = false),
+        )
         assertThat(config.installTokenPreviousSecret).isEqualTo("previous-secret-previous-secret-0000")
 
         val printed = config.toString()
-        listOf("sk-ant-test-key", TEST_SECRET, TEST_DEV_KEY, "p@ss:word", "previous-secret").forEach { secret ->
+        listOf("sk-or-v1-test-key", TEST_SECRET, TEST_DEV_KEY, "p@ss:word", "previous-secret").forEach { secret ->
             assertThat(printed).doesNotContain(secret)
         }
     }
@@ -80,8 +84,9 @@ class BackendConfigTest {
                 mapOf(
                     "INSTALL_TOKEN_SECRET" to "too-short-secret-value",
                     "PORT" to "http",
-                    "ANTHROPIC_LOG" to "debug",
+                    "OPENROUTER_BASE_URL" to "http://openrouter.ai/api/v1",
                     "ROUTE_ENRICH_EFFORT" to "maximal",
+                    "ROUTE_ENRICH_ZDR" to "maybe",
                     "DAILY_BUDGET_USD" to "-1",
                 ),
             )
@@ -89,15 +94,25 @@ class BackendConfigTest {
         val message = checkNotNull(error.message)
         listOf(
             "DATABASE_URL is required",
-            "ANTHROPIC_API_KEY is required",
+            "OPENROUTER_API_KEY is required",
             "INSTALL_TOKEN_SECRET must be at least 32 characters",
             "PORT must be an integer",
-            "ANTHROPIC_LOG",
+            "OPENROUTER_BASE_URL must start with https://",
             "ROUTE_ENRICH_EFFORT",
+            "ROUTE_ENRICH_ZDR",
             "DAILY_BUDGET_USD",
             "PLAY_PACKAGE_NAME",
         ).forEach { assertThat(message).contains(it) }
         assertThat(message).doesNotContain("too-short-secret-value")
+    }
+
+    @Test
+    fun `a key that cannot go into a header is rejected without echoing it`() {
+        val error = assertThrows(ConfigException::class.java) {
+            BackendConfig.fromEnv(minimal + ("OPENROUTER_API_KEY" to "sk-or-v1-ключ"))
+        }
+        assertThat(error.message).contains("OPENROUTER_API_KEY must be printable ASCII")
+        assertThat(error.message).doesNotContain("ключ")
     }
 
     @Test

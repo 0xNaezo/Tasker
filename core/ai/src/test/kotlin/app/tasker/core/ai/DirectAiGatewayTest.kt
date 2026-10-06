@@ -1,21 +1,24 @@
 package app.tasker.core.ai
 
-import app.tasker.core.ai.claude.createClient
 import app.tasker.core.ai.contract.EnrichRequest
 import app.tasker.core.ai.contract.EnrichResponse
 import app.tasker.core.ai.contract.EstimateScale
 import app.tasker.core.ai.contract.ExtractedFields
 import app.tasker.core.ai.contract.FailureKind
 import app.tasker.core.ai.contract.RouteResult
+import app.tasker.core.ai.openrouter.openRouterTimeouts
 import app.tasker.core.model.AiSettings
 import com.google.common.truth.Truth.assertThat
-import com.sun.net.httpserver.HttpServer
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.TextContent
+import io.ktor.http.headersOf
 import java.io.File
-import java.net.InetAddress
-import java.net.InetSocketAddress
 import java.nio.file.Files
 import java.util.concurrent.CopyOnWriteArrayList
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
@@ -25,56 +28,59 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
-/** The direct mode end to end: the real SDK client against a local stand-in for the Claude API. */
+/** The direct mode end to end: the real runner and HTTP client against a stand-in for OpenRouter. */
 @RunWith(RobolectricTestRunner::class)
 class DirectAiGatewayTest {
-    private val api = FakeClaudeApi()
     private val env = AiTestEnv()
     private val dir: File = Files.createTempDirectory("vault").toFile()
     private val keys = ApiKeyStore(testVault(dir))
-    private val createdFor = mutableListOf<String>()
-    private val gateway = DirectAiGateway(keys, env.settings, Dispatchers.IO) { apiKey: String ->
-        createdFor += apiKey
-        createClient(apiKey, baseUrl = api.baseUrl, maxRetries = 0)
+    private val requests = CopyOnWriteArrayList<Sent>()
+
+    @Volatile
+    private var status = HttpStatusCode.OK
+
+    @Volatile
+    private var answer = completion(answer())
+
+    private val engine = MockEngine { request ->
+        requests += Sent(request.url.toString(), request.headers[HttpHeaders.Authorization], (request.body as TextContent).text)
+        respond(answer, status, headersOf(HttpHeaders.ContentType, "application/json"))
     }
+    private val gateway = DirectAiGateway(keys, env.settings, HttpClient(engine) { openRouterTimeouts() })
 
     @After
     fun tearDown() {
-        api.close()
         env.close()
         dir.deleteRecursively()
     }
 
     @Test
     fun `sends the request with the stored key and the model from the settings`() = runTest {
-        keys.save("sk-ant-user-key")
-        env.settings.update { it.copy(ai = it.ai.copy(model = "claude-sonnet-5-5")) }
-        api.reply(200, message(answer(estimate = "\"S\"", confidence = "0.9")))
+        keys.save("sk-or-v1-user-key")
+        env.settings.update { it.copy(ai = it.ai.copy(model = "anthropic/claude-sonnet-5.5")) }
+        answer = completion(answer(estimate = "\"S\"", confidence = "0.9"))
 
         val result = gateway.enrich(REQUEST)
 
         assertThat(result).isInstanceOf(RouteResult.Success::class.java)
         assertThat((result as RouteResult.Success).value).isEqualTo(EnrichResponse(estimate = "S", estimateConfidence = 0.9))
-        val sent = api.requests.single()
-        assertThat(sent.headers["x-api-key"]).isEqualTo("sk-ant-user-key")
+        val sent = requests.single()
+        assertThat(sent.url).isEqualTo("https://openrouter.ai/api/v1/chat/completions")
+        assertThat(sent.authorization).isEqualTo("Bearer sk-or-v1-user-key")
         val body = Json.parseToJsonElement(sent.body).jsonObject
-        assertThat(body.getValue("model").jsonPrimitive.content).isEqualTo("claude-sonnet-5-5")
-        assertThat(body.getValue("fallbacks").jsonPrimitive.content).isEqualTo("default")
+        assertThat(body.getValue("model").jsonPrimitive.content).isEqualTo("anthropic/claude-sonnet-5.5")
+        assertThat(body.getValue("provider").jsonObject.getValue("zdr").jsonPrimitive.content).isEqualTo("true")
         assertThat(sent.body).contains("позвонить в банк")
     }
 
     @Test
-    fun `one client per key, replaced when the key changes`() = runTest {
-        api.reply(200, message(answer()))
-        keys.save("sk-ant-first")
+    fun `a new key is used from the next call on`() = runTest {
+        keys.save("sk-or-v1-first")
         gateway.enrich(REQUEST)
-        gateway.enrich(REQUEST)
-
-        keys.save("sk-ant-second")
+        keys.save("sk-or-v1-second")
         gateway.enrich(REQUEST)
 
-        assertThat(createdFor).containsExactly("sk-ant-first", "sk-ant-second").inOrder()
-        assertThat(api.requests.map { it.headers["x-api-key"] }).containsExactly("sk-ant-first", "sk-ant-first", "sk-ant-second").inOrder()
+        assertThat(requests.map { it.authorization }).containsExactly("Bearer sk-or-v1-first", "Bearer sk-or-v1-second").inOrder()
     }
 
     @Test
@@ -82,33 +88,38 @@ class DirectAiGatewayTest {
         val result = gateway.enrich(REQUEST) as RouteResult.Failed
 
         assertThat(result.kind).isEqualTo(FailureKind.AUTH)
-        assertThat(api.requests).isEmpty()
-        assertThat(createdFor).isEmpty()
+        assertThat(result.detail).isEqualTo(AiUnavailableReason.NO_API_KEY.code)
+        assertThat(requests).isEmpty()
     }
 
     @Test
-    fun `a rejected key is no access, an overloaded API is retryable`() = runTest {
-        keys.save("sk-ant-revoked")
+    fun `a rejected key is no access, a failing provider is retryable`() = runTest {
+        keys.save("sk-or-v1-revoked")
 
-        api.reply(401, """{"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}""")
+        status = HttpStatusCode.Unauthorized
+        answer = """{"error":{"code":401,"message":"User not found."}}"""
         assertThat((gateway.enrich(REQUEST) as RouteResult.Failed).kind).isEqualTo(FailureKind.AUTH)
 
-        api.reply(529, """{"type":"error","error":{"type":"overloaded_error","message":"Overloaded"}}""")
-        val overloaded = gateway.enrich(REQUEST) as RouteResult.Failed
-        assertThat(overloaded.kind).isEqualTo(FailureKind.OVERLOADED)
-        assertThat(overloaded.kind.retryable).isTrue()
+        status = HttpStatusCode.PaymentRequired
+        answer = """{"error":{"code":402,"message":"Insufficient credits"}}"""
+        assertThat((gateway.enrich(REQUEST) as RouteResult.Failed).kind).isEqualTo(FailureKind.AUTH)
+
+        status = HttpStatusCode.OK
+        answer = """{"error":{"code":502,"message":"Provider returned error"}}"""
+        val failing = gateway.enrich(REQUEST) as RouteResult.Failed
+        assertThat(failing.kind).isEqualTo(FailureKind.OVERLOADED)
+        assertThat(failing.kind.retryable).isTrue()
     }
 
     @Test
     fun `route settings follow the chosen model`() {
         val default = DirectAiGateway.routeSettingsFor(" ")
         assertThat(default.model).isEqualTo(AiSettings.DEFAULT_MODEL)
-        assertThat(default.fallbacks).isTrue()
         assertThat(default.effort).isEqualTo("low")
-        assertThat(DirectAiGateway.routeSettingsFor("claude-opus-5-5").fallbacks).isTrue()
-        assertThat(DirectAiGateway.routeSettingsFor("claude-sonnet-5-5").fallbacks).isTrue()
-        assertThat(DirectAiGateway.routeSettingsFor("claude-haiku-4-5").fallbacks).isFalse()
-        assertThat(DirectAiGateway.routeSettingsFor("claude-haiku-4-5").model).isEqualTo("claude-haiku-4-5")
+        assertThat(default.zeroDataRetention).isTrue()
+        assertThat(DirectAiGateway.routeSettingsFor("anthropic/claude-haiku-4.5").model).isEqualTo("anthropic/claude-haiku-4.5")
+        // An id saved before the switch to OpenRouter names no provider: the default model is used instead.
+        assertThat(DirectAiGateway.routeSettingsFor("claude-opus-5-5").model).isEqualTo(AiSettings.DEFAULT_MODEL)
     }
 
     /** The structured answer of `/v1/enrich`; every field is required by the schema. */
@@ -116,47 +127,15 @@ class DirectAiGatewayTest {
         """{"estimate":$estimate,"estimateConfidence":$confidence,"deadlineDate":null,"deadlineTime":null,""" +
             """"deadlineFragment":null,"planDate":null,"planDateFragment":null}"""
 
-    /** A Messages API response whose content starts with an (omitted) thinking block, as on Claude Opus 5.5. */
-    private fun message(text: String): String = """
-        {"id":"msg_1","type":"message","role":"assistant","model":"claude-opus-5-5",
-         "content":[{"type":"thinking","thinking":"","signature":"c2ln"},{"type":"text","text":${Json.encodeToString(text)}}],
-         "stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":100,"output_tokens":50}}
+    /** An OpenRouter chat completion with the answer as the message content. */
+    private fun completion(content: String): String = """
+        {"id":"gen-1","object":"chat.completion","model":"anthropic/claude-opus-5.5",
+         "choices":[{"index":0,"finish_reason":"stop","native_finish_reason":"end_turn",
+           "message":{"role":"assistant","content":${Json.encodeToString(content)}}}],
+         "usage":{"prompt_tokens":100,"completion_tokens":50,"total_tokens":150,"cost":0.0014}}
     """.trimIndent()
 
-    private class Received(val headers: Map<String, String>, val body: String)
-
-    /** Local stand-in for the Claude API on the loopback interface; tests never reach the real network. */
-    private class FakeClaudeApi : AutoCloseable {
-        private val server = HttpServer.create(InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0)
-        val requests = CopyOnWriteArrayList<Received>()
-
-        @Volatile private var status = 200
-
-        @Volatile private var responseBody = "{}"
-
-        val baseUrl: String get() = "http://127.0.0.1:${server.address.port}"
-
-        init {
-            server.createContext("/") { exchange ->
-                exchange.use {
-                    val headers = it.requestHeaders.entries.associate { (name, values) -> name.lowercase() to values.joinToString(",") }
-                    requests += Received(headers, it.requestBody.readBytes().decodeToString())
-                    val bytes = responseBody.toByteArray()
-                    it.responseHeaders.add("Content-Type", "application/json")
-                    it.sendResponseHeaders(status, bytes.size.toLong())
-                    it.responseBody.write(bytes)
-                }
-            }
-            server.start()
-        }
-
-        fun reply(status: Int, body: String) {
-            this.status = status
-            this.responseBody = body
-        }
-
-        override fun close() = server.stop(0)
-    }
+    private class Sent(val url: String, val authorization: String?, val body: String)
 
     private companion object {
         val REQUEST = EnrichRequest(

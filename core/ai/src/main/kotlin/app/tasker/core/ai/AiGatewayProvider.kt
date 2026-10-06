@@ -27,7 +27,7 @@ annotation class ProxyGateway
  * choose again, because the data path differs. As an [AiGateway] itself, it routes every call to [active].
  *
  * Gateways are created lazily: a GitHub build never builds the proxy client and a Google Play build never builds the
- * Claude SDK client.
+ * OpenRouter client.
  */
 @Singleton
 class AiGatewayProvider @Inject constructor(

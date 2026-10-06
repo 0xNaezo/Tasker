@@ -21,7 +21,7 @@ interface RouteContract<Req, Res> {
      */
     val systemPrompt: String
 
-    /** JSON Schema for `output_config.format`; also stable across calls. */
+    /** JSON Schema of the answer, sent as the strict `response_format`; also stable across calls. */
     val outputSchema: JsonObject
 
     val responseSerializer: KSerializer<Res>
@@ -47,21 +47,23 @@ enum class AiRoute(val path: String, val defaultSettings: RouteSettings) {
 }
 
 /**
- * Model parameters of one route (tech plan §17.4).
+ * Model parameters of one route (tech plan §17.4), sent through OpenRouter (ADR 0011).
  *
- * - [model]: `claude-opus-5-5` by default on every route; a cheaper model is the product owner's decision
- *   after the quality eval (§17.6).
- * - [effort]: thinking cannot be disabled on Claude Opus 5.5 and its default effort is `medium`, so the
- *   value is always sent explicitly: `low` for extraction/classification, `medium` for split/summary.
- * - [maxTokens]: covers thinking plus the JSON answer (thinking counts towards the limit).
- * - [fallbacks]: opt into server-side refusal fallbacks (`fallbacks: "default"`).
+ * - [model]: an OpenRouter model id, `anthropic/claude-opus-5.5` by default on every route; a cheaper model is the
+ *   product owner's decision after the quality eval (§17.6).
+ * - [effort]: the reasoning effort (`reasoning.effort`). Thinking cannot be disabled on Claude Opus 5.5 and its default
+ *   effort is `medium`, so the value is always sent explicitly: `low` for extraction/classification, `medium` for
+ *   split/summary.
+ * - [maxTokens]: covers reasoning plus the JSON answer (reasoning counts towards the limit).
+ * - [zeroDataRetention]: route only to endpoints that keep no prompts or answers (`provider.zdr`). Off means the
+ *   OpenRouter account's own data policy decides.
  */
 @Serializable
 data class RouteSettings(
     val model: String = DEFAULT_MODEL,
     val effort: String = EFFORT_LOW,
     val maxTokens: Long = 4_096,
-    val fallbacks: Boolean = true,
+    val zeroDataRetention: Boolean = true,
 ) {
     init {
         require(model.isNotBlank()) { "model must not be blank" }
@@ -70,7 +72,7 @@ data class RouteSettings(
     }
 
     companion object {
-        const val DEFAULT_MODEL = "claude-opus-5-5"
+        const val DEFAULT_MODEL = "anthropic/claude-opus-5.5"
         const val EFFORT_LOW = "low"
         const val EFFORT_MEDIUM = "medium"
         const val EFFORT_HIGH = "high"

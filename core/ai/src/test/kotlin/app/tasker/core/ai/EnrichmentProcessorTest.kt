@@ -24,7 +24,7 @@ import org.robolectric.RobolectricTestRunner
 class EnrichmentProcessorTest {
     private val env = AiTestEnv()
     private val dir: File = Files.createTempDirectory("vault").toFile()
-    private val keys = ApiKeyStore(testVault(dir)).also { runBlocking { it.save("sk-ant-test") } }
+    private val keys = ApiKeyStore(testVault(dir)).also { runBlocking { it.save("sk-or-v1-test") } }
     private val gateway = FakeGateway()
     private val processor = EnrichmentProcessor(env.ai, gatewayProvider(env, keys, direct = gateway), env.requests, env.clock)
 

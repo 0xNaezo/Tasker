@@ -2,7 +2,7 @@
 
 ## Статус
 
-Принято, 2026-10-06.
+Принято, 2026-10-06. Провайдер и модель заменены [ADR 0011](0011-openrouter-provider.md): вместо Claude API и Anthropic Java SDK — OpenRouter и модуль `core:ai-openrouter`, ключ пользователя — ключ OpenRouter. Остальное в силе.
 
 ## Контекст
 

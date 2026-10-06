@@ -16,8 +16,8 @@ object EvalReport {
         appendLine()
         appendLine("- Dataset: `${meta.version}`, ${outcomes.size} cases. ${meta.status}")
         appendLine(
-            "- Model `${settings.model}`, effort `${settings.effort}`, max_tokens ${settings.maxTokens}, " +
-                "server-side fallbacks ${if (settings.fallbacks) "on" else "off"}.",
+            "- Model `${settings.model}` through OpenRouter, effort `${settings.effort}`, max_tokens ${settings.maxTokens}, " +
+                "zero data retention ${if (settings.zeroDataRetention) "required" else "not required"}.",
         )
         appendLine(
             "- Context: now ${meta.now}, ${meta.timeZone}; scale S=${meta.scale.s}, M=${meta.scale.m}, L=${meta.scale.l} minutes.",

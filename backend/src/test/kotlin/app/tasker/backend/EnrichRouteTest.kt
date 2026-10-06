@@ -9,7 +9,6 @@ import app.tasker.core.ai.contract.ErrorBody
 import app.tasker.core.ai.contract.ErrorCodes
 import app.tasker.core.ai.contract.FailureKind
 import app.tasker.core.ai.contract.RouteResult
-import app.tasker.core.ai.contract.RouteUsage
 import ch.qos.logback.classic.Level
 import com.google.common.truth.Truth.assertThat
 import io.ktor.client.call.body
@@ -70,17 +69,17 @@ class EnrichRouteTest {
     }
 
     @Test
-    fun `fallback attempts are charged too`() {
+    fun `the cost the provider reported is charged`() {
         val backend = TestBackend()
-        val declined = RouteUsage(model = "claude-opus-5-5", inputTokens = 500, outputTokens = 0)
-        val served = RouteUsage(model = "claude-opus-4-8", inputTokens = 1000, outputTokens = 100, declinedAttempts = listOf(declined))
-        backend.engine.answer = { RouteResult.Success(EnrichResponse(estimate = "M"), served) }
+        val reported = OPUS_USAGE.copy(cacheReadTokens = 1500, costMicroUsd = 12_345)
+        backend.engine.answer = { RouteResult.Success(EnrichResponse(estimate = "M"), reported) }
         backend.test { client ->
             client.enrich(client.installToken())
             val usage = checkNotNull(backend.services.usage.dailyUsage(INSTALL_ID, today))
-            assertThat(usage.inputTokens).isEqualTo(1500)
-            // 500 x $4 + 1000 x $5 + 100 x $25 per million tokens = 2000 + 5000 + 2500 micro-USD
-            assertThat(usage.costMicroUsd).isEqualTo(9_500)
+            assertThat(usage.inputTokens).isEqualTo(1000)
+            assertThat(usage.cacheReadTokens).isEqualTo(1500)
+            assertThat(usage.costMicroUsd).isEqualTo(12_345)
+            assertThat(backend.services.usage.globalCost(today)).isEqualTo(12_345)
         }
     }
 
@@ -248,7 +247,7 @@ class EnrichRouteTest {
                 assertThat(client.enrich(token, request).status).isEqualTo(HttpStatusCode.OK)
                 val access = logs.await { it.loggerName == ACCESS_LOGGER_NAME && it.formattedMessage.contains("route=/v1/enrich") }
                 assertThat(access.formattedMessage).isEqualTo(
-                    "POST route=/v1/enrich status=200 latencyMs=0 outcome=succeeded model=claude-opus-5-5 inputTokens=1000 " +
+                    "POST route=/v1/enrich status=200 latencyMs=0 outcome=succeeded model=anthropic/claude-opus-5.5 inputTokens=1000 " +
                         "outputTokens=300 cacheReadTokens=0 cacheCreationTokens=0 costMicroUsd=10000",
                 )
 

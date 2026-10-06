@@ -106,12 +106,12 @@ class EvalSummary(val outcomes: List<EvalOutcome>) {
 
     private val usages = outcomes.mapNotNull { it.result.usage }
     val costMicroUsd: Long = usages.sumOf(ModelPricing::costMicroUsd)
-    val inputTokens: Long = usages.sumOf { it.totalInputTokens }
-    val outputTokens: Long = usages.sumOf { it.totalOutputTokens }
-    val cacheReadTokens: Long = usages.sumOf { it.totalCacheReadTokens }
-    val cacheCreationTokens: Long = usages.sumOf { it.totalCacheCreationTokens }
+    val inputTokens: Long = usages.sumOf { it.inputTokens }
+    val outputTokens: Long = usages.sumOf { it.outputTokens }
+    val cacheReadTokens: Long = usages.sumOf { it.cacheReadTokens }
+    val cacheCreationTokens: Long = usages.sumOf { it.cacheCreationTokens }
 
-    /** Share of prompt tokens served from the prompt cache (input tokens exclude cached ones in the API). */
+    /** Share of prompt tokens served from the prompt cache (input tokens exclude cached and cache-written ones). */
     val cacheReadShare: Double? get() {
         val prompt = inputTokens + cacheReadTokens + cacheCreationTokens
         return if (prompt == 0L) null else cacheReadTokens.toDouble() / prompt

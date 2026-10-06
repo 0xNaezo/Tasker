@@ -11,9 +11,9 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 /**
- * The user's own Anthropic API key for the direct mode (tech plan §17.2, §21): encrypted with Tink and the Android
- * Keystore ([SecretVault]), used only for requests to the provider, removed with one tap. The key is never logged
- * and never leaves this class except to build the API client.
+ * The user's own OpenRouter API key for the direct mode (tech plan §17.2, §21; ADR 0011): encrypted with Tink and the
+ * Android Keystore ([SecretVault]), used only for requests to OpenRouter, removed with one tap. The key is never logged
+ * and never leaves this class except for the request header.
  *
  * While the store cannot be read (the Keystore fails), the key counts as absent: the queue stops and keeps its tasks,
  * as without a key, and the next access reads the store again.
@@ -80,25 +80,25 @@ class ApiKeyStore @Inject constructor(private val vault: SecretVault) {
 
     companion object {
         private const val TAG = "ApiKeyStore"
-        private const val SECRET_NAME = "anthropic_api_key"
+        private const val SECRET_NAME = "openrouter_api_key"
         const val MAX_LENGTH = 1_024
 
-        /** Prefix of Anthropic API keys; only a hint for the UI, other formats are accepted. */
-        const val ANTHROPIC_KEY_PREFIX = "sk-ant-"
+        /** Prefix of OpenRouter API keys; only a hint for the UI, other formats are accepted. */
+        const val OPENROUTER_KEY_PREFIX = "sk-or-"
 
         /**
-         * Trims [key]. Other formats than `sk-ant-…` are accepted, but a key must be non-blank, at most [MAX_LENGTH]
-         * characters and free of whitespace and control characters: it is sent as an HTTP header.
+         * Trims [key]. Other formats than `sk-or-…` are accepted, but a key must be non-blank, at most [MAX_LENGTH]
+         * characters and printable ASCII without spaces: it is sent as an HTTP header.
          */
         fun normalize(key: String): String {
             val trimmed = key.trim()
             require(trimmed.isNotEmpty()) { "The API key is empty" }
             require(trimmed.length <= MAX_LENGTH) { "The API key is too long" }
-            require(trimmed.none { it.isWhitespace() || it.isISOControl() }) { "The API key contains spaces or control characters" }
+            require(trimmed.all { it in '!'..'~' }) { "The API key may contain only printable ASCII characters without spaces" }
             return trimmed
         }
 
-        /** True for keys that look like Anthropic API keys; the UI may use it for a soft warning. */
-        fun looksLikeAnthropicKey(key: String): Boolean = key.trim().startsWith(ANTHROPIC_KEY_PREFIX)
+        /** True for keys that look like OpenRouter API keys; the UI may use it for a soft warning. */
+        fun looksLikeOpenRouterKey(key: String): Boolean = key.trim().startsWith(OPENROUTER_KEY_PREFIX)
     }
 }

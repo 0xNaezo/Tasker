@@ -81,8 +81,8 @@ fun enrichRequest(text: String = "сдать отчёт до пятницы", si
     similarDone = listOf(SimilarTask(similar, "M", 75)),
 )
 
-/** 1000 input + 300 output tokens of claude-opus-5-5: $0.004 + $0.006 = 10 000 micro-USD. */
-val OPUS_USAGE = RouteUsage(model = "claude-opus-5-5", inputTokens = 1000, outputTokens = 300, cacheReadTokens = 0)
+/** 1000 input + 300 output tokens of Claude Opus 5.5 without a reported cost: $0.004 + $0.006 = 10 000 micro-USD. */
+val OPUS_USAGE = RouteUsage(model = "anthropic/claude-opus-5.5", inputTokens = 1000, outputTokens = 300, cacheReadTokens = 0)
 const val OPUS_USAGE_COST = 10_000L
 
 class FakeEnrichEngine : EnrichEngine {
@@ -93,7 +93,7 @@ class FakeEnrichEngine : EnrichEngine {
         RouteResult.Success(EnrichResponse(estimate = "M", estimateConfidence = 0.7), OPUS_USAGE)
     }
 
-    override fun enrich(request: EnrichRequest): RouteResult<EnrichResponse> {
+    override suspend fun enrich(request: EnrichRequest): RouteResult<EnrichResponse> {
         requests += request
         return answer(request)
     }
