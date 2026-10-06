@@ -61,4 +61,5 @@
     <string name="plan_empty">The plan is empty</string>
     <string name="today_ai_offer">AI can estimate task sizes and catch dates the rules missed. It stays off until you agree.</string>
     <string name="today_ai_offer_action">Set up</string>
+    <string name="plan_all_tomorrow">All to tomorrow</string>
 </resources>

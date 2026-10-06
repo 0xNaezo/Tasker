@@ -40,6 +40,13 @@ class TaskActions @Inject constructor(
 
     suspend fun postpone(task: Task, option: PostponeOption) = run(R.string.undo_postponed, task) { commands.postpone(task.id, option) }
 
+    /** "All to tomorrow" and other bulk postpones (PLN-5, scenario 3): one batch, so one Undo brings them all back. */
+    suspend fun postponeAll(tasks: List<Task>, option: PostponeOption): Boolean =
+        attempt { commands.postponeAll(tasks.map { it.id }, option) }
+            .onSuccess { messenger.undoable(UiText.Plural(R.plurals.undo_postponed_many, tasks.size, tasks.size), it.batchId) }
+            .onFailure(::report)
+            .isSuccess
+
     suspend fun move(task: Task, bucket: Bucket?) = run(R.string.undo_moved, task) { commands.move(task.id, bucket) }
 
     suspend fun setProject(task: Task, projectId: ProjectId?) =

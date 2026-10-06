@@ -189,4 +189,10 @@
     <string name="action_to_inbox">До Вхідних</string>
     <string name="action_to_project">До проєкту…</string>
     <string name="undo_project_set">Проєкт змінено: %1$s</string>
+    <plurals name="undo_postponed_many">
+        <item quantity="one">Перенесено %1$d завдання</item>
+        <item quantity="few">Перенесено %1$d завдання</item>
+        <item quantity="many">Перенесено %1$d завдань</item>
+        <item quantity="other">Перенесено %1$d завдання</item>
+    </plurals>
 </resources>

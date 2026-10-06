@@ -190,4 +190,8 @@
     <string name="action_to_inbox">Back to Inbox</string>
     <string name="action_to_project">Move to project…</string>
     <string name="undo_project_set">Project changed: %1$s</string>
+    <plurals name="undo_postponed_many">
+        <item quantity="one">Postponed: %1$d task</item>
+        <item quantity="other">Postponed: %1$d tasks</item>
+    </plurals>
 </resources>

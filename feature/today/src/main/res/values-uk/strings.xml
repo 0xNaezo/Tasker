@@ -75,4 +75,5 @@
     <string name="plan_empty">План порожній</string>
     <string name="today_ai_offer">ШІ може оцінювати розмір завдань і знаходити дати, які не розпізнали правила. Він вимкнений, доки ви не погодитеся.</string>
     <string name="today_ai_offer_action">Налаштувати</string>
+    <string name="plan_all_tomorrow">Усі на завтра</string>
 </resources>

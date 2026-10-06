@@ -95,6 +95,9 @@ class PlanViewModel @Inject constructor(
 
     fun postpone(task: Task, option: PostponeOption) = launch { actions.postpone(task, option) }
 
+    /** "All to tomorrow" for the tasks that do not fit (PLN-5, scenario 3). */
+    fun postponeAll(tasks: List<Task>) = launch { actions.postponeAll(tasks, PostponeOption.Tomorrow) }
+
     fun start(task: Task) = launch { actions.start(task)?.takeIf { it.overLimit }?.let { overLimit.value = it } }
 
     fun pause(task: Task, note: String?) = launch { actions.pause(task, note) }

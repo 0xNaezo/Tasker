@@ -218,7 +218,13 @@ private fun PlanContent(
         }
         val doesNotFit = view.doesNotFit
         if (doesNotFit.isNotEmpty()) {
-            item(key = "nofit-header") { SectionHeader(stringResource(R.string.plan_does_not_fit)) }
+            item(key = "nofit-header") {
+                SectionHeader(stringResource(R.string.plan_does_not_fit)) {
+                    TextButton(onClick = { viewModel.postponeAll(doesNotFit.map { it.task }) }) {
+                        Text(stringResource(R.string.plan_all_tomorrow))
+                    }
+                }
+            }
             items(doesNotFit, key = { "nofit-${it.task.id}" }) { candidate ->
                 TaskRow(
                     task = candidate.task,
