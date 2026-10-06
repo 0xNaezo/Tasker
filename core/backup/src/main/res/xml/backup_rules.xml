@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Android Auto Backup on Android 8-11 (tech plan §16). The app manifest refers to it with
+    android:fullBackupContent="@xml/backup_rules"; Android 12+ reads data_extraction_rules.xml instead.
+
+    Only the latest daily backup (written by BackupWorker) and the settings DataStore file are backed up. Once an
+    <include> is present nothing else is, so the live Room database (domain "database") stays out: a JSON backup has
+    no WAL or schema-version problems and stays far below the 25 MB quota. Lint (FullBackupContent) rejects an
+    <exclude> outside the included paths, which is why the database is excluded by not being included.
+-->
+<full-backup-content>
+    <include domain="file" path="backups/latest.json.gz" />
+    <include domain="file" path="datastore/settings.json" />
+</full-backup-content>
