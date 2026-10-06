@@ -29,7 +29,7 @@ class OverdueColorOnly(config: Config) : Rule(config) {
         val selector = expression.selectorExpression?.text ?: return
         if (selector !in ERROR_TOKENS) return
         if (!expression.receiverExpression.text.endsWith("colorScheme")) return
-        if (expression.containingKtFile.name.substringAfterLast('/').substringAfterLast('\\') in allowedFiles) return
+        if (expression.containingKtFile.baseName in allowedFiles) return
         report(CodeSmell(issue, Entity.from(expression), "colorScheme.$selector is reserved; use TaskerTheme.colors.overdue."))
     }
 

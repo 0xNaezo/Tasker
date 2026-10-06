@@ -36,6 +36,16 @@ class TaskerRulesTest {
     }
 
     @Test
+    fun `allow-listed file may read the clock even when detekt names it by its path`() {
+        val code = "object SystemTimeSource { val clock = java.time.Clock.systemUTC() }"
+        val allowed = compileContentForTest(code, "src/main/kotlin/app/SystemTimeSource.kt")
+        val other = compileContentForTest(code, "src/main/kotlin/app/Other.kt")
+        assertThat(allowed.name).endsWith("/app/SystemTimeSource.kt")
+        assertThat(ForbiddenClockCall(Config.empty).lint(allowed)).isEmpty()
+        assertThat(ForbiddenClockCall(Config.empty).lint(other)).hasSize(1)
+    }
+
+    @Test
     fun `flags material error colour`() {
         val code = """
             fun color() = MaterialTheme.colorScheme.error
