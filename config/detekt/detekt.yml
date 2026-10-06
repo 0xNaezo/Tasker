@@ -77,6 +77,11 @@ style:
   ThrowsCount:
     max: 4
 
+performance:
+  # Spreading small fixed arrays (migrations, provenance fields) is clearer than overloads.
+  SpreadOperator:
+    active: false
+
 exceptions:
   TooGenericExceptionCaught:
     active: true

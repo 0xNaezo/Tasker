@@ -62,9 +62,20 @@ internal fun Project.configureTests() {
     tasks.withType<Test>().configureEach {
         maxHeapSize = "2g"
         systemProperty("robolectric.logging.enabled", "false")
+        // Robolectric downloads android-all jars at runtime; Maven Central rate-limits CI, the Google mirror does not.
+        systemProperty("robolectric.dependency.repo.url", MAVEN_MIRROR)
+        systemProperty("robolectric.dependency.repo.id", "google-maven-central-mirror")
+        // The Android 16 sandbox reaches into JDK internals on JDK 21.
+        jvmArgs(
+            "--add-exports=java.base/jdk.internal.access=ALL-UNNAMED",
+            "--add-opens=java.base/java.io=ALL-UNNAMED",
+            "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        )
         testLogging {
             events("failed")
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
         }
     }
 }
+
+private const val MAVEN_MIRROR = "https://maven-central.storage-download.googleapis.com/maven2/"
