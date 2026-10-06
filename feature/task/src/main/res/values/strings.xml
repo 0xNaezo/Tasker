@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="task_back">Back</string>
+    <string name="task_missing">The task no longer exists</string>
+    <string name="task_fields">Details</string>
+    <string name="task_field_title">Text</string>
+    <string name="task_field_bucket">Horizon</string>
+    <string name="task_field_plan_date">Plan date</string>
+    <string name="task_field_deadline">Deadline</string>
+    <string name="task_field_reminders">Reminders</string>
+    <string name="task_field_estimate">Size</string>
+    <string name="task_field_project">Project</string>
+    <string name="task_field_tags">Tags</string>
+    <string name="task_field_note">Note</string>
+    <string name="task_not_set">Not set</string>
+    <string name="task_estimate_unset">Not set (counts as M)</string>
+    <string name="task_open_project">Open project</string>
+    <string name="task_tags_hint">\@work @call</string>
+    <string name="task_save">Save</string>
+    <string name="task_clear_field">Clear %1$s</string>
+    <string name="task_edit_field">Change %1$s</string>
+    <string name="task_ai_undo_field">AI · undo</string>
+    <string name="task_ai_undo_all">Undo all AI changes</string>
+    <string name="task_ai_filled">AI filled: %1$s. Tap to undo.</string>
+    <string name="task_ai_undone">AI changes undone</string>
+    <string name="task_title_ai">Text was changed by AI</string>
+    <string name="task_sources">Links and sources</string>
+    <string name="task_snapshots">Earlier notes</string>
+    <string name="task_history">History</string>
+    <string name="task_snapshot_title">Where I stopped</string>
+    <string name="task_next_step">Next: %1$s</string>
+    <string name="task_add_snapshot">Add a note</string>
+    <string name="task_reminders_default">As in settings</string>
+    <string name="task_reminders_default_value">As in settings: %1$s</string>
+    <string name="task_reminders_none">No reminders</string>
+    <string name="task_reminder_at_deadline">At the deadline</string>
+    <string name="task_reminder_before">%1$s before</string>
+    <string name="task_deadline_other_zone">%1$s (%2$s %3$s)</string>
+    <string name="task_delete_title">Delete forever?</string>
+    <string name="task_delete_body">The task, its notes, links and history will be deleted. This cannot be undone.</string>
+    <string name="task_delete_confirm">Delete forever</string>
+    <string name="task_deleted">Task deleted</string>
+</resources>
