@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="done_this_week">Эта неделя</string>
+    <string name="done_last_week">Прошлая неделя</string>
+    <string name="done_summary_done">Выполнено: %1$d (по плану %2$d, вне плана %3$d)</string>
+    <string name="done_summary_postponed">Перенесено: %1$d</string>
+    <string name="done_added_as_done">Добавлена сразу выполненной</string>
+    <string name="done_empty_title">Здесь появятся выполненные задачи</string>
+    <string name="done_empty_body">По дням и неделям, включая задачи, добавленные сразу выполненными.</string>
+    <string name="done_show_earlier">Показать более ранние недели</string>
+</resources>

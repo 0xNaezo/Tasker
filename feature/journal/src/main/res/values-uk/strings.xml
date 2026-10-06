@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="journal_title">Журнал автоматики</string>
+    <string name="journal_back">Назад</string>
+    <string name="journal_intro">Що застосунок зробив сам і чому. Кожну дію можна скасувати протягом 30 днів.</string>
+    <string name="journal_time_actor">%1$s · %2$s</string>
+    <string name="journal_actor_rule">Правила</string>
+    <string name="journal_actor_ai">ШІ</string>
+    <string name="journal_actor_integration">Інтеграція</string>
+    <string name="journal_batch_title">%1$s · %2$s</string>
+    <plurals name="journal_tasks">
+        <item quantity="one">%1$d задача</item>
+        <item quantity="few">%1$d задачі</item>
+        <item quantity="many">%1$d задач</item>
+        <item quantity="other">%1$d задачі</item>
+    </plurals>
+    <plurals name="journal_projects">
+        <item quantity="one">%1$d проєкт</item>
+        <item quantity="few">%1$d проєкти</item>
+        <item quantity="many">%1$d проєктів</item>
+        <item quantity="other">%1$d проєкту</item>
+    </plurals>
+    <string name="journal_several_actions">Кілька змін</string>
+    <plurals name="journal_more">
+        <item quantity="one">і ще %1$d</item>
+        <item quantity="few">і ще %1$d</item>
+        <item quantity="many">і ще %1$d</item>
+        <item quantity="other">і ще %1$d</item>
+    </plurals>
+    <string name="journal_details">Докладніше</string>
+    <string name="journal_hide_details">Згорнути</string>
+    <string name="journal_undo_all">Скасувати все</string>
+    <string name="journal_undone">Скасовано</string>
+    <string name="journal_partly_undone">Скасовано частково</string>
+    <string name="journal_expired">Старше 30 днів, скасування недоступне</string>
+    <plurals name="journal_undone_count">
+        <item quantity="one">Скасовано %1$d зміну</item>
+        <item quantity="few">Скасовано %1$d зміни</item>
+        <item quantity="many">Скасовано %1$d змін</item>
+        <item quantity="other">Скасовано %1$d зміни</item>
+    </plurals>
+    <plurals name="journal_ai_group">
+        <item quantity="one">ШІ доповнив %1$d задачу</item>
+        <item quantity="few">ШІ доповнив %1$d задачі</item>
+        <item quantity="many">ШІ доповнив %1$d задач</item>
+        <item quantity="other">ШІ доповнив %1$d задачі</item>
+    </plurals>
+    <string name="journal_ai_show">Показати доповнення ШІ</string>
+    <string name="journal_ai_hide">Сховати доповнення ШІ</string>
+    <string name="journal_expanded">Розгорнуто</string>
+    <string name="journal_collapsed">Згорнуто</string>
+    <string name="journal_project">Проєкт</string>
+    <string name="journal_untitled">(без назви)</string>
+    <string name="journal_kept">Відтоді ви це змінили, тому залишено як є: %1$s</string>
+    <string name="journal_open_task">Відкрити задачу</string>
+    <string name="journal_empty_title">Поки порожньо</string>
+    <string name="journal_empty_body">Коли застосунок сам надішле задачу на перевірку, врахує перенесення або відправить щось в архів, це з’явиться тут разом із причиною.</string>
+</resources>

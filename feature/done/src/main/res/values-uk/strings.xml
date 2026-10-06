@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="done_this_week">Цей тиждень</string>
+    <string name="done_last_week">Минулий тиждень</string>
+    <string name="done_summary_done">Виконано: %1$d (за планом %2$d, поза планом %3$d)</string>
+    <string name="done_summary_postponed">Перенесено: %1$d</string>
+    <string name="done_added_as_done">Додана одразу виконаною</string>
+    <string name="done_empty_title">Тут з’являться виконані задачі</string>
+    <string name="done_empty_body">За днями й тижнями, зокрема задачі, додані одразу виконаними.</string>
+    <string name="done_show_earlier">Показати раніші тижні</string>
+</resources>

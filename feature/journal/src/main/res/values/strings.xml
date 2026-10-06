@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="journal_title">Automation journal</string>
+    <string name="journal_back">Back</string>
+    <string name="journal_intro">What the app did on its own, and why. Each action can be undone for 30 days.</string>
+    <string name="journal_time_actor">%1$s · %2$s</string>
+    <string name="journal_actor_rule">Rules</string>
+    <string name="journal_actor_ai">AI</string>
+    <string name="journal_actor_integration">Integration</string>
+    <string name="journal_batch_title">%1$s · %2$s</string>
+    <plurals name="journal_tasks">
+        <item quantity="one">%1$d task</item>
+        <item quantity="other">%1$d tasks</item>
+    </plurals>
+    <plurals name="journal_projects">
+        <item quantity="one">%1$d project</item>
+        <item quantity="other">%1$d projects</item>
+    </plurals>
+    <string name="journal_several_actions">Several changes</string>
+    <plurals name="journal_more">
+        <item quantity="one">and %1$d more</item>
+        <item quantity="other">and %1$d more</item>
+    </plurals>
+    <string name="journal_details">Details</string>
+    <string name="journal_hide_details">Hide details</string>
+    <string name="journal_undo_all">Undo all</string>
+    <string name="journal_undone">Undone</string>
+    <string name="journal_partly_undone">Partly undone</string>
+    <string name="journal_expired">Older than 30 days, can\'t be undone</string>
+    <plurals name="journal_undone_count">
+        <item quantity="one">Undone: %1$d change</item>
+        <item quantity="other">Undone: %1$d changes</item>
+    </plurals>
+    <plurals name="journal_ai_group">
+        <item quantity="one">AI filled in %1$d task</item>
+        <item quantity="other">AI filled in %1$d tasks</item>
+    </plurals>
+    <string name="journal_ai_show">Show AI fills</string>
+    <string name="journal_ai_hide">Hide AI fills</string>
+    <string name="journal_expanded">Expanded</string>
+    <string name="journal_collapsed">Collapsed</string>
+    <string name="journal_project">Project</string>
+    <string name="journal_untitled">(no title)</string>
+    <string name="journal_kept">Changed by you since, so kept as is: %1$s</string>
+    <string name="journal_open_task">Open task</string>
+    <string name="journal_empty_title">Nothing here yet</string>
+    <string name="journal_empty_body">When the app sends a task to review, counts a postpone or archives something on its own, it shows up here with the reason.</string>
+</resources>
