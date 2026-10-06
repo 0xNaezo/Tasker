@@ -99,7 +99,15 @@ internal object Tokenizer {
         return tokens
     }
 
-    private fun token(norm: NormalizedText, index: Int, kind: TokenKind, start: Int, end: Int, link: LinkSpan?, literal: LiteralRanges): Token {
+    private fun token(
+        norm: NormalizedText,
+        index: Int,
+        kind: TokenKind,
+        start: Int,
+        end: Int,
+        link: LinkSpan?,
+        literal: LiteralRanges,
+    ): Token {
         val text = norm.text.substring(start, end)
         val spaceBefore = start > 0 && norm.text[start - 1] == ' '
         return Token(

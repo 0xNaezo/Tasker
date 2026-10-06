@@ -103,7 +103,7 @@ internal class ParseSession(
         return ParsedValue.Project(known ?: name, isNew = known == null)
     }
 
-    /** Rule 11: a standalone `S`, `M`, `L` or Cyrillic `М`; "S-class", "M&M" or "М." are not estimates. */
+    /** Rule 11: a standalone `S`, `M`, `L` or Cyrillic `М`; "S-class", "M&M" or the initial in "М. Горький" are not estimates. */
     private fun extractEstimate() {
         for (token in tokens) {
             if (!usable[token.index] || token.kind != TokenKind.WORD) continue
@@ -118,8 +118,14 @@ internal class ParseSession(
         val before = tokens.getOrNull(token.index - 1)
         val after = tokens.getOrNull(token.index + 1)
         val leftFree = before == null || token.spaceBefore || before.text in ESTIMATE_OPENERS
-        val rightFree = after == null || after.spaceBefore || after.text in ESTIMATE_CLOSERS
+        val rightFree = after == null || after.spaceBefore || after.text in ESTIMATE_CLOSERS || endsLine(after)
         return leftFree && rightFree
+    }
+
+    /** A dot that ends the input or its line: "Задача L." (a dot before more text may be an initial). */
+    private fun endsLine(token: Token): Boolean {
+        val following = tokens.getOrNull(token.index + 1)
+        return token.isPunct('.') && (following == null || following.breakBefore)
     }
 
     private fun extractTemporal() {
@@ -156,7 +162,7 @@ internal class ParseSession(
         return title.ifBlank { input.trim() }
     }
 
-    /** Token spans `[first..last]` → ranges in the original input; neighbouring spans of one field are joined. */
+    /** Token index spans → ranges in the original input; neighbouring spans of one field are joined. */
     private fun addField(value: ParsedValue, spans: List<IntRange>, language: String?, anchor: Boolean) {
         for (span in spans) {
             for (i in span) {

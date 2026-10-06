@@ -1,7 +1,8 @@
 package app.tasker.core.parser
 
 /**
- * The task text: tokens that are not part of a field, with the original spacing (tech plan §9.1, step 9).
+ * The task text: tokens that are not part of a field, separated by one space where the input had whitespace and glued
+ * where it had none (tech plan §9.1, step 9).
  *
  * A preposition or separator left at an edge of the title is dropped when it is "left over" by an extraction: a preposition
  * whose neighbour is an extracted date, time or URL ("созвон завтра в" → "созвон"), a separator next to any extracted
@@ -25,30 +26,52 @@ internal class TitleBuilder(
         var hi = kept.size - 1
         while (lo <= hi && droppedAtStart(kept[lo])) lo++
         while (hi >= lo && droppedAtEnd(kept[hi])) hi--
-        val sb = StringBuilder()
+        val shown = ArrayList<Token>()
         for (m in lo..hi) {
             val token = tokens[kept[m]]
-            if (m > lo) sb.append(separator(tokens[kept[m - 1]], token))
-            sb.append(token.text)
+            val previous = shown.lastOrNull()
+            if (previous != null && metOverGap(previous, token)) {
+                if (token.text in SENTENCE_ENDS && previous.text !in SENTENCE_ENDS && !previous.literal) {
+                    shown[shown.size - 1] = token
+                    continue
+                }
+                if (!token.literal) continue
+            }
+            shown += token
+        }
+        val sb = StringBuilder()
+        for (k in shown.indices) {
+            if (k > 0) sb.append(separator(shown[k - 1], shown[k]))
+            sb.append(shown[k].text)
         }
         return sb.toString()
     }
 
+    /**
+     * Separators that met over a removed fragment keep only one of them, the sentence end if there is one:
+     * "Купить молоко, завтра." → "Купить молоко.", "Купить молоко. Завтра." → "Купить молоко.".
+     */
+    private fun metOverGap(previous: Token, current: Token): Boolean =
+        current.index - previous.index > 1 &&
+            previous.kind == TokenKind.PUNCT &&
+            current.kind == TokenKind.PUNCT &&
+            previous.text in SEPARATORS &&
+            current.text in SEPARATORS
+
+    /** Kept tokens without bracket pairs that only enclosed removed fragments: "купить молоко (завтра)" → "купить молоко". */
     private fun keptWithoutEmptyBrackets(): List<Int> {
-        val kept = tokens.indices.filterTo(ArrayList()) { !removed[it] }
-        var m = 0
-        while (m + 1 < kept.size) {
-            val open = tokens[kept[m]]
-            val close = tokens[kept[m + 1]]
-            val emptied = close.index - open.index > 1 && !open.literal && !close.literal
-            if (emptied && open.kind == TokenKind.PUNCT && BRACKETS[open.text] == close.text) {
+        val kept = ArrayList<Int>(tokens.size)
+        for (index in tokens.indices) {
+            if (removed[index]) continue
+            val open = kept.lastOrNull()?.let { tokens[it] }
+            val close = tokens[index]
+            val emptied = open != null && close.index - open.index > 1 && !open.literal && !close.literal
+            if (emptied && open?.kind == TokenKind.PUNCT && BRACKETS[open.text] == close.text) {
                 dropped[open.index] = true
                 dropped[close.index] = true
-                kept.removeAt(m + 1)
-                kept.removeAt(m)
-                m = (m - 1).coerceAtLeast(0)
+                kept.removeAt(kept.size - 1)
             } else {
-                m++
+                kept += index
             }
         }
         return kept
@@ -111,7 +134,9 @@ internal class TitleBuilder(
     }
 
     private companion object {
-        val EDGE_PUNCTUATION = setOf(",", ";", ":", "—", "–", "-", "/", "|", "·")
+        val EDGE_PUNCTUATION = setOf(",", ";", ":", "—", "–", "-", "/", "|", "·", ".", "…")
+        val SENTENCE_ENDS = setOf(".", "!", "?", "…")
+        val SEPARATORS = EDGE_PUNCTUATION + SENTENCE_ENDS
         val CLOSING = setOf(",", ".", ";", ":", "!", "?", ")", "]", "}", "»", "…", "”", "’")
         val OPENING = setOf("(", "[", "{", "«", "“", "‘")
         val BRACKETS = mapOf("(" to ")", "[" to "]", "{" to "}", "«" to "»", "“" to "”")

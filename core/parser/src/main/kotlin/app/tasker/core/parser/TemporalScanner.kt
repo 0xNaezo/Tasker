@@ -1,6 +1,7 @@
 package app.tasker.core.parser
 
 import app.tasker.core.model.Bucket
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -35,8 +36,20 @@ internal class TemporalScanner(
     private val context: ParseContext,
 ) : TokenKeys {
     private val calendar = CalendarMath(context.today)
+    private val blockingKeys: Set<String> = packs.flatMapTo(HashSet()) { it.blockingKeys }
 
-    private class DateCore(val last: Int, val date: LocalDate, val todayWord: Boolean = false, val specific: Boolean = true)
+    /**
+     * @property weekday set for a plain weekday ("в среду"), which "next week" may move to the next week.
+     * @property nextWeek the core is "next week" itself, which a following weekday may refine.
+     */
+    private class DateCore(
+        val last: Int,
+        val date: LocalDate,
+        val todayWord: Boolean = false,
+        val specific: Boolean = true,
+        val weekday: DayOfWeek? = null,
+        val nextWeek: Boolean = false,
+    )
 
     private class TimeCore(val last: Int, val time: LocalTime, val specific: Boolean)
 
@@ -89,19 +102,37 @@ internal class TemporalScanner(
 
     private fun date(pack: LanguagePack, i: Int, afterMarker: Boolean): Atom? {
         val head = token(i) ?: return null
+        // "каждый понедельник", "после пятницы": a schedule or a relation, not the date of the task.
+        if (tokens.getOrNull(i - 1)?.takeIf { it.kind == TokenKind.WORD }?.key in blockingKeys) return null
         val prepositionAllowsRelative = if (head.kind == TokenKind.WORD) pack.datePrepositionKeys[head.key] else null
         val hasPreposition = prepositionAllowsRelative != null
         val start = if (hasPreposition) i + 1 else i
         if (hasPreposition && next(start) == null) return null
-        val core = dateCore(
+        val base = dateCore(
             pack = pack,
             j = start,
             continuation = hasPreposition,
             allowRelative = !hasPreposition || prepositionAllowsRelative == true,
             hasContext = hasPreposition || afterMarker,
         ) ?: return null
+        val core = weekOfWeekday(pack, base) ?: base
         val language = if (hasPreposition || core.specific) pack.code else null
         return Atom(AtomKind.DATE, i, core.last, language, date = core.date, todayWord = core.todayWord)
+    }
+
+    /** "в среду на следующей неделе", "next week on wednesday": that weekday of the next week (rule 4). */
+    private fun weekOfWeekday(pack: LanguagePack, core: DateCore): DateCore? {
+        if (core.weekday == null && !core.nextWeek) return null
+        val k = core.last + 1
+        val preposition = next(k)?.takeIf { it.kind == TokenKind.WORD && it.key in pack.datePrepositionKeys }
+        val j = if (preposition != null) k + 1 else k
+        if (next(j) == null) return null
+        if (core.weekday != null) {
+            val match = pack.nextWeekTrie.match(j, this) ?: return null
+            return DateCore(j + match.length - 1, calendar.weekdayOfNextWeek(core.weekday))
+        }
+        val day = pack.weekdayByKey[tokens[j].key]?.takeIf { tokens[j].kind == TokenKind.WORD } ?: return null
+        return DateCore(abbreviationEnd(pack, j), calendar.weekdayOfNextWeek(day))
     }
 
     private fun dateCore(pack: LanguagePack, j: Int, continuation: Boolean, allowRelative: Boolean, hasContext: Boolean): DateCore? {
@@ -128,7 +159,7 @@ internal class TemporalScanner(
 
     private fun nextWeek(pack: LanguagePack, j: Int): DateCore? {
         val match = pack.nextWeekTrie.match(j, this) ?: return null
-        return DateCore(j + match.length - 1, calendar.mondayOfNextWeek())
+        return DateCore(j + match.length - 1, calendar.mondayOfNextWeek(), nextWeek = true)
     }
 
     private fun weekday(pack: LanguagePack, j: Int, continuation: Boolean, hasContext: Boolean): DateCore? {
@@ -140,7 +171,7 @@ internal class TemporalScanner(
         val day = dayWord?.let { pack.weekdayByKey[it.key] } ?: return null
         if (!modified && !hasContext && head.key in pack.contextWeekdayKeys) return null
         val date = if (next) calendar.weekdayOfNextWeek(day) else calendar.nearestWeekday(day)
-        return DateCore(abbreviationEnd(pack, dayIndex), date)
+        return DateCore(abbreviationEnd(pack, dayIndex), date, weekday = day.takeIf { !modified })
     }
 
     /** "12 октября", "12 Oct 2026", "12th of October", "12-го жовтня". */
@@ -204,12 +235,17 @@ internal class TemporalScanner(
         return DateCore(amount.index, calendar.plus(1, singleUnit))
     }
 
-    /** Index of the last token of the word at [k]: a glued dot after an abbreviation belongs to it ("пт.", "Oct."). */
+    /**
+     * Index of the last token of the word at [k]: a glued dot after an abbreviation belongs to it ("пт.", "Oct."), unless a
+     * capitalized word follows and the dot ends the sentence ("demo on thu. By 6pm report").
+     */
     private fun abbreviationEnd(pack: LanguagePack, k: Int): Int {
         val word = tokens.getOrNull(k) ?: return k
         val dot = next(k + 1)
         val glued = dot != null && dot.isPunct('.') && !dot.spaceBefore
-        return if (glued && word.key in pack.abbreviationKeys) k + 1 else k
+        val following = tokens.getOrNull(k + 2)
+        val sentenceEnd = following != null && following.kind == TokenKind.WORD && Character.isUpperCase(following.text.codePointAt(0))
+        return if (glued && !sentenceEnd && word.key in pack.abbreviationKeys) k + 1 else k
     }
 
     /** Index of the last token of a day number with an ordinal suffix: "12th", "12-го". */
@@ -251,7 +287,7 @@ internal class TemporalScanner(
         var specific = false
         val after = next(j + 1)?.takeIf { it.kind == TokenKind.WORD }
         val takesWords = allowWords || clock.hasMinutes
-        val period = if (takesWords) after?.let { pack.dayPeriodByKey[it.key] } else null
+        val period = if (takesWords) periodAfter(pack, j + 1) else null
         val hourWord = after != null && (takesWords || !after.spaceBefore) && after.key in pack.hourWordKeys
         when {
             after != null && after.key in AM_PM -> {
@@ -273,12 +309,21 @@ internal class TemporalScanner(
                 last = abbreviationEnd(pack, j + 1)
                 strong = true
                 specific = true
+                // "до 3 часов дня": a part of the day may follow the hour word.
+                val adjusted = periodAfter(pack, last + 1)?.let { withPeriod(hour, it) }
+                if (adjusted != null) {
+                    hour = adjusted
+                    last++
+                }
             }
         }
         if (!strong && (!allowBareHour || isQuantity(pack, j + 1))) return null
         if (hour !in 0..23) return null
         return TimeCore(last, LocalTime.of(hour, clock.minute), specific)
     }
+
+    private fun periodAfter(pack: LanguagePack, k: Int): DayPeriod? =
+        next(k)?.takeIf { it.kind == TokenKind.WORD }?.let { pack.dayPeriodByKey[it.key] }
 
     /** A bare number followed by a unit, a symbol or a glued suffix is a quantity: "до 5 штук", "в 2 раза", "до 5%". */
     private fun isQuantity(pack: LanguagePack, k: Int): Boolean {

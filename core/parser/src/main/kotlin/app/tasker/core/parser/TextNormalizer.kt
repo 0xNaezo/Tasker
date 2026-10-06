@@ -26,6 +26,7 @@ internal class NormalizedText(
 
 internal object TextNormalizer {
     private const val SPACE = ' '
+    private const val MAX_SEQUENCE = 64
 
     fun normalize(input: String): NormalizedText {
         val nfc = composed(input)
@@ -66,7 +67,7 @@ internal object TextNormalizer {
     }
 
     private fun isLineBreakChar(c: Char): Boolean =
-        c == '\n' || c == '\r' || c == '\u000B' || c == '\u000C' || c == '\u0085' || c == ' ' || c == ' '
+        c == '\n' || c == '\r' || c == '\u000B' || c == '\u000C' || c == '\u0085' || c == '\u2028' || c == '\u2029'
 
     private class Mapped(val text: String, val starts: IntArray, val ends: IntArray)
 
@@ -76,7 +77,7 @@ internal object TextNormalizer {
      * original sequence.
      */
     private fun composed(input: String): Mapped {
-        if (Normalizer.isNormalized(input, Normalizer.Form.NFC)) {
+        if (longestSequence(input) <= MAX_SEQUENCE && Normalizer.isNormalized(input, Normalizer.Form.NFC)) {
             return Mapped(input, IntArray(input.length) { it }, IntArray(input.length) { it + 1 })
         }
         val out = StringBuilder(input.length + 8)
@@ -86,7 +87,10 @@ internal object TextNormalizer {
         while (chunkStart < input.length) {
             val chunkEnd = sequenceEnd(input, chunkStart)
             val chunk = input.substring(chunkStart, chunkEnd)
-            val normalized = Normalizer.normalize(chunk, Normalizer.Form.NFC)
+            // Real text never has dozens of marks on one letter (Unicode stream-safe text allows 30); longer runs stay as
+            // they are, so a hostile input cannot make canonical reordering quadratic. A lone char below U+0300 is NFC.
+            val simple = chunk.length > MAX_SEQUENCE || (chunk.length == 1 && chunk[0] < '\u0300')
+            val normalized = if (simple) chunk else Normalizer.normalize(chunk, Normalizer.Form.NFC)
             if (out.length + normalized.length > starts.size) {
                 val grown = (starts.size * 2).coerceAtLeast(out.length + normalized.length)
                 starts = starts.copyOf(grown)
@@ -102,6 +106,17 @@ internal object TextNormalizer {
             chunkStart = chunkEnd
         }
         return Mapped(out.toString(), starts.copyOf(out.length), ends.copyOf(out.length))
+    }
+
+    private fun longestSequence(s: String): Int {
+        var longest = 0
+        var start = 0
+        while (start < s.length) {
+            val end = sequenceEnd(s, start)
+            longest = maxOf(longest, end - start)
+            start = end
+        }
+        return longest
     }
 
     private fun sequenceEnd(s: String, start: Int): Int {

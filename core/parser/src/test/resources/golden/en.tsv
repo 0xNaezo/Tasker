@@ -1,0 +1,259 @@
+# Golden corpus for core:parser, English (tech plan §9.4, §9.7).
+# Reference moment: Tuesday 2026-10-06, 10:00. Known projects: client, work, Работа, дом, Робота.
+# Columns (tab-separated): input, expected title, expected fields, options (optional).
+# Fields: items separated by ";", "-" for none. Items:
+#   done | deadline=YYYY-MM-DD[ HH:MM] | plan=YYYY-MM-DD | bucket=today|week|someday | size=S|M|L
+#   project=<known name> | newproject=<name> | tag=<name> | url=<url> | email=mailto:<address>
+#   An item may end with [fragment text] and {language} ({null} = language-neutral); both are optional.
+# Options: items separated by ";": slash=MD | now=HH:MM | today=YYYY-MM-DD | lit=<substring> (first occurrence,
+#   repeatable) | langs=ru,en | projects=a,b
+# Escapes in input, title, fragments and lit: \n, \t, \uXXXX.
+
+# --- Tech plan §9.4 and its English counterparts ---
+deadline fri 5pm send invoice	send invoice	deadline=2026-10-09 17:00 [deadline fri 5pm] {en}
+fri by 6pm submit report #client M	submit report	deadline=2026-10-09 18:00 [fri by 6pm] {en}; project=client [#client]; size=M [M]
+tomorrow call mom	call mom	plan=2026-10-07 [tomorrow] {en}
+walk to the store	walk to the store	-
+by the way, buy milk	by the way, buy milk	-
+today clean inbox S	clean inbox	bucket=today [today] {en}; size=S
+someday learn Rust @learning	learn Rust	bucket=someday [someday] {en}; tag=learning [@learning]
+already did code review	code review	done [already did] {en}
+call tomorrow at 3pm	call at 3pm	plan=2026-10-07 [tomorrow]
+call today at 3pm	call at 3pm	bucket=today [today]
+today by 6pm send invoice	send invoice	deadline=2026-10-06 18:00 [today by 6pm] {en}
+tomorrow #client M	tomorrow #client M	plan=2026-10-07 [tomorrow]; project=client; size=M
+
+# --- Relative days ---
+Tomorrow buy bread	buy bread	plan=2026-10-07 [Tomorrow]
+day after tomorrow pick up parcel	pick up parcel	plan=2026-10-08 [day after tomorrow]
+pick up parcel the day after tomorrow	pick up parcel	plan=2026-10-08 [the day after tomorrow]
+for tomorrow prepare slides	prepare slides	plan=2026-10-07 [for tomorrow]
+prepare slides for tomorrow	prepare slides	plan=2026-10-07 [for tomorrow]
+tmrw gym	gym	plan=2026-10-07 [tmrw]
+tonight movie	movie	bucket=today [tonight]
+today	today	bucket=today [today]
+call mom tomorrow!	call mom!	plan=2026-10-07 [tomorrow]
+tomorrow, buy milk	buy milk	plan=2026-10-07 [tomorrow]
+tomorrow or the day after tomorrow	or the day after tomorrow	plan=2026-10-07 [tomorrow]
+
+# --- Weekdays ---
+on monday send report	send report	plan=2026-10-12 [on monday] {en}
+on tuesday standup	standup	plan=2026-10-06 [on tuesday]
+on wednesday haircut	haircut	plan=2026-10-07 [on wednesday]
+thursday buy tickets	buy tickets	plan=2026-10-08 [thursday]
+friday submit paper	submit paper	plan=2026-10-09 [friday]
+saturday cleaning	cleaning	plan=2026-10-10 [saturday]
+sunday call grandma	call grandma	plan=2026-10-11 [sunday]
+mon team sync	team sync	plan=2026-10-12 [mon]
+tue retro	retro	plan=2026-10-06 [tue]
+thu pool	pool	plan=2026-10-08 [thu]
+fri demo	demo	plan=2026-10-09 [fri]
+Fri. send report	send report	plan=2026-10-09 [Fri.]
+on wed pay internet	pay internet	plan=2026-10-07 [on wed]
+on sat garden	garden	plan=2026-10-10 [on sat]
+on sun rest	rest	plan=2026-10-11 [on sun]
+next fri submit report	submit report	plan=2026-10-16 [next fri]
+next friday meeting	meeting	plan=2026-10-16 [next friday]
+next monday kickoff	kickoff	plan=2026-10-12 [next monday]
+next sun picnic	picnic	plan=2026-10-18 [next sun]
+next wed doctor	doctor	plan=2026-10-14 [next wed]
+this friday party	party	plan=2026-10-09 [this friday]
+for friday plan demo	plan demo	plan=2026-10-09 [for friday]
+by friday finish draft	finish draft	deadline=2026-10-09 [by friday] {en}
+by wed approve budget	approve budget	deadline=2026-10-07 [by wed]
+by next friday close tasks	close tasks	deadline=2026-10-16 [by next friday]
+due monday essay	essay	deadline=2026-10-12 [due monday]
+due on friday report	report	deadline=2026-10-09 [due on friday]
+by sat buy gift	buy gift	deadline=2026-10-10 [by sat]
+by sun	by sun	deadline=2026-10-11 [by sun]
+sun cream	sun cream	-
+sat on the couch	sat on the couch	-
+wed in Vegas	wed in Vegas	-
+
+# --- Offsets ---
+in 3 days call back	call back	plan=2026-10-09 [in 3 days] {en}
+in 5 days renew subscription	renew subscription	plan=2026-10-11 [in 5 days]
+in a day water plants	water plants	plan=2026-10-07 [in a day]
+in a week report	report	plan=2026-10-13 [in a week]
+in 2 weeks vacation	vacation	plan=2026-10-20 [in 2 weeks]
+in two weeks check	check	plan=2026-10-20 [in two weeks]
+in one month renew domain	renew domain	plan=2026-11-06 [in one month]
+in a month renew domain	renew domain	plan=2026-11-06 [in a month]
+in 3 months car inspection	car inspection	plan=2027-01-06 [in 3 months]
+in 10 days return book	return book	plan=2026-10-16 [in 10 days]
+in time for dinner	in time for dinner	-
+in 15 minutes call back	in 15 minutes call back	-
+log in tomorrow	log in	plan=2026-10-07 [tomorrow]
+for 2 weeks	for 2 weeks	-
+
+# --- Next week ---
+next week book doctor	book doctor	plan=2026-10-12 [next week] {en}
+by next week sign contract	sign contract	deadline=2026-10-12 [by next week]
+for next week prepare plan	prepare plan	plan=2026-10-12 [for next week]
+move to next week	move to	plan=2026-10-12 [next week]
+
+# --- Dates ---
+Oct 12 conference	conference	plan=2026-10-12 [Oct 12] {en}
+12 Oct conference	conference	plan=2026-10-12 [12 Oct]
+October 12 conference	conference	plan=2026-10-12 [October 12]
+12 October conference	conference	plan=2026-10-12 [12 October]
+Oct 12th conference	conference	plan=2026-10-12 [Oct 12th]
+12th of October conference	conference	plan=2026-10-12 [12th of October]
+October 12, 2027 anniversary	anniversary	plan=2027-10-12 [October 12, 2027]
+12 Oct 2027 anniversary	anniversary	plan=2027-10-12 [12 Oct 2027]
+Nov 20 vacation	vacation	plan=2026-11-20 [Nov 20]
+Jan 1 holiday	holiday	plan=2027-01-01 [Jan 1]
+Dec 31 wrap up the year	wrap up the year	plan=2026-12-31 [Dec 31]
+by Dec 25 buy gifts	buy gifts	deadline=2026-12-25 [by Dec 25]
+on Oct 15 meeting	meeting	plan=2026-10-15 [on Oct 15]
+Sept. 30 report	report	plan=2027-09-30 [Sept. 30]
+May 5 dentist	dentist	plan=2027-05-05 [May 5]
+may 5 dentist	dentist	plan=2027-05-05 [may 5]
+29 Feb leap day	leap day	plan=2028-02-29 [29 Feb]
+2026-10-20 release	release	plan=2026-10-20 [2026-10-20] {null}
+release 2026-11-01	release	plan=2026-11-01 [2026-11-01]
+10/12 meeting	meeting	plan=2026-10-12 [10/12]	slash=MD
+12/10 meeting	meeting	plan=2026-12-10 [12/10]	slash=MD
+12/10 meeting	meeting	plan=2026-10-12 [12/10]
+10/12/2026 meeting	meeting	plan=2026-10-12 [10/12/2026]	slash=MD
+12.10 meeting	meeting	plan=2026-10-12 [12.10]	slash=MD
+due 15.10 taxes	taxes	deadline=2026-10-15 [due 15.10]
+you may go	you may go	-
+march on	march on	-
+
+# --- Times and deadlines ---
+by 6pm send report	send report	deadline=2026-10-06 18:00 [by 6pm] {en}
+by 9am send report	send report	deadline=2026-10-07 09:00 [by 9am]
+by 18:00 send report	send report	deadline=2026-10-06 18:00 [by 18:00]
+by 6pm send report	send report	deadline=2026-10-07 18:00 [by 6pm]	now=21:00
+by 5:30pm submit	submit	deadline=2026-10-06 17:30 [by 5:30pm]
+by 5:30 pm submit	submit	deadline=2026-10-06 17:30 [by 5:30 pm]
+by 12pm lunch order	lunch order	deadline=2026-10-06 12:00 [by 12pm]
+by 12am backup	backup	deadline=2026-10-07 00:00 [by 12am]
+by 6 o'clock send report	send report	deadline=2026-10-07 06:00 [by 6 o'clock]
+friday by 5pm submit report	submit report	deadline=2026-10-09 17:00 [friday by 5pm]
+by friday 5pm submit report	submit report	deadline=2026-10-09 17:00 [by friday 5pm]
+by friday at 5pm submit report	submit report	deadline=2026-10-09 17:00 [by friday at 5pm]
+by 5pm friday submit report	submit report	deadline=2026-10-09 17:00 [by 5pm friday]
+by 5pm on friday submit report	submit report	deadline=2026-10-09 17:00 [by 5pm on friday]
+due friday 5pm report	report	deadline=2026-10-09 17:00 [due friday 5pm]
+deadline: Oct 15 apply	apply	deadline=2026-10-15 [deadline: Oct 15]
+Deadline tomorrow 9am reply	reply	deadline=2026-10-07 09:00 [Deadline tomorrow 9am]
+due today report	report	deadline=2026-10-06 [due today]
+due by friday report	report	deadline=2026-10-09 [due by friday]
+due: tomorrow	due: tomorrow	deadline=2026-10-07 [due: tomorrow]
+no later than friday pay rent	pay rent	deadline=2026-10-09 [no later than friday]
+submit report by friday by 6pm	submit report	deadline=2026-10-09 18:00 [by friday by 6pm]
+on fri submit report by 6pm	submit report	deadline=2026-10-09 18:00 [on fri by 6pm]
+report by 6pm, demo on thu	report, demo	deadline=2026-10-08 18:00 [by 6pm on thu]
+demo on thu. By 6pm report	demo. report	plan=2026-10-08 [on thu]; deadline=2026-10-06 18:00 [By 6pm]
+by tomorrow 12:00 reply	reply	deadline=2026-10-07 12:00 [by tomorrow 12:00]
+by today 6pm pay	pay	deadline=2026-10-06 18:00 [by today 6pm]
+by 6pm	by 6pm	deadline=2026-10-06 18:00 [by 6pm]
+TOMORROW BY 6PM SEND REPORT	SEND REPORT	deadline=2026-10-07 18:00 [TOMORROW BY 6PM]
+
+# --- Time without a deadline marker stays in the text (rule 7) ---
+call at 6pm	call at 6pm	-
+6pm call	6pm call	-
+at 6 call	at 6 call	-
+tomorrow at 6pm call	at 6pm call	plan=2026-10-07 [tomorrow]
+on friday at 10am meeting	at 10am meeting	plan=2026-10-09 [on friday]
+
+# --- Negative cases ---
+due diligence	due diligence	-
+due diligence on fri	due diligence	plan=2026-10-09 [on fri]
+by the way	by the way	-
+by 6 send report	by 6 send report	-
+increase by 5	increase by 5	-
+S-class service	S-class service	-
+buy M&M	buy M&M	-
+call 555-1234	call 555-1234	-
+buy 2.5 kg apples	buy 2.5 kg apples	-
+add 1/2 cup sugar	add 1/2 cup sugar	-
+top 10 tips	top 10 tips	-
+version 2.0 release notes	version 2.0 release notes	-
+from 10 to 12 meeting	from 10 to 12 meeting	-
+wait 5 days	wait 5 days	-
+may the force be with you	may the force be with you	-
+won 1st place	won 1st place	-
+on time delivery	on time delivery	-
+
+# --- Horizons ---
+this week visit IKEA	visit IKEA	bucket=week [this week] {en}
+someday skydive	skydive	bucket=someday [someday]
+some day learn piano	learn piano	bucket=someday [some day]
+clean inbox today	clean inbox	bucket=today [today]
+this week by friday report	report	bucket=week [this week]; deadline=2026-10-09 [by friday]
+today or tomorrow buy bread	or buy bread	bucket=today [today]; plan=2026-10-07 [tomorrow]
+
+# --- Already done (CAP-8) ---
+done: bought groceries	bought groceries	done [done:] {en}
+Done: fixed bug #work	fixed bug	done [Done:]; project=work
+done bought groceries	done bought groceries	-
+already done: call with client	call with client	done [already done:]
+report already did	report already did	-
+Already did the dishes @home	the dishes	done [Already did]; tag=home
+already did	already did	done [already did]
+
+# --- Project, tags, estimate ---
+#work prepare report || prepare report || project=work [#work] {null}
+#new-project sketch plan || sketch plan || newproject=new-project [#new-project]
+#Client call || call || project=client [#Client]
+@urgent call bank	call bank	tag=urgent [@urgent]
+call bank @urgent @personal	call bank	tag=urgent; tag=personal
+write article L	write article	size=L [L]
+write article (S)	write article	size=S [S]
+write article m	write article m	-
+fix C# bug	fix C# bug	-
+close issue #123	close issue #123	-
+#client prepare report || prepare report || newproject=client [#client] || projects=
+
+# --- Links (EXC-5) ---
+email john@example.com tomorrow	email john@example.com	plan=2026-10-07 [tomorrow]; email=mailto:john@example.com
+read https://blog.example.com/2026/10/12/post tomorrow	read	plan=2026-10-07 [tomorrow]; url=https://blog.example.com/2026/10/12/post
+https://github.com/org/repo/pull/12	github.com/org/repo/pull/12	url=https://github.com/org/repo/pull/12
+www.example.com/docs/	example.com/docs	url=https://www.example.com/docs/
+check example.com/pricing on fri	check	plan=2026-10-09 [on fri]; url=https://example.com/pricing
+see (https://en.wikipedia.org/wiki/Foo_(bar))	see	url=https://en.wikipedia.org/wiki/Foo_(bar)
+https://example.com?utm=1	example.com	url=https://example.com?utm=1
+ping alice@example.org	ping alice@example.org	email=mailto:alice@example.org
+notes.md review	notes.md review	-
+visit HTTPS://EXAMPLE.COM/A	visit	url=HTTPS://EXAMPLE.COM/A
+
+# --- Literal ranges ---
+deadline fri 5pm send invoice	deadline fri 5pm send invoice	-	lit=deadline fri 5pm
+deadline fri 5pm send invoice	5pm send invoice	deadline=2026-10-09 [deadline fri]	lit=5pm
+tomorrow call mom	tomorrow call mom	-	lit=tomorrow
+already did review	already did review	-	lit=already did
+buy milk #home	buy milk #home	-	lit=#home
+call mom on fri	call mom on fri	-	lit=on fri
+read https://example.com/a tomorrow	read https://example.com/a	plan=2026-10-07 [tomorrow]	lit=https://example.com/a
+
+# --- Languages ---
+tomorrow	tomorrow	plan=2026-10-07 [tomorrow] {en}
+tomorrow call	tomorrow call	-	langs=ru
+on friday call	call	plan=2026-10-09 [on friday] {en}	langs=en
+2026-10-12 call	call	plan=2026-10-12 {null}	langs=ru
+
+# --- Mixed ---
+fri by 6pm submit report #client M @urgent	submit report	deadline=2026-10-09 18:00 [fri by 6pm]; project=client; size=M; tag=urgent
+call tomorrow at	call	plan=2026-10-07 [tomorrow]
+meeting on	meeting on	-
+buy milk (tomorrow)	buy milk	plan=2026-10-07 [tomorrow]
+buy a gift by Oct 12 and call on thu	buy a gift and call	deadline=2026-10-12 [by Oct 12]; plan=2026-10-08 [on thu]
+on friday meeting #work @office L	meeting	plan=2026-10-09 [on friday]; project=work; tag=office; size=L
+
+# --- A weekday of next week ---
+wednesday next week meeting	meeting	plan=2026-10-14 [wednesday next week] {en}
+next week on wednesday meeting	meeting	plan=2026-10-14 [next week on wednesday]
+next week wed meeting	meeting	plan=2026-10-14 [next week wed]
+by wednesday next week report	report	deadline=2026-10-14 [by wednesday next week]
+
+# --- Schedules and relations are not dates ---
+every monday gym	every monday gym	-
+after friday discuss	after friday discuss	-
+after tomorrow	after tomorrow	-
+
+# --- Punctuation left by a removed fragment ---
+Call mom, tomorrow.	Call mom.	plan=2026-10-07 [tomorrow]
+Ship it — tomorrow!	Ship it!	plan=2026-10-07 [tomorrow]

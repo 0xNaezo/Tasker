@@ -34,6 +34,8 @@ internal enum class DayPeriod { MORNING, AFTERNOON, EVENING, NIGHT }
  * @param countNouns words after a number that make it a quantity, not an hour ("до 5 штук").
  * @param alreadyDone CAP-8 prefixes with an optional colon; [alreadyDoneWithColon] require it ("done:").
  * @param rangeStarts words that open a range: "с 10 до 12" has no deadline.
+ * @param blockingWords words after which a date is not the date of the task: a schedule ("каждый понедельник"; recurrence
+ *   is not parsed) or a relation ("после пятницы").
  * @param danglingWords prepositions dropped from the edges of the title when they touch an extracted date or link.
  */
 internal class LanguagePack(
@@ -66,6 +68,7 @@ internal class LanguagePack(
     alreadyDone: List<String> = emptyList(),
     alreadyDoneWithColon: List<String> = emptyList(),
     rangeStarts: String = "",
+    blockingWords: String = "",
     danglingWords: String = "",
 ) {
     val relativeDayTrie: PhraseTrie<Int> = PhraseTrie.of(relativeDays)
@@ -97,6 +100,7 @@ internal class LanguagePack(
     val alreadyDoneTrie: PhraseTrie<Boolean> =
         PhraseTrie.of(alreadyDone.associateWith { false } + alreadyDoneWithColon.associateWith { true })
     val rangeStartKeys: Set<String> = rangeStarts.keySet()
+    val blockingKeys: Set<String> = blockingWords.keySet()
     val danglingKeys: Set<String> = danglingWords.keySet()
 
     /** Content words of the pack, prepositions excluded: a word known to only one enabled pack hints at the input language. */
@@ -109,6 +113,7 @@ internal class LanguagePack(
         addAll(numberWordByKey.keys)
         addAll(dayPeriodByKey.keys)
         addAll(hourWordKeys)
+        addAll(blockingKeys)
         val phrases = relativeDays.keys + nextWeek + horizons.keys + nounMarkers + alreadyDone + alreadyDoneWithColon
         for (phrase in phrases) addAll(phrase.keySet())
     }

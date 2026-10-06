@@ -73,13 +73,14 @@ internal object LanguagePacks {
             DayPeriod.EVENING to "вечера",
             DayPeriod.NIGHT to "ночи",
         ),
-        hourWords = "час часа часов ч",
+        hourWords = "час часа часов часам ч",
         countNouns = "раз раза штук штуки штука шт человек человека чел лет года рублей рубля рубль руб р тыс тысяч млн " +
             "км кг г мин минут минуты минуту сек секунд процентов процента страниц страницы стр листов этапа этапов " +
             "пунктов пункта задач задачи дней недель месяцев шагов шага вопросов вопроса глав главы мест баллов",
         alreadyDone = listOf("уже сделал", "уже сделала", "уже сделали", "уже сделано"),
         alreadyDoneWithColon = listOf("сделано"),
         rangeStarts = "с со",
+        blockingWords = "каждый каждую каждое каждого каждой каждые после кроме",
         danglingWords = "в во к ко до на у о об с со",
     )
 
@@ -159,6 +160,7 @@ internal object LanguagePacks {
         alreadyDone = listOf("вже зробив", "вже зробила", "вже зробили", "вже зроблено"),
         alreadyDoneWithColon = listOf("зроблено"),
         rangeStarts = "з із зі від",
+        blockingWords = "кожен кожний кожну кожне кожного кожної кожні після крім",
         danglingWords = "у в до на о об з із",
     )
 
@@ -233,6 +235,7 @@ internal object LanguagePacks {
         alreadyDone = listOf("already did", "already done"),
         alreadyDoneWithColon = listOf("done"),
         rangeStarts = "from",
+        blockingWords = "every after except",
         danglingWords = "on at by",
     )
 
