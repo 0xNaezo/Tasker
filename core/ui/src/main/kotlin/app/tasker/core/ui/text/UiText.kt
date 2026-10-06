@@ -1,5 +1,6 @@
 package app.tasker.core.ui.text
 
+import android.content.Context
 import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
@@ -26,3 +27,14 @@ fun UiText.asString(): String = when (this) {
 
 @Composable
 private fun Any.resolveArg(): Any = if (this is UiText) asString() else this
+
+/** Resolves the text outside Compose (toasts, notifications). */
+fun UiText.resolve(context: Context): String {
+    val resources = context.resources
+    fun Array<out Any>.resolved() = map { if (it is UiText) it.resolve(context) else it }.toTypedArray()
+    return when (this) {
+        is UiText.Raw -> value
+        is UiText.Res -> resources.getString(id, *args.resolved())
+        is UiText.Plural -> resources.getQuantityString(id, count, *args.resolved())
+    }
+}

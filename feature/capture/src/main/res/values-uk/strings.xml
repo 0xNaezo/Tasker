@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="capture_placeholder">Нове завдання…</string>
+    <string name="capture_voice">Голосове введення</string>
+    <string name="capture_save">Зберегти завдання</string>
+    <string name="capture_failed">Не вдалося зберегти завдання</string>
+    <string name="capture_saved_to">Збережено: %1$s</string>
+    <string name="capture_saved_project">Збережено в проєкт «%1$s»</string>
+    <string name="capture_saved_done">Додано до зробленого: %1$s</string>
+    <string name="capture_chip_deadline">до %1$s</string>
+    <string name="capture_chip_new_project">#%1$s (новий)</string>
+    <string name="capture_chip_done">вже зроблено</string>
+    <string name="capture_change_date">Змінити дату…</string>
+    <string name="capture_return_to_text">Повернути в текст</string>
+    <string name="capture_remove">Прибрати</string>
+    <string name="capture_quick_label">Нове завдання</string>
+    <string name="capture_share_label">Додати завдання</string>
+    <string name="capture_tile_label">Нове завдання</string>
+    <string name="capture_share_undone">Завдання скасовано</string>
+    <string name="capture_share_edit">Змінити</string>
+</resources>

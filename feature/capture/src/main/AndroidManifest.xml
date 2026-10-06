@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <queries>
+        <intent>
+            <action android:name="android.speech.action.RECOGNIZE_SPEECH" />
+        </intent>
+    </queries>
+
+    <application>
+        <!-- Widget, tile and shortcuts open only the input line: no lists are loaded (§13). -->
+        <activity
+            android:name=".QuickCaptureActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:label="@string/capture_quick_label"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Tasker.Capture"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
+
+        <!-- "Share" (CAP-6): the task is saved at once, a sheet offers Undo and Edit and closes by itself. -->
+        <activity
+            android:name=".ShareActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/capture_share_label"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Tasker.Capture">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".CaptureTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_capture_tile"
+            android:label="@string/capture_tile_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="false" />
+        </service>
+    </application>
+</manifest>
