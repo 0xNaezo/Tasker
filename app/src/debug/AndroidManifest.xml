@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- Managed clock for "N days later" scenarios; DUMP is held by the adb shell only. -->
+        <receiver
+            android:name="app.tasker.debug.ClockShiftReceiver"
+            android:exported="true"
+            android:permission="android.permission.DUMP">
+            <intent-filter>
+                <action android:name="app.tasker.debug.SHIFT_CLOCK" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

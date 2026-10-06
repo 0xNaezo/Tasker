@@ -9,7 +9,9 @@ import app.tasker.core.data.effects.CommitListener
 import app.tasker.core.data.settings.AppSettingsSerializer
 import app.tasker.core.domain.capacity.CapacityCalculator
 import app.tasker.core.domain.port.BusyTimeSource
+import app.tasker.core.domain.time.ClockShift
 import app.tasker.core.domain.time.DayClock
+import app.tasker.core.domain.time.ShiftedTimeSource
 import app.tasker.core.domain.time.SystemTimeSource
 import app.tasker.core.domain.time.TimeSource
 import app.tasker.core.model.AppSettings
@@ -20,6 +22,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.Multibinds
+import java.util.Optional
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -29,9 +32,11 @@ import kotlinx.coroutines.SupervisorJob
 @Module
 @InstallIn(SingletonComponent::class)
 object DataModule {
+    /** A debug build may shift the app's clock for "N days later" scenarios (tech plan §22.1); release has no shift. */
     @Provides
     @Singleton
-    fun timeSource(): TimeSource = SystemTimeSource()
+    fun timeSource(shift: Optional<ClockShift>): TimeSource =
+        if (shift.isPresent) ShiftedTimeSource(SystemTimeSource(), shift.get()) else SystemTimeSource()
 
     @Provides
     @Singleton
@@ -71,4 +76,8 @@ abstract class DataBindingsModule {
     /** Bound by the calendar module; without it capacity is working hours minus buffer (PLN-3). */
     @BindsOptionalOf
     abstract fun busyTimeSource(): BusyTimeSource
+
+    /** Bound only by debug builds (managed clock). */
+    @BindsOptionalOf
+    abstract fun clockShift(): ClockShift
 }
