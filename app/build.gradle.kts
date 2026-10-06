@@ -9,6 +9,10 @@ plugins {
 /** The release key stays out of the repository (tech plan §24.3): CI passes it in environment variables. */
 val releaseKeystore: String? = providers.environmentVariable("TASKER_KEYSTORE_FILE").orNull
 
+/** Task texts and weekly statistics pass through the AI proxy, so only over TLS. */
+val aiProxyUrl: String = (findProperty("tasker.aiProxyUrl") as String?).orEmpty()
+require(aiProxyUrl.isEmpty() || aiProxyUrl.startsWith("https://")) { "tasker.aiProxyUrl must start with https://" }
+
 android {
     namespace = "app.tasker"
 
@@ -79,7 +83,7 @@ android {
         create("play") {
             dimension = "channel"
             buildConfigField("String", "CHANNEL", "\"play\"")
-            buildConfigField("String", "AI_PROXY_URL", "\"${findProperty("tasker.aiProxyUrl") ?: ""}\"")
+            buildConfigField("String", "AI_PROXY_URL", "\"$aiProxyUrl\"")
         }
     }
 

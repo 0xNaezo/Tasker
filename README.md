@@ -8,6 +8,7 @@ Tasker — Android-менеджер задач без обслуживания: 
 - [Спайки S1–S8: что проверено, а что нет](docs/spikes/README.md)
 - [ИИ-прокси (backend)](backend/README.md)
 - [Оценка качества ИИ](docs/ai-eval/README.md)
+- [Политика конфиденциальности — черновик](docs/privacy-policy.md) и [ответы для Data safety](docs/play-data-safety.md)
 
 ## Модули
 
@@ -185,7 +186,7 @@ adb shell am broadcast -a app.tasker.debug.SHIFT_CLOCK --ez reset true -p io.git
 | `tasker.versionName` | `0.1.0` | `versionName` |
 | `tasker.sentryDsn` | пусто | DSN Sentry. Без него отчёты о сбоях выключены ([ADR 0004](docs/adr/0004-crash-reports-sentry.md)) |
 | `tasker.playCloudProject` | `0` — не задан | Номер проекта Google Cloud для Play Integrity. Используется только в канале `play` |
-| `tasker.aiProxyUrl` | пусто | Адрес ИИ-прокси для канала `play`: через него идут ИИ и недельная статистика |
+| `tasker.aiProxyUrl` | пусто | Адрес ИИ-прокси для канала `play`, только `https://`: через него идут ИИ и недельная статистика |
 | `tasker.aiProxyDevKey` | пусто | Ключ dev-окружения прокси вместо Play Integrity. Попадает только в сборку `debug` |
 
 Пример: `./gradlew :app:assemblePlayDebug -Ptasker.aiProxyUrl=https://… -Ptasker.aiProxyDevKey=…`.
@@ -269,4 +270,5 @@ ANTHROPIC_API_KEY=sk-ant-... ./gradlew :tools:ai-eval:run --args="--limit 20"
 - **E2E-тестов на устройстве два:** первый запуск и быстрый ввод. Ключевые сценарии из [плана, §22.3](docs/tech-plan.md#223-ключевые-сценарии) проходят на Robolectric: 1–5 — `ScenariosTest`, 6 и 7 — `AutomationTest`. На эмуляторах их нет. Режим полёта и выключенный ИИ отдельными прогонами не проверяются.
 - **Скриншоты с эталоном** сравниваются только для общих компонентов `core:ui`. Снимки экранов из smoke-тестов и виджета сохраняются без сравнения.
 - **Голосовой ввод** — только системный диалог распознавания. Проверка и загрузка офлайн-пакетов языков и голосовая заметка к паузе (EXC-3) отложены решением владельца продукта.
+- **Политика конфиденциальности и ответы для Data safety** — черновики. Им нужны данные владельца, условия хранения у Anthropic и Sentry и проверка юристом; опубликованной политики нет.
 - **Статистика из канала `github`** не отправляется: без Play Integrity у установки нет токена для backend ([ADR 0010](docs/adr/0010-weekly-metrics.md)).
