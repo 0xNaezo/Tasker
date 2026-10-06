@@ -13,3 +13,4 @@ build/
 !/app/debug.keystore
 keystore.properties
 backend/.env
+.claude/

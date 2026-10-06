@@ -27,4 +27,6 @@ rootProject.name = "Tasker"
 
 include(":app")
 include(":core:model")
+include(":core:domain")
+include(":core:testing")
 include(":lint:detekt-rules")
