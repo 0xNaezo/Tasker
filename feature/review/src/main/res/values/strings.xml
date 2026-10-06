@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="review_title">Is it still relevant?</string>
+    <string name="review_back">Back</string>
+    <string name="review_done_title">Nothing to review</string>
+    <string name="review_done_body">Cards you leave for later come back tomorrow.</string>
+    <string name="review_progress">%1$d of %2$d</string>
+    <string name="review_relevant">Still relevant</string>
+    <string name="review_later">Later</string>
+    <string name="review_project">Project</string>
+    <string name="review_add_step">Add a step</string>
+    <string name="review_add">Add</string>
+    <string name="review_complete_project">Project is done</string>
+    <string name="review_kept">Kept: %1$s</string>
+    <string name="review_project_completed">Project completed: %1$s</string>
+    <string name="review_step_added">Step added to %1$s</string>
+</resources>

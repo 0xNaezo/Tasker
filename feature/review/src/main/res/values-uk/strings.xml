@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="review_title">Ще актуально?</string>
+    <string name="review_back">Назад</string>
+    <string name="review_done_title">Перевіряти нічого</string>
+    <string name="review_done_body">Відкладені картки повернуться завтра.</string>
+    <string name="review_progress">%1$d з %2$d</string>
+    <string name="review_relevant">Актуально</string>
+    <string name="review_later">Пізніше</string>
+    <string name="review_project">Проєкт</string>
+    <string name="review_add_step">Додати крок</string>
+    <string name="review_add">Додати</string>
+    <string name="review_complete_project">Проєкт завершено</string>
+    <string name="review_kept">Залишено: %1$s</string>
+    <string name="review_project_completed">Проєкт завершено: %1$s</string>
+    <string name="review_step_added">Крок додано до %1$s</string>
+</resources>
