@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Busy time for the day capacity (CAL-1, PLN-3, tech plan §10.2); asked in onboarding, can be skipped. -->
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+</manifest>

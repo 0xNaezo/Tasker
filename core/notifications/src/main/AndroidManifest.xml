@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Android 13+: asked in onboarding; without it the plan and reminders are visible only in the app (§12.4). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application>
+        <!-- "Done" from a task notification (NTF-5); explicit intents from our own PendingIntents only. -->
+        <receiver
+            android:name=".action.NotificationActionReceiver"
+            android:exported="false" />
+    </application>
+</manifest>
