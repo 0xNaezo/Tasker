@@ -32,7 +32,7 @@ class ForbiddenClockCall(config: Config) : Rule(config) {
         val receiver = expression.receiverExpression.text.substringAfterLast('.')
         val signature = "$receiver.$callee"
         if (signature !in FORBIDDEN) return
-        if (expression.containingKtFile.name in allowedFiles) return
+        if (expression.containingKtFile.baseName in allowedFiles) return
         report(
             CodeSmell(
                 issue,

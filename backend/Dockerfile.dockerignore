@@ -1,0 +1,14 @@
+# Build context is the repository root (see backend/Dockerfile).
+**/build/
+**/.gradle/
+**/.kotlin/
+**/.idea/
+**/*.iml
+.git/
+local.properties
+keystore.properties
+**/*.keystore
+**/*.jks
+backend/.env
+**/.env
+docs/

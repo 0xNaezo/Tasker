@@ -1,6 +1,7 @@
 package app.tasker.lint.detekt
 
 import com.google.common.truth.Truth.assertThat
+import io.github.detekt.test.utils.compileContentForTest
 import io.gitlab.arturbosch.detekt.api.Config
 import io.gitlab.arturbosch.detekt.test.lint
 import org.junit.Test
@@ -25,6 +26,16 @@ class TaskerRulesTest {
             fun parse() = java.time.LocalDate.parse("2026-10-06")
         """.trimIndent()
         assertThat(ForbiddenClockCall(Config.empty).lint(code)).isEmpty()
+    }
+
+    @Test
+    fun `allow-listed file may read the clock even when detekt names it by its path`() {
+        val code = "object SystemTimeSource { val clock = java.time.Clock.systemUTC() }"
+        val allowed = compileContentForTest(code, "src/main/kotlin/app/SystemTimeSource.kt")
+        val other = compileContentForTest(code, "src/main/kotlin/app/Other.kt")
+        assertThat(allowed.name).endsWith("/app/SystemTimeSource.kt")
+        assertThat(ForbiddenClockCall(Config.empty).lint(allowed)).isEmpty()
+        assertThat(ForbiddenClockCall(Config.empty).lint(other)).hasSize(1)
     }
 
     @Test

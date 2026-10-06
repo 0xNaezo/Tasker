@@ -27,4 +27,8 @@ rootProject.name = "Tasker"
 
 include(":app")
 include(":core:model")
+include(":core:ai-contract")
+include(":core:ai-claude")
 include(":lint:detekt-rules")
+include(":backend")
+include(":tools:ai-eval")
