@@ -73,4 +73,6 @@
     <string name="plan_question_body">Розбити на кроки, відкласти в «Колись», в архів чи залишити?</string>
     <string name="plan_split_hint">Велике завдання — розбити на кроки?</string>
     <string name="plan_empty">План порожній</string>
+    <string name="today_ai_offer">ШІ може оцінювати розмір завдань і знаходити дати, які не розпізнали правила. Він вимкнений, доки ви не погодитеся.</string>
+    <string name="today_ai_offer_action">Налаштувати</string>
 </resources>

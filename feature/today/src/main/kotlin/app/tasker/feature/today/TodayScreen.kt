@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material.icons.outlined.Inbox
 import androidx.compose.material.icons.outlined.Pause
@@ -69,6 +70,7 @@ fun TodayScreen(
     onOpenPlan: () -> Unit,
     onOpenReview: () -> Unit,
     onOpenInbox: () -> Unit,
+    onOpenAiSettings: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
     viewModel: TodayViewModel = hiltViewModel(),
@@ -89,7 +91,7 @@ fun TodayScreen(
     )
     LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = contentPadding) {
         item(key = "header") { TodayHeader(view, onOpenPlan) }
-        banners(view, state, onOpenReview, onOpenInbox, onOpenPlan, viewModel)
+        banners(view, state, BannerActions(onOpenReview, onOpenInbox, onOpenPlan, onOpenAiSettings), viewModel)
         val working = view.work.map { it.task.id }.toSet()
         if (view.work.isNotEmpty()) {
             item(key = "work-header") { SectionHeader(stringResource(R.string.today_in_progress)) }
@@ -164,21 +166,21 @@ private fun TodayHeader(view: DayView, onOpenPlan: () -> Unit) {
     }
 }
 
-private fun LazyListScope.banners(
-    view: DayView,
-    state: TodayUiState,
-    onOpenReview: () -> Unit,
-    onOpenInbox: () -> Unit,
-    onOpenPlan: () -> Unit,
-    viewModel: TodayViewModel,
-) {
+private class BannerActions(
+    val onOpenReview: () -> Unit,
+    val onOpenInbox: () -> Unit,
+    val onOpenPlan: () -> Unit,
+    val onOpenAiSettings: () -> Unit,
+)
+
+private fun LazyListScope.banners(view: DayView, state: TodayUiState, actions: BannerActions, viewModel: TodayViewModel) {
     if (view.questions.isNotEmpty()) {
         item(key = "banner-questions") {
             Banner(
                 text = pluralStringResource(R.plurals.today_questions_banner, view.questions.size, view.questions.size),
                 icon = Icons.Outlined.Rule,
                 actionLabel = stringResource(R.string.today_open_plan),
-                onAction = onOpenPlan,
+                onAction = actions.onOpenPlan,
                 modifier = Modifier.padding(horizontal = TaskerTheme.spacing.l, vertical = TaskerTheme.spacing.xs),
             )
         }
@@ -189,7 +191,7 @@ private fun LazyListScope.banners(
                 text = pluralStringResource(R.plurals.today_review_banner, view.reviewCount, view.reviewCount),
                 icon = Icons.Outlined.EditNote,
                 actionLabel = stringResource(R.string.today_review_action),
-                onAction = onOpenReview,
+                onAction = actions.onOpenReview,
                 onDismiss = { viewModel.dismiss(DailyPrompt.REVIEW) },
                 modifier = Modifier.padding(horizontal = TaskerTheme.spacing.l, vertical = TaskerTheme.spacing.xs),
             )
@@ -201,8 +203,20 @@ private fun LazyListScope.banners(
                 text = pluralStringResource(R.plurals.today_inbox_banner, view.inboxCount, view.inboxCount),
                 icon = Icons.Outlined.Inbox,
                 actionLabel = stringResource(R.string.today_inbox_action),
-                onAction = onOpenInbox,
+                onAction = actions.onOpenInbox,
                 onDismiss = { viewModel.dismiss(DailyPrompt.INBOX_TRIAGE) },
+                modifier = Modifier.padding(horizontal = TaskerTheme.spacing.l, vertical = TaskerTheme.spacing.xs),
+            )
+        }
+    }
+    if (state.aiOffer) {
+        item(key = "banner-ai") {
+            Banner(
+                text = stringResource(R.string.today_ai_offer),
+                icon = Icons.Outlined.AutoAwesome,
+                actionLabel = stringResource(R.string.today_ai_offer_action),
+                onAction = actions.onOpenAiSettings,
+                onDismiss = viewModel::dismissAiOffer,
                 modifier = Modifier.padding(horizontal = TaskerTheme.spacing.l, vertical = TaskerTheme.spacing.xs),
             )
         }

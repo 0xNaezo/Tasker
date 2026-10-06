@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.tasker.core.ai.AiController
+import app.tasker.core.ai.AiState
 import app.tasker.core.backup.BackupResult
 import app.tasker.core.backup.BackupService
 import app.tasker.core.backup.ExportService
@@ -34,6 +36,7 @@ data class SettingsUiState(
     val loading: Boolean = true,
     val settings: AppSettings = AppSettings(),
     val lastBackup: LocalDate? = null,
+    val ai: AiState? = null,
 )
 
 /** A file picked for import that needs "Replace all data?" first. */
@@ -48,14 +51,15 @@ class SettingsViewModel @Inject constructor(
     private val backup: BackupService,
     private val maintenance: MaintenanceRunner,
     private val messenger: Messenger,
+    ai: AiController,
 ) : ViewModel() {
     private val lastBackup = MutableStateFlow<LocalDate?>(null)
     private val pending = MutableStateFlow<PendingImport?>(null)
 
     val pendingImport: StateFlow<PendingImport?> = pending.asStateFlow()
 
-    val state: StateFlow<SettingsUiState> = combine(settings.settings, lastBackup) { s, last ->
-        SettingsUiState(loading = false, settings = s, lastBackup = last)
+    val state: StateFlow<SettingsUiState> = combine(settings.settings, lastBackup, ai.state) { s, last, aiState ->
+        SettingsUiState(loading = false, settings = s, lastBackup = last, ai = aiState)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), SettingsUiState())
 
     init {

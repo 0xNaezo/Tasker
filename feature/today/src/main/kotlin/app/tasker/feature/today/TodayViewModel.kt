@@ -3,6 +3,7 @@ package app.tasker.feature.today
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.tasker.core.ai.AiController
 import app.tasker.core.data.command.StartOutcome
 import app.tasker.core.data.plan.DayView
 import app.tasker.core.data.repository.DailyPrompt
@@ -20,6 +21,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -29,6 +32,8 @@ data class TodayUiState(
     val projectNames: Map<ProjectId, String> = emptyMap(),
     val reviewBannerDismissed: Boolean = false,
     val inboxBannerDismissed: Boolean = false,
+    /** Offer AI help once, after the first tasks rather than at start (tech plan §17.1). */
+    val aiOffer: Boolean = false,
 )
 
 /** "Today" (§14.2): capacity, work in progress, the accepted plan or the candidates, daily banners. */
@@ -38,14 +43,20 @@ class TodayViewModel @Inject constructor(
     tasks: TaskRepository,
     private val prompts: DailyPrompts,
     private val actions: TaskActions,
+    private val ai: AiController,
 ) : ViewModel() {
+    private val aiOffer = combine(ai.state, tasks.observeActive().map { it.size }.distinctUntilChanged()) { ai, count ->
+        !ai.hasConsent && !ai.consentPromptDismissed && ai.availableModes.isNotEmpty() && count >= AI_OFFER_AFTER_TASKS
+    }.distinctUntilChanged()
+
     val state: StateFlow<TodayUiState> = combine(
         today.observeToday(),
         tasks.observeActiveProjects(),
         prompts.observeDismissed(DailyPrompt.REVIEW),
         prompts.observeDismissed(DailyPrompt.INBOX_TRIAGE),
-    ) { view, projects, reviewDismissed, inboxDismissed ->
-        TodayUiState(view, projects.associate { it.id to it.name }, reviewDismissed, inboxDismissed)
+        aiOffer,
+    ) { view, projects, reviewDismissed, inboxDismissed, offer ->
+        TodayUiState(view, projects.associate { it.id to it.name }, reviewDismissed, inboxDismissed, offer)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), TodayUiState())
 
     private val overLimit = MutableStateFlow<StartOutcome?>(null)
@@ -78,11 +89,15 @@ class TodayViewModel @Inject constructor(
 
     fun dismiss(prompt: DailyPrompt) = launch { prompts.dismiss(prompt) }
 
+    /** "Not now" on the AI card: it is not shown again; AI stays reachable in settings. */
+    fun dismissAiOffer() = launch { ai.dismissConsentPrompt() }
+
     private fun launch(block: suspend () -> Unit) {
         viewModelScope.launch { block() }
     }
 
     private companion object {
         const val STOP_TIMEOUT_MS = 5_000L
+        const val AI_OFFER_AFTER_TASKS = 3
     }
 }

@@ -83,6 +83,7 @@ import app.tasker.core.model.ContextSnapshot
 import app.tasker.core.model.Deadline
 import app.tasker.core.model.Estimate
 import app.tasker.core.model.Event
+import app.tasker.core.model.ProjectId
 import app.tasker.core.model.ReminderOffsets
 import app.tasker.core.model.Source
 import app.tasker.core.model.SourceKind
@@ -121,7 +122,7 @@ private enum class Prompt { PAUSE, POSTPONE, SPLIT, SNAPSHOT, DELETE }
 fun TaskScreen(
     taskId: TaskId,
     onBack: () -> Unit,
-    onOpenProject: (String) -> Unit,
+    onOpenProject: (ProjectId) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TaskViewModel = hiltViewModel<TaskViewModel, TaskViewModel.Factory>(
         key = taskId,
@@ -162,7 +163,7 @@ private fun TaskContent(
     state: TaskUiState,
     viewModel: TaskViewModel,
     onBack: () -> Unit,
-    onOpenProject: (String) -> Unit,
+    onOpenProject: (ProjectId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val task = detail.task

@@ -5,3 +5,7 @@ plugins {
 android {
     namespace = "app.tasker.feature.today"
 }
+
+dependencies {
+    implementation(project(":core:ai"))
+}

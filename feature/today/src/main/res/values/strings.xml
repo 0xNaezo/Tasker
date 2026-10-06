@@ -59,4 +59,6 @@
     <string name="plan_question_body">Split it into steps, move it to Someday, archive it or keep it?</string>
     <string name="plan_split_hint">Large task: split it into steps?</string>
     <string name="plan_empty">The plan is empty</string>
+    <string name="today_ai_offer">AI can estimate task sizes and catch dates the rules missed. It stays off until you agree.</string>
+    <string name="today_ai_offer_action">Set up</string>
 </resources>

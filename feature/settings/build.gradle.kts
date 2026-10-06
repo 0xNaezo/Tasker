@@ -7,6 +7,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:ai"))
     implementation(project(":core:backup"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)

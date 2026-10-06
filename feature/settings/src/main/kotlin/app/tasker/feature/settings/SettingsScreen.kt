@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Backup
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Folder
@@ -44,7 +45,9 @@ import androidx.core.os.LocaleListCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.tasker.core.ai.AiState
 import app.tasker.core.backup.ExportService
+import app.tasker.core.model.AiMode
 import app.tasker.core.model.AppSettings
 import app.tasker.core.ui.component.Banner
 import app.tasker.core.ui.component.ConfirmDialog
@@ -52,17 +55,14 @@ import app.tasker.core.ui.component.SectionHeader
 import app.tasker.core.ui.component.TimeDialog
 import app.tasker.core.ui.format.Formats
 
-/**
- * Settings (SET-1, SET-2, DATA-1, §14.2). [extraSections] lets the app add sections owned by other modules (AI,
- * calendars) without a dependency between features.
- */
+/** Settings (SET-1…SET-3, DATA-1, §14.2). AI help has its own page ([onOpenAi]): it carries the consent text. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
+    onOpenAi: () -> Unit,
     versionName: String,
     modifier: Modifier = Modifier,
-    extraSections: LazyListScope.() -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -93,10 +93,10 @@ fun SettingsScreen(
         LazyColumn(Modifier.fillMaxSize().padding(padding)) {
             workSection(settings, viewModel::update, open)
             planningSection(settings, open)
+            aiSection(state.ai, onOpenAi)
             relevanceSection(settings, open)
             notificationSection(settings, viewModel::update, open, notificationsAllowed)
             calendarSection(settings, viewModel::update)
-            extraSections()
             languageSection(settings, open)
             privacySection(settings, viewModel::update, canLock)
             dataSection(state.lastBackup, settings.backupTreeUri, data)
@@ -210,6 +210,21 @@ private fun LazyListScope.planningSection(settings: AppSettings, open: (Editor) 
     }
     item(key = "triage") {
         ValueRow(stringResource(R.string.settings_inbox_threshold), settings.inboxTriageThreshold.toString(), { open(Editor.INBOX_TRIAGE) })
+    }
+}
+
+private fun LazyListScope.aiSection(ai: AiState?, onOpenAi: () -> Unit) {
+    item(key = "ai-header") { SectionHeader(stringResource(R.string.settings_ai)) }
+    item(key = "ai") {
+        val value = when {
+            ai == null -> ""
+            ai.availableModes.isEmpty() -> stringResource(R.string.settings_ai_unavailable)
+            !ai.hasConsent -> stringResource(R.string.settings_ai_not_set_up)
+            !ai.enabled -> stringResource(R.string.settings_ai_off)
+            ai.mode == AiMode.DIRECT && !ai.hasApiKey -> stringResource(R.string.settings_ai_needs_key)
+            else -> stringResource(R.string.settings_ai_on)
+        }
+        ValueRow(stringResource(R.string.settings_ai_switch), value, onOpenAi, Icons.Outlined.AutoAwesome)
     }
 }
 

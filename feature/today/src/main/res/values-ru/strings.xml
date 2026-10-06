@@ -73,4 +73,6 @@
     <string name="plan_question_body">Разбить на шаги, отложить в «Когда-нибудь», в архив или оставить?</string>
     <string name="plan_split_hint">Большая задача — разбить на шаги?</string>
     <string name="plan_empty">План пуст</string>
+    <string name="today_ai_offer">ИИ может оценивать размер задач и находить даты, которые не распознали правила. Он выключен, пока вы не согласитесь.</string>
+    <string name="today_ai_offer_action">Настроить</string>
 </resources>
