@@ -53,6 +53,10 @@ gradlePlugin {
             id = libs.plugins.tasker.android.room.get().pluginId
             implementationClass = "AndroidRoomConventionPlugin"
         }
+        register("androidTest") {
+            id = libs.plugins.tasker.android.test.get().pluginId
+            implementationClass = "AndroidTestConventionPlugin"
+        }
         register("jvmLibrary") {
             id = libs.plugins.tasker.jvm.library.get().pluginId
             implementationClass = "JvmLibraryConventionPlugin"

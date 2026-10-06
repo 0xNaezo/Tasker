@@ -64,3 +64,6 @@
 -dontwarn org.bouncycastle.**
 -dontwarn org.conscrypt.**
 -dontwarn org.openjsse.**
+# Structured outputs derived from Java classes reflect on annotated types (JDK only). The runner passes JSON schemas
+# from the AI contract instead, so this path never runs on a phone.
+-dontwarn java.lang.reflect.AnnotatedType

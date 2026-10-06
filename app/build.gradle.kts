@@ -3,7 +3,11 @@ plugins {
     alias(libs.plugins.tasker.android.compose)
     alias(libs.plugins.tasker.android.hilt)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.baselineprofile)
 }
+
+/** The release key stays out of the repository (tech plan §24.3): CI passes it in environment variables. */
+val releaseKeystore: String? = providers.environmentVariable("TASKER_KEYSTORE_FILE").orNull
 
 android {
     namespace = "app.tasker"
@@ -18,10 +22,44 @@ android {
         // Google Cloud project for Play Integrity (proxy mode); 0 means "not set".
         buildConfigField("long", "PLAY_CLOUD_PROJECT", "${findProperty("tasker.playCloudProject") ?: 0}L")
         buildConfigField("String", "AI_PROXY_DEV_KEY", "\"\"")
+        // Instrumented e2e tests run on the Hilt test application, each test on a clean app (orchestrator).
+        testInstrumentationRunner = "app.tasker.TaskerTestRunner"
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
     }
 
     buildFeatures {
         buildConfig = true
+    }
+
+    testOptions {
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
+        // The nightly CI runs the e2e tests on the minimum, the owner's phone and the target API (tech plan §22.1).
+        managedDevices {
+            localDevices {
+                create("api26") {
+                    device = "Pixel 2"
+                    apiLevel = 26
+                    systemImageSource = "aosp"
+                }
+                create("api33") {
+                    device = "Pixel 6"
+                    apiLevel = 33
+                    systemImageSource = "aosp-atd"
+                }
+                create("api36") {
+                    device = "Pixel 6"
+                    apiLevel = 36
+                    systemImageSource = "google"
+                }
+            }
+            groups {
+                create("nightly") {
+                    targetDevices.add(localDevices.getByName("api26"))
+                    targetDevices.add(localDevices.getByName("api33"))
+                    targetDevices.add(localDevices.getByName("api36"))
+                }
+            }
+        }
     }
 
     androidResources {
@@ -45,6 +83,17 @@ android {
         }
     }
 
+    signingConfigs {
+        if (releaseKeystore != null) {
+            create("release") {
+                storeFile = file(releaseKeystore)
+                storePassword = providers.environmentVariable("TASKER_KEYSTORE_PASSWORD").get()
+                keyAlias = providers.environmentVariable("TASKER_KEY_ALIAS").get()
+                keyPassword = providers.environmentVariable("TASKER_KEY_PASSWORD").get()
+            }
+        }
+    }
+
     buildTypes {
         debug {
             // The proxy's dev environment accepts a shared key instead of Play Integrity (§18.1); never in release.
@@ -54,11 +103,21 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Without the key (local builds) the release APK stays unsigned.
+            signingConfig = signingConfigs.findByName("release")
         }
     }
 }
 
+baselineProfile {
+    // Profiles are generated on a managed device in the nightly CI and committed, not on every build.
+    automaticGenerationDuringBuild = false
+    saveInSrc = true
+    mergeIntoMain = true
+}
+
 dependencies {
+    baselineProfile(project(":baselineprofile"))
     implementation(project(":core:model"))
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
@@ -104,6 +163,16 @@ dependencies {
     implementation(libs.androidx.profileinstaller)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.sentry.android)
+
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.work.testing)
+    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.truth)
+    kspAndroidTest(libs.hilt.compiler)
+    androidTestUtil(libs.androidx.test.orchestrator)
 
     testImplementation(project(":core:testing"))
     testImplementation(libs.robolectric)
