@@ -158,4 +158,9 @@
     <string name="settings_ai_check_network">Немає з\'єднання. Спробуйте пізніше.</string>
     <string name="settings_ai_check_busy">Сервіс зайнятий. Спробуйте пізніше.</string>
     <string name="settings_ai_check_failed">Перевірка не вдалася. Спробуйте пізніше.</string>
+    <string name="settings_calendars">Календарі для зайнятості</string>
+    <string name="settings_calendars_all">Усі календарі</string>
+    <string name="settings_calendars_none">Жодних: місткість лише за робочими годинами</string>
+    <string name="settings_calendar_access">Доступ до календаря</string>
+    <string name="settings_calendar_denied">Не дозволено: місткість лише за робочими годинами. Натисніть, щоб дозволити.</string>
 </resources>

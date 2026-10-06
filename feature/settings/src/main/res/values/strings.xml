@@ -148,4 +148,9 @@
     <string name="settings_ai_check_network">No connection. Try again later.</string>
     <string name="settings_ai_check_busy">The service is busy. Try again later.</string>
     <string name="settings_ai_check_failed">The check failed. Try again later.</string>
+    <string name="settings_calendars">Calendars for busy time</string>
+    <string name="settings_calendars_all">All calendars</string>
+    <string name="settings_calendars_none">None: capacity uses working hours only</string>
+    <string name="settings_calendar_access">Calendar access</string>
+    <string name="settings_calendar_denied">Not allowed: capacity uses working hours only. Tap to allow.</string>
 </resources>

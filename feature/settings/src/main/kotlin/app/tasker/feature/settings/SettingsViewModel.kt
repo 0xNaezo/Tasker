@@ -13,6 +13,8 @@ import app.tasker.core.backup.ExportSummary
 import app.tasker.core.backup.FolderCopy
 import app.tasker.core.backup.ImportProblem
 import app.tasker.core.backup.ImportResult
+import app.tasker.core.calendar.CalendarRepository
+import app.tasker.core.calendar.DeviceCalendar
 import app.tasker.core.data.maintenance.MaintenanceRunner
 import app.tasker.core.data.settings.SettingsRepository
 import app.tasker.core.model.AppSettings
@@ -23,11 +25,13 @@ import app.tasker.core.ui.util.attempt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -37,7 +41,12 @@ data class SettingsUiState(
     val settings: AppSettings = AppSettings(),
     val lastBackup: LocalDate? = null,
     val ai: AiState? = null,
+    val calendar: CalendarState = CalendarState(),
 )
+
+/** READ_CALENDAR and the device calendars to choose from (CAL-1). */
+@Immutable
+data class CalendarState(val granted: Boolean = false, val calendars: List<DeviceCalendar> = emptyList())
 
 /** A file picked for import that needs "Replace all data?" first. */
 @Immutable
@@ -51,15 +60,21 @@ class SettingsViewModel @Inject constructor(
     private val backup: BackupService,
     private val maintenance: MaintenanceRunner,
     private val messenger: Messenger,
+    private val calendar: CalendarRepository,
     ai: AiController,
 ) : ViewModel() {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val calendarState = calendar.permission.mapLatest { granted ->
+        CalendarState(granted, if (granted) calendar.calendars() else emptyList())
+    }
+
     private val lastBackup = MutableStateFlow<LocalDate?>(null)
     private val pending = MutableStateFlow<PendingImport?>(null)
 
     val pendingImport: StateFlow<PendingImport?> = pending.asStateFlow()
 
-    val state: StateFlow<SettingsUiState> = combine(settings.settings, lastBackup, ai.state) { s, last, aiState ->
-        SettingsUiState(loading = false, settings = s, lastBackup = last, ai = aiState)
+    val state: StateFlow<SettingsUiState> = combine(settings.settings, lastBackup, ai.state, calendarState) { s, last, aiState, cal ->
+        SettingsUiState(loading = false, settings = s, lastBackup = last, ai = aiState, calendar = cal)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), SettingsUiState())
 
     init {
@@ -69,6 +84,17 @@ class SettingsViewModel @Inject constructor(
     fun update(transform: (AppSettings) -> AppSettings) {
         viewModelScope.launch { attempt { settings.update(transform) }.onFailure { error() } }
     }
+
+    /** After the permission dialog: starts reading busy time without a restart. */
+    fun calendarPermissionChanged() {
+        calendar.hasPermission()
+    }
+
+    /** All calendars chosen is stored as "all" (null), so calendars added later count too. */
+    fun selectCalendars(
+        keys: Set<String>,
+        all: Set<String>,
+    ) = update { it.copy(selectedCalendars = keys.takeIf { chosen -> chosen != all }) }
 
     fun exportFileName(): String = export.exportFileName()
 

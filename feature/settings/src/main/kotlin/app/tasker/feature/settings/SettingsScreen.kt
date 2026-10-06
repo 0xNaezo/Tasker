@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Backup
+import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Upload
@@ -68,6 +69,7 @@ fun SettingsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val pendingImport by viewModel.pendingImport.collectAsStateWithLifecycle()
     var editor by rememberSaveable { mutableStateOf<Editor?>(null) }
+    var choosingCalendars by rememberSaveable { mutableStateOf(false) }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -90,13 +92,14 @@ fun SettingsScreen(
         val data = rememberDataActions(viewModel)
         val notificationsAllowed = rememberNotificationPermission()
         val canLock = rememberCanLock()
+        val calendarActions = rememberCalendarActions(viewModel) { choosingCalendars = true }
         LazyColumn(Modifier.fillMaxSize().padding(padding)) {
             workSection(settings, viewModel::update, open)
             planningSection(settings, open)
             aiSection(state.ai, onOpenAi)
             relevanceSection(settings, open)
             notificationSection(settings, viewModel::update, open, notificationsAllowed)
-            calendarSection(settings, viewModel::update)
+            calendarSection(settings, state.calendar, viewModel::update, calendarActions)
             languageSection(settings, open)
             privacySection(settings, viewModel::update, canLock)
             dataSection(state.lastBackup, settings.backupTreeUri, data)
@@ -113,6 +116,20 @@ fun SettingsScreen(
             onSave = { transform ->
                 editor = null
                 viewModel.update(transform)
+            },
+        )
+    }
+    if (choosingCalendars) {
+        val calendars = state.calendar.calendars
+        val all = calendars.map { it.key }.toSet()
+        MultiChoiceDialog(
+            title = stringResource(R.string.settings_calendars),
+            options = calendars.map { "${it.displayName} · ${it.accountName}" to it.key },
+            selected = state.settings.selectedCalendars ?: all,
+            onDismiss = { choosingCalendars = false },
+            onSave = { chosen ->
+                choosingCalendars = false
+                viewModel.selectCalendars(chosen, all)
             },
         )
     }
@@ -317,8 +334,31 @@ private fun LazyListScope.notificationSection(
     }
 }
 
-private fun LazyListScope.calendarSection(settings: AppSettings, update: ((AppSettings) -> AppSettings) -> Unit) {
+private fun LazyListScope.calendarSection(
+    settings: AppSettings,
+    calendar: CalendarState,
+    update: ((AppSettings) -> AppSettings) -> Unit,
+    actions: CalendarActions,
+) {
     item(key = "calendar-header") { SectionHeader(stringResource(R.string.settings_calendar)) }
+    item(key = "calendars") {
+        if (calendar.granted) {
+            val selected = settings.selectedCalendars
+            val value = when {
+                selected == null -> stringResource(R.string.settings_calendars_all)
+                selected.isEmpty() -> stringResource(R.string.settings_calendars_none)
+                else -> calendar.calendars.filter { it.key in selected }.joinToString(", ") { it.displayName }
+            }
+            ValueRow(stringResource(R.string.settings_calendars), value, actions.choose, Icons.Outlined.CalendarMonth)
+        } else {
+            ValueRow(
+                stringResource(R.string.settings_calendar_access),
+                stringResource(R.string.settings_calendar_denied),
+                actions.requestAccess,
+                Icons.Outlined.CalendarMonth,
+            )
+        }
+    }
     item(key = "tentative") {
         SwitchRow(
             title = stringResource(R.string.settings_tentative_busy),
@@ -526,6 +566,19 @@ private fun reminderText(minutes: Int): String =
     }
 
 private fun folderName(uri: String): String = uri.toUri().lastPathSegment?.substringAfterLast(':')?.ifEmpty { null } ?: uri
+
+private class CalendarActions(val requestAccess: () -> Unit, val choose: () -> Unit)
+
+@Composable
+private fun rememberCalendarActions(viewModel: SettingsViewModel, choose: () -> Unit): CalendarActions {
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { viewModel.calendarPermissionChanged() }
+    LifecycleResumeEffect(viewModel) {
+        // Access may have been given in system settings meanwhile.
+        viewModel.calendarPermissionChanged()
+        onPauseOrDispose { }
+    }
+    return remember(viewModel) { CalendarActions(requestAccess = { launcher.launch(Manifest.permission.READ_CALENDAR) }, choose = choose) }
+}
 
 /** Launchers of the Data section. */
 private class DataActions(val export: () -> Unit, val import: () -> Unit, val pickFolder: () -> Unit, val backUpNow: () -> Unit)

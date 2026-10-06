@@ -158,4 +158,9 @@
     <string name="settings_ai_check_network">Нет соединения. Попробуйте позже.</string>
     <string name="settings_ai_check_busy">Сервис занят. Попробуйте позже.</string>
     <string name="settings_ai_check_failed">Проверка не удалась. Попробуйте позже.</string>
+    <string name="settings_calendars">Календари для занятости</string>
+    <string name="settings_calendars_all">Все календари</string>
+    <string name="settings_calendars_none">Никакие: ёмкость только по рабочим часам</string>
+    <string name="settings_calendar_access">Доступ к календарю</string>
+    <string name="settings_calendar_denied">Не разрешён: ёмкость только по рабочим часам. Нажмите, чтобы разрешить.</string>
 </resources>

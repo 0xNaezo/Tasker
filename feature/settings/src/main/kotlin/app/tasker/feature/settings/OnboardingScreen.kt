@@ -77,6 +77,7 @@ fun OnboardingScreen(
     val notificationLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { step = STEP_CALENDAR }
     var calendarDenied by rememberSaveable { mutableStateOf(false) }
     val calendarLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        viewModel.calendarPermissionChanged()
         if (granted) step = STEP_TASK else calendarDenied = true
     }
     // The capture line reports a UiText; it is kept as a plain string to survive configuration changes.

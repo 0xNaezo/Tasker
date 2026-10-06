@@ -2,6 +2,7 @@ package app.tasker.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.tasker.core.calendar.CalendarRepository
 import app.tasker.core.data.settings.SettingsRepository
 import app.tasker.core.model.AppSettings
 import app.tasker.core.ui.R as UiR
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 class OnboardingViewModel @Inject constructor(
     private val settings: SettingsRepository,
     private val messenger: Messenger,
+    private val calendar: CalendarRepository,
 ) : ViewModel() {
     /** Null until the stored settings are read. */
     val state: StateFlow<AppSettings?> = settings.settings
@@ -27,6 +29,11 @@ class OnboardingViewModel @Inject constructor(
 
     fun update(transform: (AppSettings) -> AppSettings) {
         viewModelScope.launch { attempt { settings.update(transform) }.onFailure { error() } }
+    }
+
+    /** After the READ_CALENDAR dialog: busy time is read from now on, without a restart. */
+    fun calendarPermissionChanged() {
+        calendar.hasPermission()
     }
 
     /** The app leaves onboarding as soon as the flag is stored. */
