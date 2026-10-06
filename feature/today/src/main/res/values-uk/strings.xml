@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="today_in_progress">У роботі</string>
+    <string name="today_wip">У роботі: %1$d з %2$d</string>
+    <string name="today_build_plan">Скласти план</string>
+    <string name="today_open_plan">План дня</string>
+    <plurals name="today_plan_section">
+        <item quantity="one">План · %1$d завдання · %2$s</item>
+        <item quantity="few">План · %1$d завдання · %2$s</item>
+        <item quantity="many">План · %1$d завдань · %2$s</item>
+        <item quantity="other">План · %1$d завдання · %2$s</item>
+    </plurals>
+    <string name="today_suggestions">Варто додати</string>
+    <string name="today_add">Додати</string>
+    <string name="today_group_overdue">Прострочено</string>
+    <string name="today_group_deadline">Скоро дедлайн</string>
+    <string name="today_group_planned">На сьогодні</string>
+    <plurals name="today_review_banner">
+        <item quantity="one">На перевірку: %1$d завдання</item>
+        <item quantity="few">На перевірку: %1$d завдання</item>
+        <item quantity="many">На перевірку: %1$d завдань</item>
+        <item quantity="other">На перевірку: %1$d завдання</item>
+    </plurals>
+    <string name="today_review_action">Перевірити</string>
+    <plurals name="today_inbox_banner">
+        <item quantity="one">У Вхідних %1$d завдання. Швидко розібрати?</item>
+        <item quantity="few">У Вхідних %1$d завдання. Швидко розібрати?</item>
+        <item quantity="many">У Вхідних %1$d завдань. Швидко розібрати?</item>
+        <item quantity="other">У Вхідних %1$d завдання. Швидко розібрати?</item>
+    </plurals>
+    <string name="today_inbox_action">Розібрати</string>
+    <plurals name="today_questions_banner">
+        <item quantity="one">%1$d завдання потребує рішення</item>
+        <item quantity="few">%1$d завдання потребують рішення</item>
+        <item quantity="many">%1$d завдань потребують рішення</item>
+        <item quantity="other">%1$d завдання потребують рішення</item>
+    </plurals>
+    <string name="today_empty_title">На сьогодні поки порожньо</string>
+    <string name="today_empty_body">Додайте завдання рядком нижче або складіть план із тижня.</string>
+    <string name="plan_title">План дня</string>
+    <string name="plan_back">Назад</string>
+    <string name="plan_accept">Прийняти план</string>
+    <string name="plan_accepted">План прийнято</string>
+    <string name="plan_accepted_state">План прийнято. Завдання можна додавати, прибирати й переставляти.</string>
+    <string name="plan_draft_hint">Чернетка: завдання підібрано за терміновістю під вільний час.</string>
+    <string name="plan_changed">Відтоді змінилося: %1$s</string>
+    <string name="plan_changed_capacity">вільно %1$s → %2$s</string>
+    <plurals name="plan_changed_added">
+        <item quantity="one">+%1$d завдання</item>
+        <item quantity="few">+%1$d завдання</item>
+        <item quantity="many">+%1$d завдань</item>
+        <item quantity="other">+%1$d завдання</item>
+    </plurals>
+    <plurals name="plan_changed_removed">
+        <item quantity="one">−%1$d завдання</item>
+        <item quantity="few">−%1$d завдання</item>
+        <item quantity="many">−%1$d завдань</item>
+        <item quantity="other">−%1$d завдання</item>
+    </plurals>
+    <string name="plan_does_not_fit">Не вміщується</string>
+    <string name="plan_add_anyway">Однаково додати</string>
+    <string name="plan_replace">Замінити завдання з плану…</string>
+    <string name="plan_replace_title">Що прибрати з плану</string>
+    <string name="plan_replaced">У плані замість іншого: %1$s</string>
+    <string name="plan_other_candidates">Інші кандидати</string>
+    <string name="plan_needs_decision">Потребує рішення</string>
+    <plurals name="plan_question">
+        <item quantity="one">Перенесено %1$d раз</item>
+        <item quantity="few">Перенесено %1$d рази</item>
+        <item quantity="many">Перенесено %1$d разів</item>
+        <item quantity="other">Перенесено %1$d рази</item>
+    </plurals>
+    <string name="plan_question_body">Розбити на кроки, відкласти в «Колись», в архів чи залишити?</string>
+    <string name="plan_split_hint">Велике завдання — розбити на кроки?</string>
+    <string name="plan_empty">План порожній</string>
+    <string name="today_ai_offer">ШІ може оцінювати розмір завдань і знаходити дати, які не розпізнали правила. Він вимкнений, доки ви не погодитеся.</string>
+    <string name="today_ai_offer_action">Налаштувати</string>
+    <string name="plan_all_tomorrow">Усі на завтра</string>
+</resources>

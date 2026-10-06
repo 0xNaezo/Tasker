@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="today_in_progress">В работе</string>
+    <string name="today_wip">В работе: %1$d из %2$d</string>
+    <string name="today_build_plan">Собрать план</string>
+    <string name="today_open_plan">План дня</string>
+    <plurals name="today_plan_section">
+        <item quantity="one">План · %1$d задача · %2$s</item>
+        <item quantity="few">План · %1$d задачи · %2$s</item>
+        <item quantity="many">План · %1$d задач · %2$s</item>
+        <item quantity="other">План · %1$d задачи · %2$s</item>
+    </plurals>
+    <string name="today_suggestions">Стоит добавить</string>
+    <string name="today_add">Добавить</string>
+    <string name="today_group_overdue">Просрочено</string>
+    <string name="today_group_deadline">Скоро дедлайн</string>
+    <string name="today_group_planned">На сегодня</string>
+    <plurals name="today_review_banner">
+        <item quantity="one">На проверку: %1$d задача</item>
+        <item quantity="few">На проверку: %1$d задачи</item>
+        <item quantity="many">На проверку: %1$d задач</item>
+        <item quantity="other">На проверку: %1$d задачи</item>
+    </plurals>
+    <string name="today_review_action">Проверить</string>
+    <plurals name="today_inbox_banner">
+        <item quantity="one">Во Входящих %1$d задача. Быстро разобрать?</item>
+        <item quantity="few">Во Входящих %1$d задачи. Быстро разобрать?</item>
+        <item quantity="many">Во Входящих %1$d задач. Быстро разобрать?</item>
+        <item quantity="other">Во Входящих %1$d задачи. Быстро разобрать?</item>
+    </plurals>
+    <string name="today_inbox_action">Разобрать</string>
+    <plurals name="today_questions_banner">
+        <item quantity="one">%1$d задача требует решения</item>
+        <item quantity="few">%1$d задачи требуют решения</item>
+        <item quantity="many">%1$d задач требуют решения</item>
+        <item quantity="other">%1$d задачи требуют решения</item>
+    </plurals>
+    <string name="today_empty_title">На сегодня пока пусто</string>
+    <string name="today_empty_body">Добавьте задачу строкой ниже или соберите план из недели.</string>
+    <string name="plan_title">План дня</string>
+    <string name="plan_back">Назад</string>
+    <string name="plan_accept">Принять план</string>
+    <string name="plan_accepted">План принят</string>
+    <string name="plan_accepted_state">План принят. Задачи можно добавлять, убирать и переставлять.</string>
+    <string name="plan_draft_hint">Черновик: задачи подобраны по срочности под свободное время.</string>
+    <string name="plan_changed">С момента сборки изменилось: %1$s</string>
+    <string name="plan_changed_capacity">свободно %1$s → %2$s</string>
+    <plurals name="plan_changed_added">
+        <item quantity="one">+%1$d задача</item>
+        <item quantity="few">+%1$d задачи</item>
+        <item quantity="many">+%1$d задач</item>
+        <item quantity="other">+%1$d задачи</item>
+    </plurals>
+    <plurals name="plan_changed_removed">
+        <item quantity="one">−%1$d задача</item>
+        <item quantity="few">−%1$d задачи</item>
+        <item quantity="many">−%1$d задач</item>
+        <item quantity="other">−%1$d задачи</item>
+    </plurals>
+    <string name="plan_does_not_fit">Не влезает</string>
+    <string name="plan_add_anyway">Всё равно добавить</string>
+    <string name="plan_replace">Заменить задачу из плана…</string>
+    <string name="plan_replace_title">Что убрать из плана</string>
+    <string name="plan_replaced">В плане вместо другой: %1$s</string>
+    <string name="plan_other_candidates">Другие кандидаты</string>
+    <string name="plan_needs_decision">Требует решения</string>
+    <plurals name="plan_question">
+        <item quantity="one">Перенесена %1$d раз</item>
+        <item quantity="few">Перенесена %1$d раза</item>
+        <item quantity="many">Перенесена %1$d раз</item>
+        <item quantity="other">Перенесена %1$d раза</item>
+    </plurals>
+    <string name="plan_question_body">Разбить на шаги, отложить в «Когда-нибудь», в архив или оставить?</string>
+    <string name="plan_split_hint">Большая задача — разбить на шаги?</string>
+    <string name="plan_empty">План пуст</string>
+    <string name="today_ai_offer">ИИ может оценивать размер задач и находить даты, которые не распознали правила. Он выключен, пока вы не согласитесь.</string>
+    <string name="today_ai_offer_action">Настроить</string>
+    <string name="plan_all_tomorrow">Все на завтра</string>
+</resources>

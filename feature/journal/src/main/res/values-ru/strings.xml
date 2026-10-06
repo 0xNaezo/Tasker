@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="journal_title">Журнал автоматики</string>
+    <string name="journal_back">Назад</string>
+    <string name="journal_intro">Что приложение сделало само и почему. Каждое действие можно отменить в течение 30 дней.</string>
+    <string name="journal_time_actor">%1$s · %2$s</string>
+    <string name="journal_actor_rule">Правила</string>
+    <string name="journal_actor_ai">ИИ</string>
+    <string name="journal_actor_integration">Интеграция</string>
+    <string name="journal_batch_title">%1$s · %2$s</string>
+    <plurals name="journal_tasks">
+        <item quantity="one">%1$d задача</item>
+        <item quantity="few">%1$d задачи</item>
+        <item quantity="many">%1$d задач</item>
+        <item quantity="other">%1$d задачи</item>
+    </plurals>
+    <plurals name="journal_projects">
+        <item quantity="one">%1$d проект</item>
+        <item quantity="few">%1$d проекта</item>
+        <item quantity="many">%1$d проектов</item>
+        <item quantity="other">%1$d проекта</item>
+    </plurals>
+    <string name="journal_several_actions">Несколько изменений</string>
+    <plurals name="journal_more">
+        <item quantity="one">и ещё %1$d</item>
+        <item quantity="few">и ещё %1$d</item>
+        <item quantity="many">и ещё %1$d</item>
+        <item quantity="other">и ещё %1$d</item>
+    </plurals>
+    <string name="journal_details">Подробнее</string>
+    <string name="journal_hide_details">Свернуть</string>
+    <string name="journal_undo_all">Отменить всё</string>
+    <string name="journal_undone">Отменено</string>
+    <string name="journal_partly_undone">Отменено частично</string>
+    <string name="journal_expired">Старше 30 дней, отмена недоступна</string>
+    <plurals name="journal_undone_count">
+        <item quantity="one">Отменено %1$d изменение</item>
+        <item quantity="few">Отменено %1$d изменения</item>
+        <item quantity="many">Отменено %1$d изменений</item>
+        <item quantity="other">Отменено %1$d изменения</item>
+    </plurals>
+    <plurals name="journal_ai_group">
+        <item quantity="one">ИИ дополнил %1$d задачу</item>
+        <item quantity="few">ИИ дополнил %1$d задачи</item>
+        <item quantity="many">ИИ дополнил %1$d задач</item>
+        <item quantity="other">ИИ дополнил %1$d задачи</item>
+    </plurals>
+    <string name="journal_ai_show">Показать дополнения ИИ</string>
+    <string name="journal_ai_hide">Скрыть дополнения ИИ</string>
+    <string name="journal_expanded">Развёрнуто</string>
+    <string name="journal_collapsed">Свёрнуто</string>
+    <string name="journal_project">Проект</string>
+    <string name="journal_untitled">(без названия)</string>
+    <string name="journal_kept">С тех пор вы это изменили, поэтому оставлено как есть: %1$s</string>
+    <string name="journal_open_task">Открыть задачу</string>
+    <string name="journal_empty_title">Пока пусто</string>
+    <string name="journal_empty_body">Когда приложение само отправит задачу на проверку, учтёт перенос или отправит что-то в архив, это появится здесь вместе с причиной.</string>
+</resources>

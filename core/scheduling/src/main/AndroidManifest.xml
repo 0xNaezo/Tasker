@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Alarms do not survive a reboot: they are registered again (tech plan §12.2). -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application>
+        <!-- Inexact alarms (setWindow); explicit intents from the app's own PendingIntents only. -->
+        <receiver
+            android:name=".plan.MorningPlanReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".reminder.DeadlineReminderReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".quiet.QuietHoursEndReceiver"
+            android:exported="false" />
+
+        <!-- System broadcasts reach non-exported receivers. -->
+        <receiver
+            android:name=".system.SystemEventsReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <!--
+            WorkManager is configured by the Application (Configuration.Provider with HiltWorkerFactory), so its default
+            initializer is removed here and this removal merges into the app manifest.
+        -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+    </application>
+</manifest>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Buckets and statuses -->
+    <string name="bucket_today">Today</string>
+    <string name="bucket_week">Week</string>
+    <string name="bucket_someday">Someday</string>
+    <string name="bucket_inbox">Inbox</string>
+    <string name="status_open">Open</string>
+    <string name="status_in_progress">In progress</string>
+    <string name="status_paused">Paused</string>
+    <string name="status_done">Done</string>
+    <string name="status_archived">Archived</string>
+
+    <!-- Durations -->
+    <string name="duration_minutes">%1$d min</string>
+    <string name="duration_hours">%1$d h</string>
+    <string name="duration_hours_minutes">%1$d h %2$d min</string>
+
+    <!-- Days -->
+    <string name="day_today">today</string>
+    <string name="day_tomorrow">tomorrow</string>
+    <string name="day_yesterday">yesterday</string>
+    <string name="day_at_time">%1$s at %2$s</string>
+
+    <!-- Candidate reasons (principle 7) -->
+    <string name="reason_overdue_since">overdue since %1$s</string>
+    <string name="reason_deadline_on">deadline %1$s</string>
+    <string name="reason_in_progress">in progress</string>
+    <string name="reason_paused">paused</string>
+    <string name="reason_carried_over">carried over from %1$s</string>
+    <string name="reason_for_today">for today</string>
+    <string name="reason_from_week">from the week</string>
+    <string name="reason_in_review">in review</string>
+    <string name="reason_added_manually">added by hand</string>
+
+    <!-- Automation reasons -->
+    <plurals name="auto_ttl_expired">
+        <item quantity="one">Not touched for %1$d day · %2$s</item>
+        <item quantity="other">Not touched for %1$d days · %2$s</item>
+    </plurals>
+    <plurals name="auto_review_skipped">
+        <item quantity="one">Skipped in review %1$d time in a row</item>
+        <item quantity="other">Skipped in review %1$d times in a row</item>
+    </plurals>
+    <plurals name="auto_ttl_skips">
+        <item quantity="one">Archived: skipped in review %1$d time in a row</item>
+        <item quantity="other">Archived: skipped in review %1$d times in a row</item>
+    </plurals>
+    <string name="auto_plan_date_passed">The plan date (%1$s) has passed</string>
+    <string name="auto_plan_not_done">Not done from the plan of %1$s</string>
+    <string name="auto_today_not_done">Stayed in Today on %1$s</string>
+    <plurals name="auto_project_inactive">
+        <item quantity="one">No activity for %1$d day</item>
+        <item quantity="other">No activity for %1$d days</item>
+    </plurals>
+    <string name="auto_ai_enriched">AI filled: %1$s</string>
+    <string name="auto_ai_nothing">AI found nothing to fill</string>
+    <string name="auto_integration_closed">Closed in the source</string>
+    <string name="auto_integration_merged">Merged in the source</string>
+    <string name="auto_integration_title">Title updated from the source</string>
+    <string name="review_no_next_step">No next step</string>
+
+    <!-- Fields -->
+    <string name="field_title">text</string>
+    <string name="field_note">note</string>
+    <string name="field_bucket">horizon</string>
+    <string name="field_deadline">deadline</string>
+    <string name="field_plan_date">plan date</string>
+    <string name="field_estimate">size</string>
+    <string name="field_project">project</string>
+    <string name="field_tags">tags</string>
+    <string name="field_status">status</string>
+
+    <!-- History -->
+    <string name="history_created">Created</string>
+    <string name="history_updated">Changed: %1$s</string>
+    <string name="history_status">Status: %1$s</string>
+    <string name="history_postponed">Postponed</string>
+    <string name="history_rolled_over">Postpone counted</string>
+    <string name="history_moved">Moved: %1$s</string>
+    <string name="history_reordered">Reordered</string>
+    <string name="history_snapshot">Context note added</string>
+    <string name="history_review_entered">Sent to review</string>
+    <string name="history_review_decided">Decided in review</string>
+    <string name="history_review_skipped">Skipped in review</string>
+    <string name="history_ai_filled">Filled by AI</string>
+    <string name="history_split">Split into a project</string>
+    <string name="history_merged">Merged</string>
+    <string name="history_archived">Archived</string>
+    <string name="history_restored">Restored</string>
+    <string name="history_plan">Day plan changed</string>
+    <string name="history_undone">Undone</string>
+    <string name="history_by_rule">automatically</string>
+    <string name="history_by_ai">by AI</string>
+
+    <!-- Task row -->
+    <string name="action_done">Done</string>
+    <string name="action_mark_done">Mark as done</string>
+    <string name="action_mark_not_done">Mark as not done</string>
+    <string name="action_postpone">Postpone</string>
+    <string name="action_more">More actions</string>
+    <string name="action_open">Open</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_ok">OK</string>
+    <string name="action_move_up">Move up</string>
+    <string name="action_move_down">Move down</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_close">Close</string>
+    <string name="chip_ai">AI</string>
+    <string name="chip_in_review">in review</string>
+    <string name="chip_new_project">new project</string>
+    <string name="estimate_s">S</string>
+    <string name="estimate_m">M</string>
+    <string name="estimate_l">L</string>
+    <string name="cd_deadline">Deadline %1$s</string>
+    <string name="cd_deadline_overdue">Overdue deadline %1$s</string>
+    <string name="cd_plan_date">Plan date %1$s</string>
+    <string name="cd_estimate">Size %1$s</string>
+    <string name="cd_project">Project %1$s</string>
+    <string name="cd_ai_fields">Some fields were filled by AI</string>
+
+    <!-- Postpone -->
+    <string name="postpone_title">Postpone</string>
+    <string name="postpone_tomorrow">Tomorrow</string>
+    <string name="postpone_week">This week</string>
+    <string name="postpone_someday">Someday</string>
+    <string name="postpone_date">Pick a date…</string>
+    <string name="postpone_note">The deadline does not change.</string>
+
+    <!-- Capacity -->
+    <string name="capacity_planned">%1$s of %2$s</string>
+    <string name="capacity_overload">Overload %1$s</string>
+    <string name="capacity_free">%1$s free</string>
+    <string name="capacity_no_calendar">without calendar</string>
+    <string name="capacity_day_over">The working day is over</string>
+    <string name="capacity_day_off">Day off</string>
+    <string name="cd_capacity">Planned %1$s, capacity %2$s</string>
+
+    <!-- Common -->
+    <string name="undo_done">Done: %1$s</string>
+    <string name="undo_postponed">Postponed: %1$s</string>
+    <string name="undo_archived">Archived: %1$s</string>
+    <string name="undo_moved">Moved: %1$s</string>
+    <string name="undo_saved">Saved</string>
+    <string name="undo_conflicts">Some fields were changed since and kept</string>
+    <string name="undo_expired">Nothing to undo</string>
+    <string name="error_generic">Could not do that. Nothing was changed.</string>
+    <string name="undo_reopened">Back to work: %1$s</string>
+    <string name="undo_restored">Restored: %1$s</string>
+    <string name="undo_started">Started: %1$s</string>
+    <string name="undo_paused">Paused: %1$s</string>
+    <string name="undo_added_to_plan">Added to the plan: %1$s</string>
+    <string name="undo_removed_from_plan">Removed from the plan: %1$s</string>
+    <string name="undo_kept">Kept: %1$s</string>
+    <string name="undo_split">Split into steps: %1$s</string>
+    <string name="pause_title">Pause</string>
+    <string name="pause_hint">Where did you stop? What is next?</string>
+    <string name="pause_action">Pause</string>
+    <plurals name="wip_title">
+        <item quantity="one">In progress: %1$d of %2$d</item>
+        <item quantity="other">In progress: %1$d of %2$d</item>
+    </plurals>
+    <string name="wip_body">That is more than your limit. Pause one of them?</string>
+    <string name="wip_pause">Pause</string>
+    <string name="wip_keep_all">Keep all</string>
+    <string name="split_title">Split into steps</string>
+    <string name="split_hint">One step per line</string>
+    <string name="split_rules">2 to 5 steps. The task becomes a project.</string>
+    <string name="split_action">Split</string>
+    <string name="action_start">Start</string>
+    <string name="action_resume">Resume</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_archive">Archive</string>
+    <string name="action_restore">Restore</string>
+    <string name="action_add_to_plan">Add to the plan</string>
+    <string name="action_remove_from_plan">Remove from the plan</string>
+    <string name="action_split">Split into steps</string>
+    <string name="action_keep">Keep</string>
+    <string name="action_to_someday">To Someday</string>
+    <string name="action_move_to">Move to…</string>
+    <string name="project_pick">Project</string>
+    <string name="project_new">New project</string>
+    <string name="project_none">No project</string>
+    <string name="project_name_hint">Project name</string>
+    <string name="project_create">Create</string>
+    <string name="project_current">Current project</string>
+    <string name="action_to_today">To Today</string>
+    <string name="action_to_week">To this week</string>
+    <string name="action_to_inbox">Back to Inbox</string>
+    <string name="action_to_project">Move to project…</string>
+    <string name="undo_project_set">Project changed: %1$s</string>
+    <plurals name="undo_postponed_many">
+        <item quantity="one">Postponed: %1$d task</item>
+        <item quantity="other">Postponed: %1$d tasks</item>
+    </plurals>
+</resources>

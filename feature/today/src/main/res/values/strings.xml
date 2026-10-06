@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="today_in_progress">In progress</string>
+    <string name="today_wip">In progress: %1$d of %2$d</string>
+    <string name="today_build_plan">Build the plan</string>
+    <string name="today_open_plan">Day plan</string>
+    <plurals name="today_plan_section">
+        <item quantity="one">Plan · %1$d task · %2$s</item>
+        <item quantity="other">Plan · %1$d tasks · %2$s</item>
+    </plurals>
+    <string name="today_suggestions">Worth adding</string>
+    <string name="today_add">Add</string>
+    <string name="today_group_overdue">Overdue</string>
+    <string name="today_group_deadline">Deadline soon</string>
+    <string name="today_group_planned">For today</string>
+    <plurals name="today_review_banner">
+        <item quantity="one">%1$d task to review</item>
+        <item quantity="other">%1$d tasks to review</item>
+    </plurals>
+    <string name="today_review_action">Review</string>
+    <plurals name="today_inbox_banner">
+        <item quantity="one">Inbox has %1$d task. Sort it quickly?</item>
+        <item quantity="other">Inbox has %1$d tasks. Sort them quickly?</item>
+    </plurals>
+    <string name="today_inbox_action">Sort</string>
+    <plurals name="today_questions_banner">
+        <item quantity="one">%1$d task needs a decision</item>
+        <item quantity="other">%1$d tasks need a decision</item>
+    </plurals>
+    <string name="today_empty_title">Nothing for today yet</string>
+    <string name="today_empty_body">Add a task in the line below or build a plan from the week.</string>
+    <string name="plan_title">Day plan</string>
+    <string name="plan_back">Back</string>
+    <string name="plan_accept">Accept the plan</string>
+    <string name="plan_accepted">Plan accepted</string>
+    <string name="plan_accepted_state">The plan is accepted. You can still add, remove and reorder tasks.</string>
+    <string name="plan_draft_hint">Draft: tasks were picked in order of urgency to fit your free time.</string>
+    <string name="plan_changed">Updated since it was built: %1$s</string>
+    <string name="plan_changed_capacity">free time %1$s → %2$s</string>
+    <plurals name="plan_changed_added">
+        <item quantity="one">+%1$d task</item>
+        <item quantity="other">+%1$d tasks</item>
+    </plurals>
+    <plurals name="plan_changed_removed">
+        <item quantity="one">−%1$d task</item>
+        <item quantity="other">−%1$d tasks</item>
+    </plurals>
+    <string name="plan_does_not_fit">Doesn\'t fit</string>
+    <string name="plan_add_anyway">Add anyway</string>
+    <string name="plan_replace">Swap with a planned task…</string>
+    <string name="plan_replace_title">Take out of the plan</string>
+    <string name="plan_replaced">In the plan instead: %1$s</string>
+    <string name="plan_other_candidates">Other candidates</string>
+    <string name="plan_needs_decision">Needs a decision</string>
+    <plurals name="plan_question">
+        <item quantity="one">Postponed %1$d time</item>
+        <item quantity="other">Postponed %1$d times</item>
+    </plurals>
+    <string name="plan_question_body">Split it into steps, move it to Someday, archive it or keep it?</string>
+    <string name="plan_split_hint">Large task: split it into steps?</string>
+    <string name="plan_empty">The plan is empty</string>
+    <string name="today_ai_offer">AI can estimate task sizes and catch dates the rules missed. It stays off until you agree.</string>
+    <string name="today_ai_offer_action">Set up</string>
+    <string name="plan_all_tomorrow">All to tomorrow</string>
+</resources>

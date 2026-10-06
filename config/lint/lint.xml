@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Versions are pinned deliberately in gradle/libs.versions.toml. -->
+    <issue id="GradleDependency" severity="ignore" />
+    <issue id="NewerVersionAvailable" severity="ignore" />
+    <issue id="AndroidGradlePluginVersion" severity="ignore" />
+    <issue id="OldTargetApi" severity="ignore" />
+    <!-- Translations are complete for en/ru/uk; missing ones must fail the build. -->
+    <issue id="MissingTranslation" severity="error" />
+    <issue id="ObsoleteLintCustomCheck" severity="ignore" />
+</lint>

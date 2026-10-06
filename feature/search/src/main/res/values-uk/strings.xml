@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Search -->
+    <string name="search_hint">Пошук задач</string>
+    <string name="search_back">Назад</string>
+    <string name="search_clear">Очистити пошук</string>
+    <string name="search_open_archive">Архів</string>
+    <string name="search_filter_status">Статус</string>
+    <string name="search_filter_horizon">Горизонт</string>
+    <string name="search_filter_project">Проєкт</string>
+    <string name="search_filter_tag">Тег</string>
+    <string name="search_filter_source">Джерело</string>
+    <string name="search_filter_deadline">Дедлайн</string>
+    <string name="search_filter_value">%1$s: %2$s</string>
+    <string name="search_filter_any">Усі</string>
+    <string name="search_filters_clear">Скинути фільтри</string>
+    <string name="search_status_active">Активна</string>
+    <string name="search_deadline_with">З дедлайном</string>
+    <string name="search_deadline_without">Без дедлайну</string>
+    <string name="search_source_telegram">Telegram</string>
+    <string name="search_source_github_issue">Issue в GitHub</string>
+    <string name="search_source_github_pr">Pull request у GitHub</string>
+    <string name="search_source_link">Посилання</string>
+    <string name="search_source_app">Інший застосунок</string>
+    <string name="search_idle_title">Пошук у всіх задачах</string>
+    <string name="search_idle_body">Шукає в тексті, нотатках і знімках контексту, зокрема у виконаних задачах та архіві. Фільтри працюють і без запиту.</string>
+    <string name="search_archive_open">Відкрити архів</string>
+    <plurals name="search_archive_count">
+        <item quantity="one">Архів: %1$d задача</item>
+        <item quantity="few">Архів: %1$d задачі</item>
+        <item quantity="many">Архів: %1$d задач</item>
+        <item quantity="other">Архів: %1$d задачі</item>
+    </plurals>
+    <string name="search_error">Пошук не вдався</string>
+    <string name="search_retry">Повторити</string>
+    <string name="search_nothing_found">Нічого не знайдено</string>
+    <string name="search_nothing_found_body">Спробуйте інші слова або менше фільтрів.</string>
+    <string name="search_matched_elsewhere">Збіг у знімках контексту або тегах</string>
+    <string name="search_place">Горизонт: %1$s</string>
+
+    <!-- Archive -->
+    <string name="archive_title">Архів</string>
+    <string name="archive_back">Назад</string>
+    <plurals name="archive_summary">
+        <item quantity="one">%1$d задача · зберігається без обмеження терміну</item>
+        <item quantity="few">%1$d задачі · зберігаються без обмеження терміну</item>
+        <item quantity="many">%1$d задач · зберігаються без обмеження терміну</item>
+        <item quantity="other">%1$d задачі · зберігаються без обмеження терміну</item>
+    </plurals>
+    <string name="archive_delete">Видалити назавжди</string>
+    <string name="archive_delete_title">Видалити назавжди?</string>
+    <string name="archive_delete_text">Задачу «%1$s» буде видалено разом із нотаткою, знімками контексту, джерелами та історією. Це не можна скасувати.</string>
+    <string name="archive_deleted">Видалено назавжди: %1$s</string>
+    <string name="archive_empty_title">Архів порожній</string>
+    <string name="archive_empty_body">Задачі зберігаються тут без обмеження терміну й повертаються одним дотиком.</string>
+    <string name="archive_error">Не вдалося завантажити архів</string>
+    <string name="archive_returns_to">Повернеться в «%1$s»</string>
+    <string name="archive_reason_user">Відправлена в архів вручну</string>
+    <string name="archive_reason_ttl_skips">Відправлена в архів автоматично після пропусків у перевірці</string>
+    <string name="archive_reason_project">Відправлена в архів разом із проєктом</string>
+    <string name="archive_reason_split">Розбита на кроки проєкту</string>
+    <string name="archive_reason_merged">Об’єднана з іншою задачею</string>
+    <string name="archive_reason_telegram">Скасована в Telegram</string>
+</resources>

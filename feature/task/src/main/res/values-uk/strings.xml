@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="task_back">Назад</string>
+    <string name="task_missing">Завдання більше немає</string>
+    <string name="task_fields">Деталі</string>
+    <string name="task_field_title">Текст</string>
+    <string name="task_field_bucket">Горизонт</string>
+    <string name="task_field_plan_date">План-дата</string>
+    <string name="task_field_deadline">Дедлайн</string>
+    <string name="task_field_reminders">Нагадування</string>
+    <string name="task_field_estimate">Розмір</string>
+    <string name="task_field_project">Проєкт</string>
+    <string name="task_field_tags">Теги</string>
+    <string name="task_field_note">Нотатка</string>
+    <string name="task_not_set">Не задано</string>
+    <string name="task_estimate_unset">Не задано (рахується як M)</string>
+    <string name="task_open_project">Відкрити проєкт</string>
+    <string name="task_tags_hint">\@робота @дзвінок</string>
+    <string name="task_save">Зберегти</string>
+    <string name="task_clear_field">Очистити: %1$s</string>
+    <string name="task_edit_field">Змінити: %1$s</string>
+    <string name="task_ai_undo_field">ШІ · скасувати</string>
+    <string name="task_ai_undo_all">Скасувати всі зміни ШІ</string>
+    <string name="task_ai_filled">Заповнено ШІ: %1$s. Натисніть, щоб скасувати.</string>
+    <string name="task_ai_undone">Зміни ШІ скасовано</string>
+    <string name="task_title_ai">Текст змінено ШІ</string>
+    <string name="task_sources">Посилання та джерела</string>
+    <string name="task_snapshots">Попередні нотатки</string>
+    <string name="task_history">Історія</string>
+    <string name="task_snapshot_title">Де зупинився</string>
+    <string name="task_next_step">Далі: %1$s</string>
+    <string name="task_add_snapshot">Додати нотатку</string>
+    <string name="task_reminders_default">Як у налаштуваннях</string>
+    <string name="task_reminders_default_value">Як у налаштуваннях: %1$s</string>
+    <string name="task_reminders_none">Без нагадувань</string>
+    <string name="task_reminder_at_deadline">У момент дедлайну</string>
+    <string name="task_reminder_before">за %1$s</string>
+    <string name="task_deadline_other_zone">%1$s (%2$s %3$s)</string>
+    <string name="task_delete_title">Видалити назавжди?</string>
+    <string name="task_delete_body">Завдання, його нотатки, посилання й історію буде видалено. Скасувати не можна.</string>
+    <string name="task_delete_confirm">Видалити назавжди</string>
+    <string name="task_deleted">Завдання видалено</string>
+    <string name="task_screen_title">Завдання</string>
+</resources>

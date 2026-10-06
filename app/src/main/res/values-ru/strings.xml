@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_today">Сегодня</string>
+    <string name="tab_inbox">Входящие</string>
+    <string name="tab_tasks">Задачи</string>
+    <string name="tab_done">Сделано</string>
+    <string name="app_search">Поиск</string>
+    <string name="app_menu">Ещё</string>
+    <string name="app_menu_review">Проверка актуальности</string>
+    <string name="app_menu_journal">Журнал автоматики</string>
+    <string name="app_menu_archive">Архив</string>
+    <string name="app_menu_settings">Настройки</string>
+    <string name="lock_title">Разблокируйте, чтобы увидеть задачи</string>
+    <string name="lock_unlock">Разблокировать</string>
+    <string name="lock_prompt_title">Разблокировка Tasker</string>
+    <string name="app_restore_title">Восстановить данные?</string>
+    <plurals name="app_restore_body">
+        <item quantity="one">На устройстве найдена резервная копия от %1$s: %2$d задача.</item>
+        <item quantity="few">На устройстве найдена резервная копия от %1$s: %2$d задачи.</item>
+        <item quantity="many">На устройстве найдена резервная копия от %1$s: %2$d задач.</item>
+        <item quantity="other">На устройстве найдена резервная копия от %1$s: %2$d задачи.</item>
+    </plurals>
+    <string name="app_restore">Восстановить</string>
+    <string name="app_restore_decline">Начать заново</string>
+    <string name="app_restoring">Восстанавливаем…</string>
+    <plurals name="app_restored">
+        <item quantity="one">Восстановлена %d задача</item>
+        <item quantity="few">Восстановлено %d задачи</item>
+        <item quantity="many">Восстановлено %d задач</item>
+        <item quantity="other">Восстановлено %d задачи</item>
+    </plurals>
+    <string name="app_restore_failed">Не удалось восстановить копию. Ничего не изменено.</string>
+    <string name="app_task_gone">Эта задача уже выполнена или удалена</string>
+    <string name="app_pick_task">Выберите задачу, чтобы увидеть её карточку</string>
+</resources>

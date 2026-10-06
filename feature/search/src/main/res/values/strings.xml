@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Search -->
+    <string name="search_hint">Search tasks</string>
+    <string name="search_back">Back</string>
+    <string name="search_clear">Clear search</string>
+    <string name="search_open_archive">Archive</string>
+    <string name="search_filter_status">Status</string>
+    <string name="search_filter_horizon">Horizon</string>
+    <string name="search_filter_project">Project</string>
+    <string name="search_filter_tag">Tag</string>
+    <string name="search_filter_source">Source</string>
+    <string name="search_filter_deadline">Deadline</string>
+    <string name="search_filter_value">%1$s: %2$s</string>
+    <string name="search_filter_any">Any</string>
+    <string name="search_filters_clear">Clear filters</string>
+    <string name="search_status_active">Active</string>
+    <string name="search_deadline_with">With a deadline</string>
+    <string name="search_deadline_without">Without a deadline</string>
+    <string name="search_source_telegram">Telegram</string>
+    <string name="search_source_github_issue">GitHub issue</string>
+    <string name="search_source_github_pr">GitHub pull request</string>
+    <string name="search_source_link">Link</string>
+    <string name="search_source_app">Another app</string>
+    <string name="search_idle_title">Search all tasks</string>
+    <string name="search_idle_body">Finds words in titles, notes and context notes, including done and archived tasks. Filters work without a query too.</string>
+    <string name="search_archive_open">Open the archive</string>
+    <plurals name="search_archive_count">
+        <item quantity="one">Archive: %1$d task</item>
+        <item quantity="other">Archive: %1$d tasks</item>
+    </plurals>
+    <string name="search_error">Search didn\'t work</string>
+    <string name="search_retry">Try again</string>
+    <string name="search_nothing_found">Nothing found</string>
+    <string name="search_nothing_found_body">Try other words or fewer filters.</string>
+    <string name="search_matched_elsewhere">Matches in context notes or tags</string>
+    <string name="search_place">Horizon: %1$s</string>
+
+    <!-- Archive -->
+    <string name="archive_title">Archive</string>
+    <string name="archive_back">Back</string>
+    <plurals name="archive_summary">
+        <item quantity="one">%1$d task · kept with no time limit</item>
+        <item quantity="other">%1$d tasks · kept with no time limit</item>
+    </plurals>
+    <string name="archive_delete">Delete forever</string>
+    <string name="archive_delete_title">Delete forever?</string>
+    <string name="archive_delete_text">“%1$s” will be deleted with its notes, context notes, sources and history. This can\'t be undone.</string>
+    <string name="archive_deleted">Deleted forever: %1$s</string>
+    <string name="archive_empty_title">The archive is empty</string>
+    <string name="archive_empty_body">Archived tasks are kept here with no time limit and come back in one tap.</string>
+    <string name="archive_error">Couldn\'t load the archive</string>
+    <string name="archive_returns_to">Returns to %1$s</string>
+    <string name="archive_reason_user">Archived by you</string>
+    <string name="archive_reason_ttl_skips">Archived automatically after skips in review</string>
+    <string name="archive_reason_project">Archived with its project</string>
+    <string name="archive_reason_split">Split into a project with steps</string>
+    <string name="archive_reason_merged">Merged with another task</string>
+    <string name="archive_reason_telegram">Cancelled in Telegram</string>
+</resources>

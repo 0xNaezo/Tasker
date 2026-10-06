@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="capture_placeholder">Новая задача…</string>
+    <string name="capture_voice">Голосовой ввод</string>
+    <string name="capture_save">Сохранить задачу</string>
+    <string name="capture_failed">Не удалось сохранить задачу</string>
+    <string name="capture_saved_to">Сохранено: %1$s</string>
+    <string name="capture_saved_project">Сохранено в проект «%1$s»</string>
+    <string name="capture_saved_done">Добавлено в сделанное: %1$s</string>
+    <string name="capture_chip_deadline">до %1$s</string>
+    <string name="capture_chip_new_project">#%1$s (новый)</string>
+    <string name="capture_chip_done">уже сделано</string>
+    <string name="capture_change_date">Изменить дату…</string>
+    <string name="capture_return_to_text">Вернуть в текст</string>
+    <string name="capture_remove">Убрать</string>
+    <string name="capture_quick_label">Новая задача</string>
+    <string name="capture_share_label">Добавить задачу</string>
+    <string name="capture_tile_label">Новая задача</string>
+    <string name="capture_share_undone">Задача отменена</string>
+    <string name="capture_share_edit">Изменить</string>
+    <string name="capture_shortcut_new">Новая задача</string>
+    <string name="capture_shortcut_new_long">Добавить задачу</string>
+    <string name="capture_shortcut_voice">Голосом</string>
+    <string name="capture_shortcut_voice_long">Добавить задачу голосом</string>
+</resources>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="capture_placeholder">New task…</string>
+    <string name="capture_voice">Voice input</string>
+    <string name="capture_save">Save task</string>
+    <string name="capture_failed">Could not save the task</string>
+    <string name="capture_saved_to">Saved to %1$s</string>
+    <string name="capture_saved_project">Saved to project %1$s</string>
+    <string name="capture_saved_done">Added to the done log: %1$s</string>
+    <string name="capture_chip_deadline">due %1$s</string>
+    <string name="capture_chip_new_project">#%1$s (new)</string>
+    <string name="capture_chip_done">already done</string>
+    <string name="capture_change_date">Change date…</string>
+    <string name="capture_return_to_text">Back to text</string>
+    <string name="capture_remove">Remove</string>
+    <string name="capture_quick_label">New task</string>
+    <string name="capture_share_label">Add as a task</string>
+    <string name="capture_tile_label">New task</string>
+    <string name="capture_share_undone">Task removed</string>
+    <string name="capture_share_edit">Edit</string>
+    <string name="capture_shortcut_new">New task</string>
+    <string name="capture_shortcut_new_long">Add a task</string>
+    <string name="capture_shortcut_voice">By voice</string>
+    <string name="capture_shortcut_voice_long">Add a task by voice</string>
+</resources>

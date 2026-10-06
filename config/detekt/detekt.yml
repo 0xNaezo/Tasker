@@ -1,0 +1,104 @@
+# Built on top of the default detekt config (buildUponDefaultConfig = true).
+build:
+  maxIssues: 0
+
+config:
+  validation: true
+  # The custom rule set is not loaded while detekt checks the rule module itself.
+  excludes: 'tasker.*'
+
+tasker:
+  active: true
+  ForbiddenClockCall:
+    active: true
+    allowedFiles:
+      - 'SystemTimeSource.kt'
+  OverdueColorOnly:
+    active: true
+    allowedFiles:
+      - 'Color.kt'
+      - 'Theme.kt'
+
+complexity:
+  LongMethod:
+    active: true
+    threshold: 120
+    ignoreAnnotated: ['Composable']
+  LongParameterList:
+    active: true
+    functionThreshold: 10
+    constructorThreshold: 14
+    ignoreDefaultParameters: true
+    ignoreAnnotated: ['Composable', 'Inject']
+  TooManyFunctions:
+    active: false
+  CyclomaticComplexMethod:
+    active: true
+    threshold: 25
+    ignoreAnnotated: ['Composable']
+  ComplexCondition:
+    threshold: 6
+  NestedBlockDepth:
+    threshold: 6
+  LargeClass:
+    threshold: 900
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][A-Za-z0-9_]*'
+  MatchingDeclarationName:
+    active: false
+  ConstructorParameterNaming:
+    active: true
+
+style:
+  MagicNumber:
+    active: false
+  MaxLineLength:
+    maxLineLength: 140
+    excludeCommentStatements: true
+  ReturnCount:
+    max: 6
+    excludeGuardClauses: true
+  UnusedPrivateMember:
+    ignoreAnnotated: ['Preview']
+  WildcardImport:
+    active: true
+  ForbiddenComment:
+    active: false
+  DestructuringDeclarationWithTooManyEntries:
+    maxDestructuringEntries: 4
+  UseCheckOrError:
+    active: true
+  LoopWithTooManyJumpStatements:
+    maxJumpCount: 3
+  ThrowsCount:
+    max: 4
+
+performance:
+  # Spreading small fixed arrays (migrations, provenance fields) is clearer than overloads.
+  SpreadOperator:
+    active: false
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: true
+    exceptionNames:
+      - 'Error'
+      - 'Throwable'
+  SwallowedException:
+    active: true
+    ignoredExceptionTypes:
+      - 'CancellationException'
+      - 'NumberFormatException'
+      - 'DateTimeException'
+      - 'IllegalArgumentException'
+      - 'SerializationException'
+      - 'ActivityNotFoundException'
+      - 'SecurityException'
+
+potential-bugs:
+  LateinitUsage:
+    active: false

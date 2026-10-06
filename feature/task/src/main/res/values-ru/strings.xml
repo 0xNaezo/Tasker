@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="task_back">Назад</string>
+    <string name="task_missing">Задачи больше нет</string>
+    <string name="task_fields">Детали</string>
+    <string name="task_field_title">Текст</string>
+    <string name="task_field_bucket">Горизонт</string>
+    <string name="task_field_plan_date">План-дата</string>
+    <string name="task_field_deadline">Дедлайн</string>
+    <string name="task_field_reminders">Напоминания</string>
+    <string name="task_field_estimate">Размер</string>
+    <string name="task_field_project">Проект</string>
+    <string name="task_field_tags">Теги</string>
+    <string name="task_field_note">Заметка</string>
+    <string name="task_not_set">Не задано</string>
+    <string name="task_estimate_unset">Не задан (считается как M)</string>
+    <string name="task_open_project">Открыть проект</string>
+    <string name="task_tags_hint">\@работа @звонок</string>
+    <string name="task_save">Сохранить</string>
+    <string name="task_clear_field">Очистить: %1$s</string>
+    <string name="task_edit_field">Изменить: %1$s</string>
+    <string name="task_ai_undo_field">ИИ · отменить</string>
+    <string name="task_ai_undo_all">Отменить все изменения ИИ</string>
+    <string name="task_ai_filled">Заполнено ИИ: %1$s. Нажмите, чтобы отменить.</string>
+    <string name="task_ai_undone">Изменения ИИ отменены</string>
+    <string name="task_title_ai">Текст изменён ИИ</string>
+    <string name="task_sources">Ссылки и источники</string>
+    <string name="task_snapshots">Прошлые заметки</string>
+    <string name="task_history">История</string>
+    <string name="task_snapshot_title">Где остановился</string>
+    <string name="task_next_step">Дальше: %1$s</string>
+    <string name="task_add_snapshot">Добавить заметку</string>
+    <string name="task_reminders_default">Как в настройках</string>
+    <string name="task_reminders_default_value">Как в настройках: %1$s</string>
+    <string name="task_reminders_none">Без напоминаний</string>
+    <string name="task_reminder_at_deadline">В момент дедлайна</string>
+    <string name="task_reminder_before">за %1$s</string>
+    <string name="task_deadline_other_zone">%1$s (%2$s %3$s)</string>
+    <string name="task_delete_title">Удалить навсегда?</string>
+    <string name="task_delete_body">Задача, её заметки, ссылки и история будут удалены. Отменить нельзя.</string>
+    <string name="task_delete_confirm">Удалить навсегда</string>
+    <string name="task_deleted">Задача удалена</string>
+    <string name="task_screen_title">Задача</string>
+</resources>

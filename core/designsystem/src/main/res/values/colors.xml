@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launcher and splash background; app colours live in Compose tokens. -->
+    <color name="tasker_brand">#1F6B5C</color>
+    <color name="tasker_background_light">#F7FAF8</color>
+</resources>

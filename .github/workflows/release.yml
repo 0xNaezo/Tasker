@@ -1,0 +1,178 @@
+# A tag "vX.Y.Z" publishes the signed GitHub-channel APK to GitHub Releases (tech plan §24.1–§24.3), where Obtainium
+# picks it up, and pushes the backend image. versionCode is this workflow's run number: one monotonic counter for
+# both channels.
+#
+# Secrets: TASKER_KEYSTORE_BASE64 (the release keystore, base64), TASKER_KEYSTORE_PASSWORD, TASKER_KEY_ALIAS,
+# TASKER_KEY_PASSWORD; optional TASKER_SENTRY_DSN (crash reports, still only with the user's consent),
+# TASKER_BACKEND_DEPLOY_HOOK (a deploy hook URL of the hosting that runs the backend in prod),
+# PLAY_SERVICE_ACCOUNT_JSON with variable TASKER_PLAY_PROXY_URL (Google Play internal track, from M10).
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    name: Signed APK to GitHub Releases
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-read-only: true
+
+      - name: Version
+        run: |
+          echo "VERSION_NAME=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+          echo "VERSION_CODE=$((1000 + GITHUB_RUN_NUMBER))" >> "$GITHUB_ENV"
+
+      - name: Release key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.TASKER_KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+          echo "TASKER_KEYSTORE_FILE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+
+      - name: Build
+        env:
+          TASKER_KEYSTORE_PASSWORD: ${{ secrets.TASKER_KEYSTORE_PASSWORD }}
+          TASKER_KEY_ALIAS: ${{ secrets.TASKER_KEY_ALIAS }}
+          TASKER_KEY_PASSWORD: ${{ secrets.TASKER_KEY_PASSWORD }}
+          SENTRY_DSN: ${{ secrets.TASKER_SENTRY_DSN }}
+        run: >-
+          ./gradlew :app:assembleGithubRelease
+          -Ptasker.versionName="$VERSION_NAME"
+          -Ptasker.versionCode="$VERSION_CODE"
+          -Ptasker.sentryDsn="$SENTRY_DSN"
+
+      - name: Check the signature
+        run: |
+          APK=app/build/outputs/apk/github/release/app-github-release.apk
+          "$ANDROID_HOME"/build-tools/$(ls "$ANDROID_HOME"/build-tools | sort -V | tail -1)/apksigner verify --print-certs "$APK"
+          cp "$APK" "tasker-$VERSION_NAME.apk"
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" "tasker-$VERSION_NAME.apk" --title "$GITHUB_REF_NAME" --generate-notes --verify-tag
+
+      - name: Mapping file
+        uses: actions/upload-artifact@v4
+        with:
+          name: mapping-${{ env.VERSION_NAME }}
+          path: app/build/outputs/mapping/githubRelease/
+          retention-days: 90
+
+  play:
+    name: Google Play internal track
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PLAY_CONFIGURED: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON != '' }}
+    steps:
+      - uses: actions/checkout@v5
+        if: env.PLAY_CONFIGURED == 'true'
+
+      - uses: actions/setup-java@v5
+        if: env.PLAY_CONFIGURED == 'true'
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v5
+        if: env.PLAY_CONFIGURED == 'true'
+        with:
+          cache-read-only: true
+
+      - name: Release key
+        if: env.PLAY_CONFIGURED == 'true'
+        env:
+          KEYSTORE_BASE64: ${{ secrets.TASKER_KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+          echo "TASKER_KEYSTORE_FILE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+
+      - name: Build the bundle
+        if: env.PLAY_CONFIGURED == 'true'
+        env:
+          TASKER_KEYSTORE_PASSWORD: ${{ secrets.TASKER_KEYSTORE_PASSWORD }}
+          TASKER_KEY_ALIAS: ${{ secrets.TASKER_KEY_ALIAS }}
+          TASKER_KEY_PASSWORD: ${{ secrets.TASKER_KEY_PASSWORD }}
+          SENTRY_DSN: ${{ secrets.TASKER_SENTRY_DSN }}
+          PROXY_URL: ${{ vars.TASKER_PLAY_PROXY_URL }}
+          CLOUD_PROJECT: ${{ vars.TASKER_PLAY_CLOUD_PROJECT }}
+        run: >-
+          ./gradlew :app:bundlePlayRelease
+          -Ptasker.versionName="${GITHUB_REF_NAME#v}"
+          -Ptasker.versionCode="$((1000 + GITHUB_RUN_NUMBER))"
+          -Ptasker.sentryDsn="$SENTRY_DSN"
+          -Ptasker.aiProxyUrl="$PROXY_URL"
+          -Ptasker.playCloudProject="${CLOUD_PROJECT:-0}"
+
+      - name: Upload to the internal track
+        if: env.PLAY_CONFIGURED == 'true'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: io.github.oxnaezo.tasks
+          releaseFiles: app/build/outputs/bundle/playRelease/app-play-release.aab
+          mappingFile: app/build/outputs/mapping/playRelease/mapping.txt
+          track: internal
+          status: completed
+
+  backend:
+    name: Backend image
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Image name
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/tasker-backend" >> "$GITHUB_ENV"
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ github.ref_name }}
+            ${{ env.IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Production deploys from the tag (§24.1): the hosting pulls the new image when its deploy hook is called.
+      - name: Deploy to prod
+        env:
+          DEPLOY_HOOK: ${{ secrets.TASKER_BACKEND_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "No deploy hook configured: the image is pushed, deploy it by hand."
+          else
+            curl --fail --silent --show-error -X POST "$DEPLOY_HOOK"
+          fi

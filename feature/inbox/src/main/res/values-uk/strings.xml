@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="inbox_overflow">
+        <item quantity="one">У Вхідних %1$d завдання. Швидко розібрати?</item>
+        <item quantity="few">У Вхідних %1$d завдання. Швидко розібрати?</item>
+        <item quantity="many">У Вхідних %1$d завдань. Швидко розібрати?</item>
+        <item quantity="other">У Вхідних %1$d завдання. Швидко розібрати?</item>
+    </plurals>
+    <string name="inbox_triage_action">Розібрати</string>
+    <string name="inbox_empty_title">Вхідні порожні</string>
+    <string name="inbox_empty_body">Сюди потрапляє все, що записано без дати й проєкту.</string>
+    <string name="inbox_triage_title">Швидкий розбір</string>
+    <string name="inbox_back">Назад</string>
+    <string name="inbox_triage_done">Вхідні розібрано</string>
+    <string name="inbox_triage_progress">%1$d з %2$d</string>
+    <string name="inbox_added_on">Додано: %1$s</string>
+    <string name="inbox_skip">Пропустити</string>
+</resources>

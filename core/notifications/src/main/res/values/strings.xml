@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Channels (NTF-1, tech plan §12.1) -->
+    <string name="notification_channel_plan">Day plan</string>
+    <string name="notification_channel_plan_description">Morning notification with the plan of the day</string>
+    <string name="notification_channel_deadlines">Deadlines</string>
+    <string name="notification_channel_deadlines_description">Reminders before deadlines</string>
+    <string name="notification_channel_weekly_review">Weekly review</string>
+    <string name="notification_channel_weekly_review_description">Reminder to review the week</string>
+    <string name="notification_channel_integrations">Integrations</string>
+    <string name="notification_channel_integrations_description">News from connected services</string>
+
+    <!-- Morning plan (PLN-4, TTL-5): "Plan is ready: 5 tasks, 4 h of 5 h free, and 3 tasks to review" -->
+    <string name="notification_plan_title">Day plan</string>
+    <string name="notification_plan_text">Plan is ready: %1$s, %2$s of %3$s free</string>
+    <plurals name="notification_plan_tasks">
+        <item quantity="one">%d task</item>
+        <item quantity="other">%d tasks</item>
+    </plurals>
+    <plurals name="notification_plan_review">
+        <item quantity="one">, and %d task to review</item>
+        <item quantity="other">, and %d tasks to review</item>
+    </plurals>
+    <string name="notification_duration_hours">%d h</string>
+    <string name="notification_duration_minutes">%d min</string>
+    <string name="notification_duration_hours_minutes">%1$d h %2$d min</string>
+    <string name="notification_preparing_plan">Preparing the day plan…</string>
+
+    <!-- Deadline reminders (NTF-2) -->
+    <string name="notification_deadline_today">Deadline today</string>
+    <string name="notification_deadline_today_at">Deadline today at %1$s</string>
+    <string name="notification_deadline_tomorrow">Deadline tomorrow</string>
+    <string name="notification_deadline_tomorrow_at">Deadline tomorrow at %1$s</string>
+    <string name="notification_deadline_on">Deadline %1$s</string>
+    <string name="notification_deadline_on_at">Deadline %1$s at %2$s</string>
+
+    <!-- Task actions (NTF-5) -->
+    <string name="notification_action_done">Done</string>
+    <string name="notification_action_postpone">Postpone</string>
+
+    <!-- One group after quiet hours (NTF-4) -->
+    <string name="notification_digest_title">While quiet hours were on</string>
+    <plurals name="notification_digest_text">
+        <item quantity="one">%d notification</item>
+        <item quantity="other">%d notifications</item>
+    </plurals>
+</resources>

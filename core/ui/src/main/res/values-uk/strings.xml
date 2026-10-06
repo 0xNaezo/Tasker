@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bucket_today">Сьогодні</string>
+    <string name="bucket_week">Тиждень</string>
+    <string name="bucket_someday">Колись</string>
+    <string name="bucket_inbox">Вхідні</string>
+    <string name="status_open">Відкрита</string>
+    <string name="status_in_progress">У роботі</string>
+    <string name="status_paused">На паузі</string>
+    <string name="status_done">Виконана</string>
+    <string name="status_archived">В архіві</string>
+
+    <string name="duration_minutes">%1$d хв</string>
+    <string name="duration_hours">%1$d год</string>
+    <string name="duration_hours_minutes">%1$d год %2$d хв</string>
+
+    <string name="day_today">сьогодні</string>
+    <string name="day_tomorrow">завтра</string>
+    <string name="day_yesterday">учора</string>
+    <string name="day_at_time">%1$s о %2$s</string>
+
+    <string name="reason_overdue_since">прострочено з %1$s</string>
+    <string name="reason_deadline_on">дедлайн %1$s</string>
+    <string name="reason_in_progress">у роботі</string>
+    <string name="reason_paused">на паузі</string>
+    <string name="reason_carried_over">перенесено з %1$s</string>
+    <string name="reason_for_today">на сьогодні</string>
+    <string name="reason_from_week">з тижня</string>
+    <string name="reason_in_review">на перевірці</string>
+    <string name="reason_added_manually">додано вручну</string>
+
+    <plurals name="auto_ttl_expired">
+        <item quantity="one">Не чіпали %1$d день · %2$s</item>
+        <item quantity="few">Не чіпали %1$d дні · %2$s</item>
+        <item quantity="many">Не чіпали %1$d днів · %2$s</item>
+        <item quantity="other">Не чіпали %1$d дня · %2$s</item>
+    </plurals>
+    <plurals name="auto_review_skipped">
+        <item quantity="one">Пропущена в перевірці %1$d раз поспіль</item>
+        <item quantity="few">Пропущена в перевірці %1$d рази поспіль</item>
+        <item quantity="many">Пропущена в перевірці %1$d разів поспіль</item>
+        <item quantity="other">Пропущена в перевірці %1$d рази поспіль</item>
+    </plurals>
+    <plurals name="auto_ttl_skips">
+        <item quantity="one">В архів: пропущена в перевірці %1$d раз поспіль</item>
+        <item quantity="few">В архів: пропущена в перевірці %1$d рази поспіль</item>
+        <item quantity="many">В архів: пропущена в перевірці %1$d разів поспіль</item>
+        <item quantity="other">В архів: пропущена в перевірці %1$d рази поспіль</item>
+    </plurals>
+    <string name="auto_plan_date_passed">Минула план-дата (%1$s)</string>
+    <string name="auto_plan_not_done">Не виконана з плану на %1$s</string>
+    <string name="auto_today_not_done">Лишилася в «Сьогодні» (%1$s)</string>
+    <plurals name="auto_project_inactive">
+        <item quantity="one">Немає активності %1$d день</item>
+        <item quantity="few">Немає активності %1$d дні</item>
+        <item quantity="many">Немає активності %1$d днів</item>
+        <item quantity="other">Немає активності %1$d дня</item>
+    </plurals>
+    <string name="auto_ai_enriched">ШІ заповнив: %1$s</string>
+    <string name="auto_ai_nothing">ШІ нічого не доповнив</string>
+    <string name="auto_integration_closed">Закрита в джерелі</string>
+    <string name="auto_integration_merged">Об’єднана в джерелі</string>
+    <string name="auto_integration_title">Текст оновлено з джерела</string>
+    <string name="review_no_next_step">Немає наступного кроку</string>
+
+    <string name="field_title">текст</string>
+    <string name="field_note">нотатка</string>
+    <string name="field_bucket">горизонт</string>
+    <string name="field_deadline">дедлайн</string>
+    <string name="field_plan_date">план-дата</string>
+    <string name="field_estimate">оцінка</string>
+    <string name="field_project">проєкт</string>
+    <string name="field_tags">теги</string>
+    <string name="field_status">статус</string>
+
+    <string name="history_created">Створена</string>
+    <string name="history_updated">Змінено: %1$s</string>
+    <string name="history_status">Статус: %1$s</string>
+    <string name="history_postponed">Перенесена</string>
+    <string name="history_rolled_over">Враховано перенесення</string>
+    <string name="history_moved">Переміщена: %1$s</string>
+    <string name="history_reordered">Змінено порядок</string>
+    <string name="history_snapshot">Додано знімок контексту</string>
+    <string name="history_review_entered">Надіслана на перевірку</string>
+    <string name="history_review_decided">Рішення в перевірці</string>
+    <string name="history_review_skipped">Пропущена в перевірці</string>
+    <string name="history_ai_filled">Доповнена ШІ</string>
+    <string name="history_split">Розбита на проєкт</string>
+    <string name="history_merged">Об’єднана</string>
+    <string name="history_archived">В архіві</string>
+    <string name="history_restored">Відновлена</string>
+    <string name="history_plan">Змінено план дня</string>
+    <string name="history_undone">Скасовано</string>
+    <string name="history_by_rule">автоматично</string>
+    <string name="history_by_ai">ШІ</string>
+
+    <string name="action_done">Готово</string>
+    <string name="action_mark_done">Позначити виконаною</string>
+    <string name="action_mark_not_done">Зняти позначку про виконання</string>
+    <string name="action_postpone">Перенести</string>
+    <string name="action_more">Інші дії</string>
+    <string name="action_open">Відкрити</string>
+    <string name="action_undo">Скасувати</string>
+    <string name="action_cancel">Скасувати</string>
+    <string name="action_ok">ОК</string>
+    <string name="action_move_up">Вище</string>
+    <string name="action_move_down">Нижче</string>
+    <string name="action_clear">Очистити</string>
+    <string name="action_close">Закрити</string>
+    <string name="chip_ai">ШІ</string>
+    <string name="chip_in_review">на перевірці</string>
+    <string name="chip_new_project">новий проєкт</string>
+    <string name="estimate_s">S</string>
+    <string name="estimate_m">M</string>
+    <string name="estimate_l">L</string>
+    <string name="cd_deadline">Дедлайн %1$s</string>
+    <string name="cd_deadline_overdue">Прострочений дедлайн %1$s</string>
+    <string name="cd_plan_date">План-дата %1$s</string>
+    <string name="cd_estimate">Оцінка %1$s</string>
+    <string name="cd_project">Проєкт %1$s</string>
+    <string name="cd_ai_fields">Частину полів заповнив ШІ</string>
+
+    <string name="postpone_title">Перенести</string>
+    <string name="postpone_tomorrow">На завтра</string>
+    <string name="postpone_week">На тиждень</string>
+    <string name="postpone_someday">Колись</string>
+    <string name="postpone_date">Обрати дату…</string>
+    <string name="postpone_note">Дедлайн під час перенесення не змінюється.</string>
+
+    <string name="capacity_planned">%1$s з %2$s</string>
+    <string name="capacity_overload">Перевантаження %1$s</string>
+    <string name="capacity_free">вільно %1$s</string>
+    <string name="capacity_no_calendar">без календаря</string>
+    <string name="capacity_day_over">Робочий день закінчився</string>
+    <string name="capacity_day_off">Вихідний</string>
+    <string name="cd_capacity">Заплановано %1$s, місткість %2$s</string>
+
+    <string name="undo_done">Готово: %1$s</string>
+    <string name="undo_postponed">Перенесено: %1$s</string>
+    <string name="undo_archived">В архіві: %1$s</string>
+    <string name="undo_moved">Переміщено: %1$s</string>
+    <string name="undo_saved">Збережено</string>
+    <string name="undo_conflicts">Частину полів відтоді змінено й залишено як є</string>
+    <string name="undo_expired">Нічого скасовувати</string>
+    <string name="error_generic">Не вдалося. Нічого не змінено.</string>
+    <string name="undo_reopened">Знову в роботі: %1$s</string>
+    <string name="undo_restored">Відновлено: %1$s</string>
+    <string name="undo_started">У роботі: %1$s</string>
+    <string name="undo_paused">На паузі: %1$s</string>
+    <string name="undo_added_to_plan">У плані: %1$s</string>
+    <string name="undo_removed_from_plan">Прибрано з плану: %1$s</string>
+    <string name="undo_kept">Залишено: %1$s</string>
+    <string name="undo_split">Розбито на кроки: %1$s</string>
+    <string name="pause_title">Пауза</string>
+    <string name="pause_hint">Де зупинилися? Що далі?</string>
+    <string name="pause_action">На паузу</string>
+    <plurals name="wip_title">
+        <item quantity="one">У роботі: %1$d з %2$d</item>
+        <item quantity="few">У роботі: %1$d з %2$d</item>
+        <item quantity="many">У роботі: %1$d з %2$d</item>
+        <item quantity="other">У роботі: %1$d з %2$d</item>
+    </plurals>
+    <string name="wip_body">Це більше за ліміт. Поставити одне із завдань на паузу?</string>
+    <string name="wip_pause">Пауза</string>
+    <string name="wip_keep_all">Залишити всі</string>
+    <string name="split_title">Розбити на кроки</string>
+    <string name="split_hint">Кожен крок — з нового рядка</string>
+    <string name="split_rules">Від 2 до 5 кроків. Завдання стане проєктом.</string>
+    <string name="split_action">Розбити</string>
+    <string name="action_start">Почати</string>
+    <string name="action_resume">Продовжити</string>
+    <string name="action_pause">Пауза</string>
+    <string name="action_archive">В архів</string>
+    <string name="action_restore">Відновити</string>
+    <string name="action_add_to_plan">Додати в план</string>
+    <string name="action_remove_from_plan">Прибрати з плану</string>
+    <string name="action_split">Розбити на кроки</string>
+    <string name="action_keep">Залишити</string>
+    <string name="action_to_someday">У «Колись»</string>
+    <string name="action_move_to">Перемістити…</string>
+    <string name="project_pick">Проєкт</string>
+    <string name="project_new">Новий проєкт</string>
+    <string name="project_none">Без проєкту</string>
+    <string name="project_name_hint">Назва проєкту</string>
+    <string name="project_create">Створити</string>
+    <string name="project_current">Поточний проєкт</string>
+    <string name="action_to_today">На сьогодні</string>
+    <string name="action_to_week">На тиждень</string>
+    <string name="action_to_inbox">До Вхідних</string>
+    <string name="action_to_project">До проєкту…</string>
+    <string name="undo_project_set">Проєкт змінено: %1$s</string>
+    <plurals name="undo_postponed_many">
+        <item quantity="one">Перенесено %1$d завдання</item>
+        <item quantity="few">Перенесено %1$d завдання</item>
+        <item quantity="many">Перенесено %1$d завдань</item>
+        <item quantity="other">Перенесено %1$d завдання</item>
+    </plurals>
+</resources>

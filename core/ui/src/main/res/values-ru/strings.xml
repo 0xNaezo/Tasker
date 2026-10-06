@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bucket_today">Сегодня</string>
+    <string name="bucket_week">Неделя</string>
+    <string name="bucket_someday">Когда-нибудь</string>
+    <string name="bucket_inbox">Входящие</string>
+    <string name="status_open">Открыта</string>
+    <string name="status_in_progress">В работе</string>
+    <string name="status_paused">На паузе</string>
+    <string name="status_done">Выполнена</string>
+    <string name="status_archived">В архиве</string>
+
+    <string name="duration_minutes">%1$d мин</string>
+    <string name="duration_hours">%1$d ч</string>
+    <string name="duration_hours_minutes">%1$d ч %2$d мин</string>
+
+    <string name="day_today">сегодня</string>
+    <string name="day_tomorrow">завтра</string>
+    <string name="day_yesterday">вчера</string>
+    <string name="day_at_time">%1$s в %2$s</string>
+
+    <string name="reason_overdue_since">просрочено с %1$s</string>
+    <string name="reason_deadline_on">дедлайн %1$s</string>
+    <string name="reason_in_progress">в работе</string>
+    <string name="reason_paused">на паузе</string>
+    <string name="reason_carried_over">перенесено с %1$s</string>
+    <string name="reason_for_today">на сегодня</string>
+    <string name="reason_from_week">из недели</string>
+    <string name="reason_in_review">на проверке</string>
+    <string name="reason_added_manually">добавлено вручную</string>
+
+    <plurals name="auto_ttl_expired">
+        <item quantity="one">Не трогали %1$d день · %2$s</item>
+        <item quantity="few">Не трогали %1$d дня · %2$s</item>
+        <item quantity="many">Не трогали %1$d дней · %2$s</item>
+        <item quantity="other">Не трогали %1$d дня · %2$s</item>
+    </plurals>
+    <plurals name="auto_review_skipped">
+        <item quantity="one">Пропущена в проверке %1$d раз подряд</item>
+        <item quantity="few">Пропущена в проверке %1$d раза подряд</item>
+        <item quantity="many">Пропущена в проверке %1$d раз подряд</item>
+        <item quantity="other">Пропущена в проверке %1$d раза подряд</item>
+    </plurals>
+    <plurals name="auto_ttl_skips">
+        <item quantity="one">В архив: пропущена в проверке %1$d раз подряд</item>
+        <item quantity="few">В архив: пропущена в проверке %1$d раза подряд</item>
+        <item quantity="many">В архив: пропущена в проверке %1$d раз подряд</item>
+        <item quantity="other">В архив: пропущена в проверке %1$d раза подряд</item>
+    </plurals>
+    <string name="auto_plan_date_passed">Прошла план-дата (%1$s)</string>
+    <string name="auto_plan_not_done">Не выполнена из плана на %1$s</string>
+    <string name="auto_today_not_done">Осталась в «Сегодня» (%1$s)</string>
+    <plurals name="auto_project_inactive">
+        <item quantity="one">Нет активности %1$d день</item>
+        <item quantity="few">Нет активности %1$d дня</item>
+        <item quantity="many">Нет активности %1$d дней</item>
+        <item quantity="other">Нет активности %1$d дня</item>
+    </plurals>
+    <string name="auto_ai_enriched">ИИ заполнил: %1$s</string>
+    <string name="auto_ai_nothing">ИИ ничего не дополнил</string>
+    <string name="auto_integration_closed">Закрыта в источнике</string>
+    <string name="auto_integration_merged">Объединена в источнике</string>
+    <string name="auto_integration_title">Текст обновлён из источника</string>
+    <string name="review_no_next_step">Нет следующего шага</string>
+
+    <string name="field_title">текст</string>
+    <string name="field_note">заметка</string>
+    <string name="field_bucket">горизонт</string>
+    <string name="field_deadline">дедлайн</string>
+    <string name="field_plan_date">план-дата</string>
+    <string name="field_estimate">оценка</string>
+    <string name="field_project">проект</string>
+    <string name="field_tags">теги</string>
+    <string name="field_status">статус</string>
+
+    <string name="history_created">Создана</string>
+    <string name="history_updated">Изменено: %1$s</string>
+    <string name="history_status">Статус: %1$s</string>
+    <string name="history_postponed">Перенесена</string>
+    <string name="history_rolled_over">Учтён перенос</string>
+    <string name="history_moved">Перемещена: %1$s</string>
+    <string name="history_reordered">Изменён порядок</string>
+    <string name="history_snapshot">Добавлен снимок контекста</string>
+    <string name="history_review_entered">Отправлена на проверку</string>
+    <string name="history_review_decided">Решение в проверке</string>
+    <string name="history_review_skipped">Пропущена в проверке</string>
+    <string name="history_ai_filled">Дополнена ИИ</string>
+    <string name="history_split">Разбита на проект</string>
+    <string name="history_merged">Объединена</string>
+    <string name="history_archived">В архиве</string>
+    <string name="history_restored">Восстановлена</string>
+    <string name="history_plan">Изменён план дня</string>
+    <string name="history_undone">Отменено</string>
+    <string name="history_by_rule">автоматически</string>
+    <string name="history_by_ai">ИИ</string>
+
+    <string name="action_done">Готово</string>
+    <string name="action_mark_done">Отметить выполненной</string>
+    <string name="action_mark_not_done">Снять отметку о выполнении</string>
+    <string name="action_postpone">Перенести</string>
+    <string name="action_more">Другие действия</string>
+    <string name="action_open">Открыть</string>
+    <string name="action_undo">Отменить</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="action_ok">ОК</string>
+    <string name="action_move_up">Выше</string>
+    <string name="action_move_down">Ниже</string>
+    <string name="action_clear">Очистить</string>
+    <string name="action_close">Закрыть</string>
+    <string name="chip_ai">ИИ</string>
+    <string name="chip_in_review">на проверке</string>
+    <string name="chip_new_project">новый проект</string>
+    <string name="estimate_s">S</string>
+    <string name="estimate_m">M</string>
+    <string name="estimate_l">L</string>
+    <string name="cd_deadline">Дедлайн %1$s</string>
+    <string name="cd_deadline_overdue">Просроченный дедлайн %1$s</string>
+    <string name="cd_plan_date">План-дата %1$s</string>
+    <string name="cd_estimate">Оценка %1$s</string>
+    <string name="cd_project">Проект %1$s</string>
+    <string name="cd_ai_fields">Часть полей заполнил ИИ</string>
+
+    <string name="postpone_title">Перенести</string>
+    <string name="postpone_tomorrow">На завтра</string>
+    <string name="postpone_week">На неделю</string>
+    <string name="postpone_someday">Когда-нибудь</string>
+    <string name="postpone_date">Выбрать дату…</string>
+    <string name="postpone_note">Дедлайн при переносе не меняется.</string>
+
+    <string name="capacity_planned">%1$s из %2$s</string>
+    <string name="capacity_overload">Перегруз %1$s</string>
+    <string name="capacity_free">свободно %1$s</string>
+    <string name="capacity_no_calendar">без календаря</string>
+    <string name="capacity_day_over">Рабочий день закончился</string>
+    <string name="capacity_day_off">Выходной</string>
+    <string name="cd_capacity">Запланировано %1$s, ёмкость %2$s</string>
+
+    <string name="undo_done">Готово: %1$s</string>
+    <string name="undo_postponed">Перенесено: %1$s</string>
+    <string name="undo_archived">В архиве: %1$s</string>
+    <string name="undo_moved">Перемещено: %1$s</string>
+    <string name="undo_saved">Сохранено</string>
+    <string name="undo_conflicts">Часть полей с тех пор изменена и оставлена как есть</string>
+    <string name="undo_expired">Нечего отменять</string>
+    <string name="error_generic">Не получилось. Ничего не изменено.</string>
+    <string name="undo_reopened">Снова в работе: %1$s</string>
+    <string name="undo_restored">Восстановлено: %1$s</string>
+    <string name="undo_started">В работе: %1$s</string>
+    <string name="undo_paused">На паузе: %1$s</string>
+    <string name="undo_added_to_plan">В плане: %1$s</string>
+    <string name="undo_removed_from_plan">Убрано из плана: %1$s</string>
+    <string name="undo_kept">Оставлено: %1$s</string>
+    <string name="undo_split">Разбито на шаги: %1$s</string>
+    <string name="pause_title">Пауза</string>
+    <string name="pause_hint">Где остановились? Что дальше?</string>
+    <string name="pause_action">На паузу</string>
+    <plurals name="wip_title">
+        <item quantity="one">В работе: %1$d из %2$d</item>
+        <item quantity="few">В работе: %1$d из %2$d</item>
+        <item quantity="many">В работе: %1$d из %2$d</item>
+        <item quantity="other">В работе: %1$d из %2$d</item>
+    </plurals>
+    <string name="wip_body">Это больше лимита. Поставить одну из задач на паузу?</string>
+    <string name="wip_pause">Пауза</string>
+    <string name="wip_keep_all">Оставить все</string>
+    <string name="split_title">Разбить на шаги</string>
+    <string name="split_hint">Каждый шаг — с новой строки</string>
+    <string name="split_rules">От 2 до 5 шагов. Задача станет проектом.</string>
+    <string name="split_action">Разбить</string>
+    <string name="action_start">Начать</string>
+    <string name="action_resume">Продолжить</string>
+    <string name="action_pause">Пауза</string>
+    <string name="action_archive">В архив</string>
+    <string name="action_restore">Восстановить</string>
+    <string name="action_add_to_plan">Добавить в план</string>
+    <string name="action_remove_from_plan">Убрать из плана</string>
+    <string name="action_split">Разбить на шаги</string>
+    <string name="action_keep">Оставить</string>
+    <string name="action_to_someday">В «Когда-нибудь»</string>
+    <string name="action_move_to">Переместить…</string>
+    <string name="project_pick">Проект</string>
+    <string name="project_new">Новый проект</string>
+    <string name="project_none">Без проекта</string>
+    <string name="project_name_hint">Название проекта</string>
+    <string name="project_create">Создать</string>
+    <string name="project_current">Текущий проект</string>
+    <string name="action_to_today">На сегодня</string>
+    <string name="action_to_week">На неделю</string>
+    <string name="action_to_inbox">Во Входящие</string>
+    <string name="action_to_project">В проект…</string>
+    <string name="undo_project_set">Проект изменён: %1$s</string>
+    <plurals name="undo_postponed_many">
+        <item quantity="one">Перенесена %1$d задача</item>
+        <item quantity="few">Перенесены %1$d задачи</item>
+        <item quantity="many">Перенесено %1$d задач</item>
+        <item quantity="other">Перенесено %1$d задачи</item>
+    </plurals>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_label">Сегодня</string>
+    <string name="widget_description">План на сегодня и новая задача в одно касание</string>
+    <string name="widget_title">Сегодня</string>
+    <string name="widget_add">Новая задача</string>
+    <string name="widget_voice">Новая задача голосом</string>
+    <string name="widget_locked">Задачи скрыты, пока включена блокировка приложения</string>
+    <string name="widget_empty">На сегодня пока пусто</string>
+    <string name="widget_plan_done">Всё из плана сделано</string>
+    <string name="widget_plan_progress">Сделано %1$d из %2$d</string>
+    <string name="widget_build_plan">Составить план дня</string>
+    <string name="widget_overdue">Просрочено</string>
+    <string name="widget_sample_working">Черновик квартального отчёта</string>
+    <string name="widget_sample_overdue">Оплатить электричество</string>
+    <string name="widget_sample_planned">Позвонить стоматологу</string>
+</resources>

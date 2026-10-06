@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tasks_projects">Projects</string>
+    <string name="tasks_empty">Nothing here yet</string>
+    <string name="tasks_empty_filtered">No tasks match the filter</string>
+    <string name="tasks_filter_deadline">With deadline</string>
+    <string name="tasks_projects_empty">No projects yet</string>
+    <string name="tasks_projects_completed">Completed (%1$d)</string>
+    <string name="tasks_projects_archived">Archived (%1$d)</string>
+    <string name="tasks_collapse">Collapse</string>
+    <string name="tasks_expand">Expand</string>
+    <plurals name="tasks_project_count">
+        <item quantity="one">%1$d task</item>
+        <item quantity="other">%1$d tasks</item>
+    </plurals>
+    <string name="tasks_project_created">Project created: %1$s</string>
+    <string name="tasks_project_renamed">Renamed: %1$s</string>
+    <string name="tasks_project_outcome_saved">Outcome saved: %1$s</string>
+    <string name="tasks_project_completed">Project completed: %1$s</string>
+    <string name="tasks_project_reopened">Project reopened: %1$s</string>
+    <string name="tasks_project_archived">Project archived: %1$s</string>
+    <string name="tasks_project_restored">Project restored: %1$s</string>
+    <string name="tasks_step_added">Step added to %1$s</string>
+    <string name="tasks_back">Back</string>
+    <string name="tasks_project_missing">The project no longer exists</string>
+    <string name="tasks_outcome">Outcome</string>
+    <string name="tasks_outcome_hint">What does done look like? Tap to describe the outcome.</string>
+    <string name="tasks_no_next_step">No next step. Add one below so the project keeps moving.</string>
+    <string name="tasks_project_done">Done (%1$d)</string>
+    <string name="tasks_remove_from_project">Remove from project</string>
+    <string name="tasks_rename">Rename</string>
+    <string name="tasks_complete_project">Complete project</string>
+    <string name="tasks_reopen_project">Reopen project</string>
+    <string name="tasks_archive_project">Archive project</string>
+    <string name="tasks_restore_project">Restore project</string>
+    <string name="tasks_restore_title">Restore the project</string>
+    <string name="tasks_restore_body">Bring back the tasks that were archived together with it?</string>
+    <string name="tasks_restore_with_tasks">With tasks</string>
+    <string name="tasks_restore_only_project">Only the project</string>
+    <string name="tasks_add_step">Add a step</string>
+    <string name="tasks_save">Save</string>
+    <plurals name="tasks_archive_tasks">
+        <item quantity="one">%1$d unfinished task will be archived with the project.</item>
+        <item quantity="other">%1$d unfinished tasks will be archived with the project.</item>
+    </plurals>
+    <plurals name="tasks_archive_detach">
+        <item quantity="one">%1$d task with a future deadline stays open outside the project.</item>
+        <item quantity="other">%1$d tasks with a future deadline stay open outside the project.</item>
+    </plurals>
+</resources>
