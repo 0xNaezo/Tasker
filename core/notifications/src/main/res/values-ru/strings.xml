@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_plan">План дня</string>
+    <string name="notification_channel_plan_description">Утреннее уведомление с планом дня</string>
+    <string name="notification_channel_deadlines">Дедлайны</string>
+    <string name="notification_channel_deadlines_description">Напоминания перед дедлайнами</string>
+    <string name="notification_channel_weekly_review">Обзор недели</string>
+    <string name="notification_channel_weekly_review_description">Напоминание об обзоре недели</string>
+    <string name="notification_channel_integrations">Интеграции</string>
+    <string name="notification_channel_integrations_description">Новости от подключённых сервисов</string>
+
+    <string name="notification_plan_title">План дня</string>
+    <string name="notification_plan_text">План готов: %1$s, %2$s из %3$s свободных</string>
+    <plurals name="notification_plan_tasks">
+        <item quantity="one">%d задача</item>
+        <item quantity="few">%d задачи</item>
+        <item quantity="many">%d задач</item>
+        <item quantity="other">%d задачи</item>
+    </plurals>
+    <plurals name="notification_plan_review">
+        <item quantity="one">, и %d задача на проверку</item>
+        <item quantity="few">, и %d задачи на проверку</item>
+        <item quantity="many">, и %d задач на проверку</item>
+        <item quantity="other">, и %d задачи на проверку</item>
+    </plurals>
+    <string name="notification_duration_hours">%d ч</string>
+    <string name="notification_duration_minutes">%d мин</string>
+    <string name="notification_duration_hours_minutes">%1$d ч %2$d мин</string>
+    <string name="notification_preparing_plan">Готовлю план дня…</string>
+
+    <string name="notification_deadline_today">Дедлайн сегодня</string>
+    <string name="notification_deadline_today_at">Дедлайн сегодня в %1$s</string>
+    <string name="notification_deadline_tomorrow">Дедлайн завтра</string>
+    <string name="notification_deadline_tomorrow_at">Дедлайн завтра в %1$s</string>
+    <string name="notification_deadline_on">Дедлайн %1$s</string>
+    <string name="notification_deadline_on_at">Дедлайн %1$s в %2$s</string>
+
+    <string name="notification_action_done">Выполнено</string>
+    <string name="notification_action_postpone">Перенести</string>
+
+    <string name="notification_digest_title">Пока были тихие часы</string>
+    <plurals name="notification_digest_text">
+        <item quantity="one">%d уведомление</item>
+        <item quantity="few">%d уведомления</item>
+        <item quantity="many">%d уведомлений</item>
+        <item quantity="other">%d уведомления</item>
+    </plurals>
+</resources>
