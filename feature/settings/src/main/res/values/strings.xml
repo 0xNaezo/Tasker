@@ -157,4 +157,10 @@
     <string name="settings_statistics_note">Weekly totals, such as how many tasks came from the widget. Never the text of tasks</string>
     <string name="settings_crash_reports_statistics">Send crash reports and statistics</string>
     <string name="settings_crash_reports_statistics_note">Crash details and weekly totals, such as how many tasks came from the widget. Never the text of tasks</string>
+    <string name="settings_capture">Quick capture</string>
+    <string name="settings_tile">Tile in quick settings</string>
+    <string name="settings_tile_note">A new task right from the notification shade</string>
+    <string name="settings_tile_added">The tile is in quick settings</string>
+    <string name="settings_tile_help_title">Add the tile</string>
+    <string name="settings_tile_help">Swipe down from the top of the screen twice, tap the pencil and drag the “New task” tile to your tiles.</string>
 </resources>

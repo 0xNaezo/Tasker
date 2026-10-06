@@ -60,6 +60,22 @@ class CaptureLogicTest {
     }
 
     @Test
+    fun `a whole book shared is cut to the limits of title and note`() {
+        val intent = Intent(Intent.ACTION_SEND)
+            .putExtra(Intent.EXTRA_SUBJECT, "S".repeat(500))
+            .putExtra(Intent.EXTRA_TEXT, "Chapter one\n" + "\uD83D\uDE00".repeat(15_000))
+
+        val shared = checkNotNull(SharedText.from(intent, null))
+
+        assertThat(shared.input).hasLength(SharedText.MAX_TITLE)
+        assertThat(shared.input).endsWith("…")
+        assertThat(shared.note!!.length).isAtMost(SharedText.MAX_NOTE)
+        assertThat(shared.note).endsWith("…")
+        val beforeEllipsis = shared.note!![shared.note!!.length - 2]
+        assertThat(Character.isHighSurrogate(beforeEllipsis)).isFalse()
+    }
+
+    @Test
     fun `empty share is ignored`() {
         assertThat(SharedText.from(Intent(Intent.ACTION_SEND), null)).isNull()
         assertThat(SharedText.from(Intent(Intent.ACTION_VIEW).putExtra(Intent.EXTRA_TEXT, "x"), null)).isNull()

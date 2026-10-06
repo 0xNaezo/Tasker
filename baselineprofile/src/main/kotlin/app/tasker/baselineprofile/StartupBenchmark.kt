@@ -11,8 +11,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Cold start to the first frame of Today (NFR "Отклик": at most 1.5 s on the reference phone), with and without the
- * Baseline Profile, so a regression or a stale profile shows up in the nightly run.
+ * Cold start (NFR "Отклик": at most 1.5 s on the reference phone), with and without the Baseline Profile, so a
+ * regression or a stale profile shows up in the nightly run. `timeToInitialDisplayMs` is the first frame;
+ * `timeToFullDisplayMs` is the app's readiness mark (`ReportDrawnWhen` in `TaskerApp`): the frame with the input line.
  */
 @RunWith(AndroidJUnit4::class)
 class StartupBenchmark {

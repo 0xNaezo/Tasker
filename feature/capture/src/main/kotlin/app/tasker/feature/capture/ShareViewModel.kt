@@ -19,16 +19,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/** Text received through "Share": a short line is parsed as is; a long text keeps its first line and goes to the note. */
+/**
+ * Text received through "Share": a short line is parsed as is; a long text keeps its first line and goes to the note.
+ * The title and the note have upper limits, so sharing a whole book does not make a task of it.
+ */
 internal data class SharedText(val input: String, val note: String?, val appPackage: String?, val url: String?) {
     companion object {
-        private const val MAX_TITLE = 200
+        const val MAX_TITLE = 200
+
+        /** About ten pages of text. */
+        const val MAX_NOTE = 20_000
         private val URL = Regex("""https?://\S+""")
 
         fun from(intent: Intent, appPackage: String?): SharedText? {
             if (intent.action != Intent.ACTION_SEND) return null
             val text = intent.getStringExtra(Intent.EXTRA_TEXT)?.trim().orEmpty()
-            val subject = intent.getStringExtra(Intent.EXTRA_SUBJECT)?.trim().orEmpty()
+            val subject = intent.getStringExtra(Intent.EXTRA_SUBJECT)?.trim().orEmpty().limitedTo(MAX_TITLE)
             if (text.isEmpty() && subject.isEmpty()) return null
             val url = URL.find(text)?.value?.trimEnd('.', ',', ')', ']')
             val short = text.length <= MAX_TITLE && '\n' !in text
@@ -40,9 +46,17 @@ internal data class SharedText(val input: String, val note: String?, val appPack
                 }
                 SharedText(input, note = null, appPackage = appPackage, url = url)
             } else {
-                val firstLine = text.lineSequence().firstOrNull { it.isNotBlank() }.orEmpty().take(MAX_TITLE)
-                SharedText(subject.ifEmpty { firstLine }, note = text, appPackage = appPackage, url = url)
+                val firstLine = text.lineSequence().firstOrNull { it.isNotBlank() }.orEmpty().limitedTo(MAX_TITLE)
+                SharedText(subject.ifEmpty { firstLine }, note = text.limitedTo(MAX_NOTE), appPackage = appPackage, url = url)
             }
+        }
+
+        /** At most [max] characters: a cut text ends with "…" and never splits a surrogate pair. */
+        private fun String.limitedTo(max: Int): String {
+            if (length <= max) return this
+            var end = max - 1
+            if (Character.isHighSurrogate(this[end - 1])) end--
+            return substring(0, end).trimEnd() + "…"
         }
     }
 }

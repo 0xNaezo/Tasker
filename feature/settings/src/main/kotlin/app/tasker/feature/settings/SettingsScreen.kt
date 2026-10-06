@@ -16,18 +16,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.AddBox
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Backup
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Upload
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -51,6 +54,7 @@ import app.tasker.core.backup.ExportService
 import app.tasker.core.data.settings.TelemetryOptions
 import app.tasker.core.model.AiMode
 import app.tasker.core.model.AppSettings
+import app.tasker.core.ui.R as UiR
 import app.tasker.core.ui.component.Banner
 import app.tasker.core.ui.component.ConfirmDialog
 import app.tasker.core.ui.component.SectionHeader
@@ -65,12 +69,14 @@ fun SettingsScreen(
     onOpenAi: () -> Unit,
     versionName: String,
     modifier: Modifier = Modifier,
+    tile: TileRequest? = null,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val pendingImport by viewModel.pendingImport.collectAsStateWithLifecycle()
     var editor by rememberSaveable { mutableStateOf<Editor?>(null) }
     var choosingCalendars by rememberSaveable { mutableStateOf(false) }
+    var tileHelp by rememberSaveable { mutableStateOf(false) }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -101,6 +107,14 @@ fun SettingsScreen(
             relevanceSection(settings, open)
             notificationSection(settings, viewModel::update, open, notificationsAllowed)
             calendarSection(settings, state.calendar, viewModel::update, calendarActions)
+            tile?.let { request ->
+                captureSection {
+                    when (request) {
+                        is TileRequest.System -> request.request(viewModel::tileResult)
+                        TileRequest.Manual -> tileHelp = true
+                    }
+                }
+            }
             languageSection(settings, open)
             privacySection(settings, viewModel::update, canLock, viewModel.telemetry)
             dataSection(state.lastBackup, settings.backupTreeUri, data)
@@ -132,6 +146,14 @@ fun SettingsScreen(
                 choosingCalendars = false
                 viewModel.selectCalendars(chosen, all)
             },
+        )
+    }
+    if (tileHelp) {
+        AlertDialog(
+            onDismissRequest = { tileHelp = false },
+            title = { Text(stringResource(R.string.settings_tile_help_title)) },
+            text = { Text(stringResource(R.string.settings_tile_help)) },
+            confirmButton = { TextButton(onClick = { tileHelp = false }) { Text(stringResource(UiR.string.action_ok)) } },
         )
     }
     pendingImport?.let { pending ->
@@ -366,6 +388,13 @@ private fun LazyListScope.calendarSection(
             checked = settings.tentativeIsBusy,
             onChange = { on -> update { it.copy(tentativeIsBusy = on) } },
         )
+    }
+}
+
+private fun LazyListScope.captureSection(onAddTile: () -> Unit) {
+    item(key = "capture-header") { SectionHeader(stringResource(R.string.settings_capture)) }
+    item(key = "tile") {
+        ValueRow(stringResource(R.string.settings_tile), stringResource(R.string.settings_tile_note), onAddTile, Icons.Outlined.AddBox)
     }
 }
 

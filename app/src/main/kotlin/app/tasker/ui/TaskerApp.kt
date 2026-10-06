@@ -1,5 +1,6 @@
 package app.tasker.ui
 
+import androidx.activity.compose.ReportDrawnWhen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +53,9 @@ import kotlinx.coroutines.flow.collectLatest
 fun TaskerApp(viewModel: AppViewModel, onUnlock: () -> Unit, versionName: String) {
     val start by viewModel.start.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
+    // The readiness mark of the startup benchmark (tech plan §20): the first frame with the input line, or with the
+    // lock, the restore question or onboarding in its place. The lists fill in after it.
+    ReportDrawnWhen { start != AppStart.Loading }
     Messages(viewModel, snackbar)
     when (val current = start) {
         // The splash screen stays on top meanwhile.

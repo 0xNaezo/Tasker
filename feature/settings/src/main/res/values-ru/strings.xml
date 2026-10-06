@@ -167,4 +167,10 @@
     <string name="settings_statistics_note">Недельные итоги — например, сколько задач пришло из виджета. Никогда — текст задач</string>
     <string name="settings_crash_reports_statistics">Отправлять отчёты о сбоях и статистику</string>
     <string name="settings_crash_reports_statistics_note">Сведения о сбоях и недельные итоги — например, сколько задач пришло из виджета. Никогда — текст задач</string>
+    <string name="settings_capture">Быстрый ввод</string>
+    <string name="settings_tile">Плитка в шторке</string>
+    <string name="settings_tile_note">Новая задача прямо из шторки уведомлений</string>
+    <string name="settings_tile_added">Плитка добавлена в шторку</string>
+    <string name="settings_tile_help_title">Как добавить плитку</string>
+    <string name="settings_tile_help">Дважды проведите вниз от верхнего края экрана, нажмите на карандаш и перетащите плитку «Новая задача» к своим плиткам.</string>
 </resources>

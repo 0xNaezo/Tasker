@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
 import android.os.Build
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.RequiresApi
 import app.tasker.core.model.CaptureChannel
 
@@ -25,6 +26,7 @@ object CaptureIntents {
             ?: CaptureChannel.WIDGET
 
     /** Android 13+: the system dialog that adds the capture tile to quick settings (§13). */
+    @get:ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
     val canRequestTile: Boolean get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)

@@ -88,6 +88,11 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch { attempt { settings.update(transform) }.onFailure { error() } }
     }
 
+    /** The system dialog of the capture tile closed; a tile already there counts as added. */
+    fun tileResult(added: Boolean) {
+        if (added) messenger.info(UiText.Res(R.string.settings_tile_added))
+    }
+
     /** After the permission dialog: starts reading busy time without a restart. */
     fun calendarPermissionChanged() {
         calendar.hasPermission()

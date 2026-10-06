@@ -1,5 +1,6 @@
 package app.tasker.ui
 
+import android.content.Context
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.TaskAlt
@@ -7,7 +8,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
@@ -16,6 +19,7 @@ import app.tasker.R
 import app.tasker.core.model.ProjectId
 import app.tasker.core.model.TaskId
 import app.tasker.core.ui.component.EmptyState
+import app.tasker.feature.capture.CaptureIntents
 import app.tasker.feature.done.DoneKey
 import app.tasker.feature.done.DoneScreen
 import app.tasker.feature.inbox.InboxKey
@@ -34,6 +38,7 @@ import app.tasker.feature.settings.AiSettingsKey
 import app.tasker.feature.settings.AiSettingsScreen
 import app.tasker.feature.settings.SettingsKey
 import app.tasker.feature.settings.SettingsScreen
+import app.tasker.feature.settings.TileRequest
 import app.tasker.feature.task.TaskKey
 import app.tasker.feature.task.TaskScreen
 import app.tasker.feature.tasks.ProjectKey
@@ -109,9 +114,22 @@ internal fun tabEntries(
     entry<ArchiveKey>(clazzContentKey = contentKey) { ArchiveScreen(onBack = back, onOpenTask = openTask) }
     entry<JournalKey>(clazzContentKey = contentKey) { JournalScreen(onBack = back, onOpenTask = openTask) }
     entry<SettingsKey>(clazzContentKey = contentKey) {
-        SettingsScreen(onBack = back, onOpenAi = { navigator.navigate(AiSettingsKey) }, versionName = versionName)
+        val context = LocalContext.current
+        SettingsScreen(
+            onBack = back,
+            onOpenAi = { navigator.navigate(AiSettingsKey) },
+            versionName = versionName,
+            tile = remember(context) { tileRequest(context) },
+        )
     }
     entry<AiSettingsKey>(clazzContentKey = contentKey) { AiSettingsScreen(onBack = back) }
+}
+
+/** The capture tile is offered from settings: by the system dialog on Android 13+, by instructions before (CAP-6). */
+private fun tileRequest(context: Context): TileRequest = if (CaptureIntents.canRequestTile) {
+    TileRequest.System { onResult -> CaptureIntents.requestAddTile(context, onResult) }
+} else {
+    TileRequest.Manual
 }
 
 /** The card pane before a task is chosen. */

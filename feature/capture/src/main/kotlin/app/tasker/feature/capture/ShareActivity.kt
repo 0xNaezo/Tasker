@@ -1,7 +1,6 @@
 package app.tasker.feature.capture
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -35,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.tasker.core.designsystem.theme.TaskerTheme
 import app.tasker.core.domain.time.DayClock
@@ -85,7 +85,7 @@ class ShareActivity : ComponentActivity() {
     }
 
     private fun openTask(id: TaskId) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("tasker://task/$id"))
+        val intent = Intent(Intent.ACTION_VIEW, "tasker://task/$id".toUri())
             .setPackage(packageName)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
