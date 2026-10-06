@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="done_this_week">This week</string>
+    <string name="done_last_week">Last week</string>
+    <string name="done_summary_done">Done: %1$d (planned %2$d, off plan %3$d)</string>
+    <string name="done_summary_postponed">Postponed: %1$d</string>
+    <string name="done_added_as_done">Added as already done</string>
+    <string name="done_empty_title">Completed tasks appear here</string>
+    <string name="done_empty_body">Grouped by day and week, including tasks added as already done.</string>
+    <string name="done_show_earlier">Show earlier weeks</string>
+</resources>
