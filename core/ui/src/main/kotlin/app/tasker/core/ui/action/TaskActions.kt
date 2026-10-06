@@ -1,6 +1,7 @@
 package app.tasker.core.ui.action
 
 import android.util.Log
+import app.tasker.core.data.command.ProjectCommands
 import app.tasker.core.data.command.SnapshotInput
 import app.tasker.core.data.command.StartOutcome
 import app.tasker.core.data.command.TaskCommands
@@ -8,6 +9,7 @@ import app.tasker.core.data.command.TxResult
 import app.tasker.core.data.plan.PlanService
 import app.tasker.core.domain.postpone.PostponeOption
 import app.tasker.core.model.Bucket
+import app.tasker.core.model.ProjectId
 import app.tasker.core.model.SnapshotInputKind
 import app.tasker.core.model.Task
 import app.tasker.core.model.TaskStatus
@@ -25,6 +27,7 @@ import javax.inject.Singleton
 @Singleton
 class TaskActions @Inject constructor(
     private val commands: TaskCommands,
+    private val projects: ProjectCommands,
     private val plans: PlanService,
     private val messenger: Messenger,
 ) {
@@ -38,6 +41,15 @@ class TaskActions @Inject constructor(
     suspend fun postpone(task: Task, option: PostponeOption) = run(R.string.undo_postponed, task) { commands.postpone(task.id, option) }
 
     suspend fun move(task: Task, bucket: Bucket?) = run(R.string.undo_moved, task) { commands.move(task.id, bucket) }
+
+    suspend fun setProject(task: Task, projectId: ProjectId?) =
+        run(R.string.undo_project_set, task) { commands.setProject(task.id, projectId) }
+
+    /** "New project…" from the project picker: creates the project, then moves the task into it. */
+    suspend fun moveToNewProject(task: Task, name: String): Boolean {
+        val project = attempt { projects.create(name) }.onFailure(::report).getOrNull()?.value ?: return false
+        return setProject(task, project.id)
+    }
 
     suspend fun archive(task: Task) = run(R.string.undo_archived, task) { commands.archive(task.id) }
 

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tasks_projects">Проекты</string>
+    <string name="tasks_empty">Здесь пока пусто</string>
+    <string name="tasks_empty_filtered">Нет задач под фильтр</string>
+    <string name="tasks_filter_deadline">С дедлайном</string>
+    <string name="tasks_projects_empty">Проектов пока нет</string>
+    <string name="tasks_projects_completed">Завершённые (%1$d)</string>
+    <string name="tasks_projects_archived">В архиве (%1$d)</string>
+    <string name="tasks_collapse">Свернуть</string>
+    <string name="tasks_expand">Развернуть</string>
+    <plurals name="tasks_project_count">
+        <item quantity="one">%1$d задача</item>
+        <item quantity="few">%1$d задачи</item>
+        <item quantity="many">%1$d задач</item>
+        <item quantity="other">%1$d задачи</item>
+    </plurals>
+    <string name="tasks_project_created">Проект создан: %1$s</string>
+    <string name="tasks_project_renamed">Переименовано: %1$s</string>
+    <string name="tasks_project_outcome_saved">Результат сохранён: %1$s</string>
+    <string name="tasks_project_completed">Проект завершён: %1$s</string>
+    <string name="tasks_project_reopened">Проект снова активен: %1$s</string>
+    <string name="tasks_project_archived">Проект в архиве: %1$s</string>
+    <string name="tasks_project_restored">Проект восстановлен: %1$s</string>
+    <string name="tasks_step_added">Шаг добавлен в %1$s</string>
+    <string name="tasks_back">Назад</string>
+    <string name="tasks_project_missing">Проекта больше нет</string>
+    <string name="tasks_outcome">Результат</string>
+    <string name="tasks_outcome_hint">Как выглядит «готово»? Нажмите, чтобы описать результат.</string>
+    <string name="tasks_no_next_step">Нет следующего шага. Добавьте его ниже, чтобы проект двигался.</string>
+    <string name="tasks_project_done">Сделано (%1$d)</string>
+    <string name="tasks_remove_from_project">Убрать из проекта</string>
+    <string name="tasks_rename">Переименовать</string>
+    <string name="tasks_complete_project">Завершить проект</string>
+    <string name="tasks_reopen_project">Вернуть в работу</string>
+    <string name="tasks_archive_project">Проект в архив</string>
+    <string name="tasks_restore_project">Восстановить проект</string>
+    <string name="tasks_restore_title">Восстановить проект</string>
+    <string name="tasks_restore_body">Вернуть и задачи, которые ушли в архив вместе с ним?</string>
+    <string name="tasks_restore_with_tasks">С задачами</string>
+    <string name="tasks_restore_only_project">Только проект</string>
+    <string name="tasks_add_step">Добавить шаг</string>
+    <string name="tasks_save">Сохранить</string>
+    <plurals name="tasks_archive_tasks">
+        <item quantity="one">%1$d незавершённая задача уйдёт в архив вместе с проектом.</item>
+        <item quantity="few">%1$d незавершённые задачи уйдут в архив вместе с проектом.</item>
+        <item quantity="many">%1$d незавершённых задач уйдут в архив вместе с проектом.</item>
+        <item quantity="other">%1$d незавершённой задачи уйдут в архив вместе с проектом.</item>
+    </plurals>
+    <plurals name="tasks_archive_detach">
+        <item quantity="one">%1$d задача с будущим дедлайном останется открытой вне проекта.</item>
+        <item quantity="few">%1$d задачи с будущим дедлайном останутся открытыми вне проекта.</item>
+        <item quantity="many">%1$d задач с будущим дедлайном останутся открытыми вне проекта.</item>
+        <item quantity="other">%1$d задачи с будущим дедлайном останутся открытыми вне проекта.</item>
+    </plurals>
+</resources>

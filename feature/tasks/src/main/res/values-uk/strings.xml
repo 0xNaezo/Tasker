@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tasks_projects">Проєкти</string>
+    <string name="tasks_empty">Тут поки порожньо</string>
+    <string name="tasks_empty_filtered">Немає завдань під фільтр</string>
+    <string name="tasks_filter_deadline">З дедлайном</string>
+    <string name="tasks_projects_empty">Проєктів поки немає</string>
+    <string name="tasks_projects_completed">Завершені (%1$d)</string>
+    <string name="tasks_projects_archived">В архіві (%1$d)</string>
+    <string name="tasks_collapse">Згорнути</string>
+    <string name="tasks_expand">Розгорнути</string>
+    <plurals name="tasks_project_count">
+        <item quantity="one">%1$d завдання</item>
+        <item quantity="few">%1$d завдання</item>
+        <item quantity="many">%1$d завдань</item>
+        <item quantity="other">%1$d завдання</item>
+    </plurals>
+    <string name="tasks_project_created">Проєкт створено: %1$s</string>
+    <string name="tasks_project_renamed">Перейменовано: %1$s</string>
+    <string name="tasks_project_outcome_saved">Результат збережено: %1$s</string>
+    <string name="tasks_project_completed">Проєкт завершено: %1$s</string>
+    <string name="tasks_project_reopened">Проєкт знову активний: %1$s</string>
+    <string name="tasks_project_archived">Проєкт в архіві: %1$s</string>
+    <string name="tasks_project_restored">Проєкт відновлено: %1$s</string>
+    <string name="tasks_step_added">Крок додано до %1$s</string>
+    <string name="tasks_back">Назад</string>
+    <string name="tasks_project_missing">Проєкту більше немає</string>
+    <string name="tasks_outcome">Результат</string>
+    <string name="tasks_outcome_hint">Як виглядає «готово»? Натисніть, щоб описати результат.</string>
+    <string name="tasks_no_next_step">Немає наступного кроку. Додайте його нижче, щоб проєкт рухався.</string>
+    <string name="tasks_project_done">Зроблено (%1$d)</string>
+    <string name="tasks_remove_from_project">Прибрати з проєкту</string>
+    <string name="tasks_rename">Перейменувати</string>
+    <string name="tasks_complete_project">Завершити проєкт</string>
+    <string name="tasks_reopen_project">Повернути в роботу</string>
+    <string name="tasks_archive_project">Проєкт в архів</string>
+    <string name="tasks_restore_project">Відновити проєкт</string>
+    <string name="tasks_restore_title">Відновити проєкт</string>
+    <string name="tasks_restore_body">Повернути й завдання, що пішли в архів разом із ним?</string>
+    <string name="tasks_restore_with_tasks">Із завданнями</string>
+    <string name="tasks_restore_only_project">Лише проєкт</string>
+    <string name="tasks_add_step">Додати крок</string>
+    <string name="tasks_save">Зберегти</string>
+    <plurals name="tasks_archive_tasks">
+        <item quantity="one">%1$d незавершене завдання піде в архів разом із проєктом.</item>
+        <item quantity="few">%1$d незавершені завдання підуть в архів разом із проєктом.</item>
+        <item quantity="many">%1$d незавершених завдань підуть в архів разом із проєктом.</item>
+        <item quantity="other">%1$d незавершеного завдання підуть в архів разом із проєктом.</item>
+    </plurals>
+    <plurals name="tasks_archive_detach">
+        <item quantity="one">%1$d завдання з майбутнім дедлайном залишиться відкритим поза проєктом.</item>
+        <item quantity="few">%1$d завдання з майбутнім дедлайном залишаться відкритими поза проєктом.</item>
+        <item quantity="many">%1$d завдань з майбутнім дедлайном залишаться відкритими поза проєктом.</item>
+        <item quantity="other">%1$d завдання з майбутнім дедлайном залишаться відкритими поза проєктом.</item>
+    </plurals>
+</resources>

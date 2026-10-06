@@ -178,4 +178,15 @@
     <string name="action_keep">Оставить</string>
     <string name="action_to_someday">В «Когда-нибудь»</string>
     <string name="action_move_to">Переместить…</string>
+    <string name="project_pick">Проект</string>
+    <string name="project_new">Новый проект</string>
+    <string name="project_none">Без проекта</string>
+    <string name="project_name_hint">Название проекта</string>
+    <string name="project_create">Создать</string>
+    <string name="project_current">Текущий проект</string>
+    <string name="action_to_today">На сегодня</string>
+    <string name="action_to_week">На неделю</string>
+    <string name="action_to_inbox">Во Входящие</string>
+    <string name="action_to_project">В проект…</string>
+    <string name="undo_project_set">Проект изменён: %1$s</string>
 </resources>

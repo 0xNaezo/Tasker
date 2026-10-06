@@ -179,4 +179,15 @@
     <string name="action_keep">Keep</string>
     <string name="action_to_someday">To Someday</string>
     <string name="action_move_to">Move to…</string>
+    <string name="project_pick">Project</string>
+    <string name="project_new">New project</string>
+    <string name="project_none">No project</string>
+    <string name="project_name_hint">Project name</string>
+    <string name="project_create">Create</string>
+    <string name="project_current">Current project</string>
+    <string name="action_to_today">To Today</string>
+    <string name="action_to_week">To this week</string>
+    <string name="action_to_inbox">Back to Inbox</string>
+    <string name="action_to_project">Move to project…</string>
+    <string name="undo_project_set">Project changed: %1$s</string>
 </resources>

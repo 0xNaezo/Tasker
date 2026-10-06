@@ -178,4 +178,15 @@
     <string name="action_keep">Залишити</string>
     <string name="action_to_someday">У «Колись»</string>
     <string name="action_move_to">Перемістити…</string>
+    <string name="project_pick">Проєкт</string>
+    <string name="project_new">Новий проєкт</string>
+    <string name="project_none">Без проєкту</string>
+    <string name="project_name_hint">Назва проєкту</string>
+    <string name="project_create">Створити</string>
+    <string name="project_current">Поточний проєкт</string>
+    <string name="action_to_today">На сьогодні</string>
+    <string name="action_to_week">На тиждень</string>
+    <string name="action_to_inbox">До Вхідних</string>
+    <string name="action_to_project">До проєкту…</string>
+    <string name="undo_project_set">Проєкт змінено: %1$s</string>
 </resources>

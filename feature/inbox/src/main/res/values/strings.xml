@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="inbox_overflow">
+        <item quantity="one">%1$d task in Inbox. Sort it quickly?</item>
+        <item quantity="other">%1$d tasks in Inbox. Sort them quickly?</item>
+    </plurals>
+    <string name="inbox_triage_action">Sort</string>
+    <string name="inbox_empty_title">Inbox is empty</string>
+    <string name="inbox_empty_body">Everything you capture without a date or a project lands here.</string>
+    <string name="inbox_triage_title">Quick triage</string>
+    <string name="inbox_back">Back</string>
+    <string name="inbox_triage_done">Inbox is sorted</string>
+    <string name="inbox_triage_progress">%1$d of %2$d</string>
+    <string name="inbox_added_on">Added %1$s</string>
+    <string name="inbox_skip">Skip</string>
+</resources>
