@@ -153,4 +153,8 @@
     <string name="settings_calendars_none">None: capacity uses working hours only</string>
     <string name="settings_calendar_access">Calendar access</string>
     <string name="settings_calendar_denied">Not allowed: capacity uses working hours only. Tap to allow.</string>
+    <string name="settings_statistics">Send usage statistics</string>
+    <string name="settings_statistics_note">Weekly totals, such as how many tasks came from the widget. Never the text of tasks</string>
+    <string name="settings_crash_reports_statistics">Send crash reports and statistics</string>
+    <string name="settings_crash_reports_statistics_note">Crash details and weekly totals, such as how many tasks came from the widget. Never the text of tasks</string>
 </resources>

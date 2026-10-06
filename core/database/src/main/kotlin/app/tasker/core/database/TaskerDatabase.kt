@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import app.tasker.core.database.dao.ContentDao
 import app.tasker.core.database.dao.EventDao
+import app.tasker.core.database.dao.MetricsDao
 import app.tasker.core.database.dao.PlanDao
 import app.tasker.core.database.dao.ProjectDao
 import app.tasker.core.database.dao.SearchDao
@@ -66,6 +67,8 @@ abstract class TaskerDatabase : RoomDatabase() {
     abstract fun serviceDao(): ServiceDao
 
     abstract fun searchDao(): SearchDao
+
+    abstract fun metricsDao(): MetricsDao
 
     companion object {
         const val VERSION = 1

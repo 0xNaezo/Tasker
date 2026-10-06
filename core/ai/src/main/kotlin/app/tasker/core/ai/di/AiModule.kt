@@ -9,6 +9,7 @@ import app.tasker.core.ai.DirectGateway
 import app.tasker.core.ai.EnrichmentCommitListener
 import app.tasker.core.ai.EnrichmentScheduler
 import app.tasker.core.ai.IntegrityTokenProvider
+import app.tasker.core.ai.MetricsSender
 import app.tasker.core.ai.PlayIntegrityTokenProvider
 import app.tasker.core.ai.ProxyAiGateway
 import app.tasker.core.ai.ProxyGateway
@@ -33,7 +34,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * Bindings of `core:ai`. The app module must provide [app.tasker.core.ai.AiEnvironment] (see its KDoc) and give
- * WorkManager the `HiltWorkerFactory`, so that [app.tasker.core.ai.EnrichmentWorker] gets its dependencies.
+ * WorkManager the `HiltWorkerFactory`, so that [app.tasker.core.ai.EnrichmentWorker] and
+ * [app.tasker.core.ai.MetricsWorker] get their dependencies.
  */
 @Module
 @InstallIn(SingletonComponent::class)
@@ -52,6 +54,10 @@ abstract class AiBindingsModule {
 
     @Binds
     abstract fun integrityTokenProvider(provider: PlayIntegrityTokenProvider): IntegrityTokenProvider
+
+    /** Weekly telemetry goes through the proxy's backend with its install token (tech plan §23). */
+    @Binds
+    abstract fun metricsSender(gateway: ProxyAiGateway): MetricsSender
 
     @Binds
     abstract fun enrichmentScheduler(scheduler: WorkManagerEnrichmentScheduler): EnrichmentScheduler

@@ -11,9 +11,11 @@ import app.tasker.core.ai.contract.FailureKind
 import app.tasker.core.ai.contract.InstallRequest
 import app.tasker.core.ai.contract.InstallResponse
 import app.tasker.core.ai.contract.IntegrityBinding
+import app.tasker.core.ai.contract.MetricsReport
 import app.tasker.core.ai.contract.ProxyProtocol
 import app.tasker.core.ai.contract.RouteResult
 import app.tasker.core.ai.contract.RouteUsage
+import app.tasker.core.data.metrics.WeeklyMetrics
 import app.tasker.core.domain.time.DayClock
 import io.ktor.client.HttpClient
 import io.ktor.client.request.accept
@@ -55,6 +57,7 @@ annotation class AiProxyHttpClient
  * `invalid_output` fail for good; 401/403 mean no access ([FailureKind.AUTH]). A failed install is never blamed on the
  * task: it is reported as [FailureKind.AUTH], or as retryable when it was transient, and a final install failure is
  * not retried for [INSTALL_COOLDOWN] so a device that cannot attest does not call Play Integrity on every task.
+ * The same install token carries the weekly telemetry ([sendMetrics]).
  */
 @Singleton
 class ProxyAiGateway @Inject constructor(
@@ -63,7 +66,8 @@ class ProxyAiGateway @Inject constructor(
     private val vault: SecretVault,
     private val integrity: IntegrityTokenProvider,
     private val clock: DayClock,
-) : AiGateway {
+) : AiGateway,
+    MetricsSender {
     private val baseUrl: String? = environment.proxyBaseUrl?.trim()?.trimEnd('/')?.takeIf { it.isNotEmpty() }
     private val installMutex = Mutex()
 
@@ -116,12 +120,62 @@ class ProxyAiGateway @Inject constructor(
         return RouteResult.Success(EnrichRoute.validate(request, raw), PROXY_USAGE)
     }
 
+    // region Telemetry
+
+    /**
+     * Sends one week of telemetry aggregates (tech plan §23) with the install token of the AI route: the report names
+     * the token's install, since the backend accepts aggregates only from the install they describe. A 401 renews the
+     * token once, as for [enrich]; 5xx, 429 and network failures are worth a retry, other answers are not.
+     */
+    override suspend fun sendMetrics(metrics: WeeklyMetrics): MetricsDelivery {
+        val base = baseUrl ?: return MetricsDelivery.OFF
+        var access = when (val result = installToken(base, stale = null)) {
+            is Access.Granted -> result
+            is Access.Denied -> return deliveryOf(result.failure.kind)
+        }
+        var reply = postMetrics(base, access, metrics) ?: return MetricsDelivery.REJECTED
+        if (reply is Reply.Error && reply.status == HTTP_UNAUTHORIZED) {
+            access = when (val result = installToken(base, stale = access.token)) {
+                is Access.Granted -> result
+                is Access.Denied -> return deliveryOf(result.failure.kind)
+            }
+            reply = postMetrics(base, access, metrics) ?: return MetricsDelivery.REJECTED
+            if (reply is Reply.Error && reply.status == HTTP_UNAUTHORIZED) forgetToken(clock.now())
+        }
+        return when (reply) {
+            is Reply.Ok -> MetricsDelivery.SENT
+            is Reply.Error -> deliveryOf(kindOf(reply.status, reply.code))
+            is Reply.Network -> MetricsDelivery.RETRY
+        }
+    }
+
+    /** Null when the report would not pass the backend's checks: a bug to fix, not something to send again. */
+    private suspend fun postMetrics(base: String, access: Access.Granted, metrics: WeeklyMetrics): Reply? {
+        val report = MetricsReport(access.installId, metrics.weekStart.toString(), metrics.counters, metrics.values)
+        val problems = report.problems()
+        if (problems.isNotEmpty()) {
+            Log.w(TAG, "Metrics report not sent, invalid fields: ${problems.joinToString()}")
+            return null
+        }
+        return post(
+            base + ProxyProtocol.METRICS_PATH,
+            AiJson.wire.encodeToString(MetricsReport.serializer(), report),
+            bearer = access.token,
+        )
+    }
+
+    private fun deliveryOf(kind: FailureKind): MetricsDelivery = if (kind.retryable) MetricsDelivery.RETRY else MetricsDelivery.REJECTED
+
+    // endregion
+
     // region Install token
 
     private suspend fun installToken(base: String, stale: String?): Access = installMutex.withLock {
         val now = clock.now()
         val current = loadRecord()
-        current?.usableToken(now)?.takeIf { it != stale }?.let { return@withLock Access.Granted(it) }
+        if (current != null) {
+            current.usableToken(now)?.takeIf { it != stale }?.let { return@withLock Access.Granted(it, current.installId) }
+        }
         installCooldownUntil?.takeIf { now < it }?.let {
             return@withLock Access.Denied(RouteResult.Failed(FailureKind.AUTH, detail = "install_cooldown"))
         }
@@ -145,7 +199,7 @@ class ProxyAiGateway @Inject constructor(
                 val response = decode(InstallResponse.serializer(), reply.body)?.takeIf { it.token.isNotBlank() }
                     ?: return installFailed(FailureKind.OVERLOADED, "install_malformed_response", now)
                 saveRecord(InstallRecord(installId, response.token, response.expiresAtEpochSeconds, now.toEpochMilli()))
-                Access.Granted(response.token)
+                Access.Granted(response.token, installId)
             }
             is Reply.Error -> {
                 val kind = kindOf(reply.status, reply.code)
@@ -251,7 +305,7 @@ class ProxyAiGateway @Inject constructor(
     private class Pause(val until: Instant, val kind: FailureKind)
 
     private sealed interface Access {
-        class Granted(val token: String) : Access
+        class Granted(val token: String, val installId: String) : Access
 
         class Denied(val failure: RouteResult.Failed) : Access
     }

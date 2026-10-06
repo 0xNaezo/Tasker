@@ -9,8 +9,10 @@ import app.tasker.core.ai.contract.FailureKind
 import app.tasker.core.ai.contract.InstallIds
 import app.tasker.core.ai.contract.InstallRequest
 import app.tasker.core.ai.contract.IntegrityBinding
+import app.tasker.core.ai.contract.MetricsReport
 import app.tasker.core.ai.contract.ProxyProtocol
 import app.tasker.core.ai.contract.RouteResult
+import app.tasker.core.data.metrics.WeeklyMetrics
 import app.tasker.core.domain.time.DayClock
 import app.tasker.core.testing.TestTimeSource
 import com.google.common.truth.Truth.assertThat
@@ -29,6 +31,7 @@ import java.io.IOException
 import java.nio.file.Files
 import java.security.GeneralSecurityException
 import java.time.Duration
+import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -56,6 +59,11 @@ class ProxyAiGatewayTest {
     private var enrich: MockRequestHandleScope.(token: String?) -> HttpResponseData = { token ->
         if (token != null && token.startsWith("install-token-")) json(ANSWER) else errorReply(401, "unauthorized")
     }
+
+    /** Answers `/v1/metrics` like the backend: 204 for a valid install token. */
+    private var metrics: MockRequestHandleScope.(token: String?) -> HttpResponseData = { token ->
+        if (token != null && token.startsWith("install-token-")) respond("", HttpStatusCode.NoContent) else errorReply(401, "unauthorized")
+    }
     private var install: MockRequestHandleScope.() -> HttpResponseData = {
         issued++
         json("""{"token":"install-token-$issued","expiresAtEpochSeconds":${time.now().plus(Duration.ofDays(30)).epochSecond}}""")
@@ -66,6 +74,7 @@ class ProxyAiGatewayTest {
         when (request.url.encodedPath) {
             ProxyProtocol.INSTALL_PATH -> install()
             "/v1/enrich" -> enrich(request.headers[HttpHeaders.Authorization]?.removePrefix("Bearer "))
+            ProxyProtocol.METRICS_PATH -> metrics(request.headers[HttpHeaders.Authorization]?.removePrefix("Bearer "))
             else -> errorReply(404, "not_found")
         }
     }
@@ -341,6 +350,82 @@ class ProxyAiGatewayTest {
         assertThat(IntegrityTokenResult.Token("secret").toString()).doesNotContain("secret")
     }
 
+    @Test
+    fun `weekly metrics go with the install token and name its install`() = runTest {
+        val delivery = gateway().sendMetrics(WEEK)
+
+        assertThat(delivery).isEqualTo(MetricsDelivery.SENT)
+        val (installCall, metricsCall) = requests
+        val installId = AiJson.wire.decodeFromString(InstallRequest.serializer(), installCall.body).installId
+        assertThat(metricsCall.data.url.toString()).isEqualTo("https://proxy.test/v1/metrics")
+        assertThat(metricsCall.data.headers[HttpHeaders.Authorization]).isEqualTo("Bearer install-token-1")
+        val report = AiJson.wire.decodeFromString(MetricsReport.serializer(), metricsCall.body)
+        assertThat(report).isEqualTo(MetricsReport(installId, "2026-09-28", WEEK.counters, WEEK.values))
+        assertThat(report.problems()).isEmpty()
+    }
+
+    @Test
+    fun `metrics share the install token with enrichment`() = runTest {
+        val gateway = gateway()
+        gateway.enrich(REQUEST)
+        gateway.sendMetrics(WEEK)
+
+        assertThat(issued).isEqualTo(1)
+        assertThat(requests.last().data.headers[HttpHeaders.Authorization]).isEqualTo("Bearer install-token-1")
+    }
+
+    @Test
+    fun `a 401 on metrics installs again once and sends the report again`() = runTest {
+        metrics = { token -> if (token == "install-token-2") respond("", HttpStatusCode.NoContent) else errorReply(401, "unauthorized") }
+
+        assertThat(gateway().sendMetrics(WEEK)).isEqualTo(MetricsDelivery.SENT)
+        assertThat(requests.map { it.path }).containsExactly(
+            ProxyProtocol.INSTALL_PATH,
+            ProxyProtocol.METRICS_PATH,
+            ProxyProtocol.INSTALL_PATH,
+            ProxyProtocol.METRICS_PATH,
+        ).inOrder()
+    }
+
+    @Test
+    fun `temporary failures are retried later, refusals are not`() = runTest {
+        val cases = mapOf(
+            (429 to "daily_limit") to MetricsDelivery.RETRY,
+            (500 to "internal") to MetricsDelivery.RETRY,
+            (503 to "upstream_busy") to MetricsDelivery.RETRY,
+            (400 to "invalid_request") to MetricsDelivery.REJECTED,
+            (403 to "install_blocked") to MetricsDelivery.REJECTED,
+            (413 to "payload_too_large") to MetricsDelivery.REJECTED,
+        )
+        val gateway = gateway()
+        for ((answer, delivery) in cases) {
+            metrics = { errorReply(answer.first, answer.second) }
+            assertThat(gateway.sendMetrics(WEEK)).isEqualTo(delivery)
+        }
+        val offline = ProxyAiGateway(
+            AiTestEnv.PROXY_ONLY,
+            HttpClient(MockEngine { throw IOException("connection reset") }) { expectSuccess = false },
+            testVault(dir, aead),
+            integrity,
+            clock,
+        )
+        assertThat(offline.sendMetrics(WEEK)).isEqualTo(MetricsDelivery.RETRY)
+    }
+
+    @Test
+    fun `a report the backend would refuse is not sent`() = runTest {
+        val broken = WEEK.copy(counters = mapOf("Tasks with text" to 1L))
+
+        assertThat(gateway().sendMetrics(broken)).isEqualTo(MetricsDelivery.REJECTED)
+        assertThat(requests.none { it.path == ProxyProtocol.METRICS_PATH }).isTrue()
+    }
+
+    @Test
+    fun `without the proxy nothing is sent`() = runTest {
+        assertThat(gateway(AiTestEnv.DIRECT_ONLY).sendMetrics(WEEK)).isEqualTo(MetricsDelivery.OFF)
+        assertThat(requests).isEmpty()
+    }
+
     private class Recorded(val data: HttpRequestData, val body: String) {
         val path: String get() = data.url.encodedPath
     }
@@ -371,5 +456,10 @@ class ProxyAiGatewayTest {
             extracted = ExtractedFields(),
         )
         const val ANSWER = """{"estimate":"S","estimateConfidence":0.9}"""
+        val WEEK = WeeklyMetrics(
+            weekStart = LocalDate.of(2026, 9, 28),
+            counters = mapOf("format" to 1L, "created.widget" to 3L, "active.days" to 5L),
+            values = mapOf("plan.done_share" to 0.75),
+        )
     }
 }

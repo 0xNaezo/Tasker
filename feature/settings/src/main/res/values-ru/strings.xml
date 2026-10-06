@@ -163,4 +163,8 @@
     <string name="settings_calendars_none">Никакие: ёмкость только по рабочим часам</string>
     <string name="settings_calendar_access">Доступ к календарю</string>
     <string name="settings_calendar_denied">Не разрешён: ёмкость только по рабочим часам. Нажмите, чтобы разрешить.</string>
+    <string name="settings_statistics">Отправлять статистику использования</string>
+    <string name="settings_statistics_note">Недельные итоги — например, сколько задач пришло из виджета. Никогда — текст задач</string>
+    <string name="settings_crash_reports_statistics">Отправлять отчёты о сбоях и статистику</string>
+    <string name="settings_crash_reports_statistics_note">Сведения о сбоях и недельные итоги — например, сколько задач пришло из виджета. Никогда — текст задач</string>
 </resources>

@@ -17,6 +17,7 @@ import app.tasker.core.calendar.CalendarRepository
 import app.tasker.core.calendar.DeviceCalendar
 import app.tasker.core.data.maintenance.MaintenanceRunner
 import app.tasker.core.data.settings.SettingsRepository
+import app.tasker.core.data.settings.TelemetryOptions
 import app.tasker.core.model.AppSettings
 import app.tasker.core.ui.R as UiR
 import app.tasker.core.ui.message.Messenger
@@ -62,6 +63,8 @@ class SettingsViewModel @Inject constructor(
     private val messenger: Messenger,
     private val calendar: CalendarRepository,
     ai: AiController,
+    /** What the telemetry switch covers in this build. */
+    val telemetry: TelemetryOptions,
 ) : ViewModel() {
     @OptIn(ExperimentalCoroutinesApi::class)
     private val calendarState = calendar.permission.mapLatest { granted ->

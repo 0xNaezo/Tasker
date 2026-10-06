@@ -2,6 +2,7 @@ package app.tasker.di
 
 import app.tasker.BuildConfig
 import app.tasker.core.ai.AiEnvironment
+import app.tasker.core.data.settings.TelemetryOptions
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,4 +28,9 @@ object AppModule {
         )
         else -> AiEnvironment(directAvailable = true, proxyAvailable = false, proxyBaseUrl = null)
     }
+
+    /** Crash reports need a Sentry DSN in the build; weekly statistics go to the backend of the AI proxy (§23). */
+    @Provides
+    fun telemetryOptions(ai: AiEnvironment): TelemetryOptions =
+        TelemetryOptions(crashReports = BuildConfig.SENTRY_DSN.isNotBlank(), statistics = !ai.proxyBaseUrl.isNullOrBlank())
 }

@@ -46,6 +46,12 @@ class AiGraphTest {
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
+    @Inject
+    lateinit var metricsSender: MetricsSender
+
+    @Inject
+    lateinit var metricsScheduler: MetricsScheduler
+
     @Module
     @InstallIn(SingletonComponent::class)
     object TestEnvironmentModule {
@@ -64,5 +70,10 @@ class AiGraphTest {
             .setWorkerFactory(workerFactory)
             .build()
         assertThat(worker).isInstanceOf(EnrichmentWorker::class.java)
+        assertThat(metricsSender).isInstanceOf(ProxyAiGateway::class.java)
+        val metricsWorker = TestListenableWorkerBuilder<MetricsWorker>(ApplicationProvider.getApplicationContext<Context>())
+            .setWorkerFactory(workerFactory)
+            .build()
+        assertThat(metricsWorker).isInstanceOf(MetricsWorker::class.java)
     }
 }

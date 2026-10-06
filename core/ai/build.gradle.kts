@@ -15,6 +15,7 @@ dependencies {
     api(project(":core:ai-contract"))
     implementation(project(":core:ai-claude"))
 
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)

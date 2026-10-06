@@ -163,4 +163,8 @@
     <string name="settings_calendars_none">Жодних: місткість лише за робочими годинами</string>
     <string name="settings_calendar_access">Доступ до календаря</string>
     <string name="settings_calendar_denied">Не дозволено: місткість лише за робочими годинами. Натисніть, щоб дозволити.</string>
+    <string name="settings_statistics">Надсилати статистику використання</string>
+    <string name="settings_statistics_note">Тижневі підсумки — наприклад, скільки завдань надійшло з віджета. Ніколи — текст завдань</string>
+    <string name="settings_crash_reports_statistics">Надсилати звіти про збої та статистику</string>
+    <string name="settings_crash_reports_statistics_note">Відомості про збої та тижневі підсумки — наприклад, скільки завдань надійшло з віджета. Ніколи — текст завдань</string>
 </resources>

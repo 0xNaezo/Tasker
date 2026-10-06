@@ -48,6 +48,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.tasker.core.ai.AiState
 import app.tasker.core.backup.ExportService
+import app.tasker.core.data.settings.TelemetryOptions
 import app.tasker.core.model.AiMode
 import app.tasker.core.model.AppSettings
 import app.tasker.core.ui.component.Banner
@@ -101,7 +102,7 @@ fun SettingsScreen(
             notificationSection(settings, viewModel::update, open, notificationsAllowed)
             calendarSection(settings, state.calendar, viewModel::update, calendarActions)
             languageSection(settings, open)
-            privacySection(settings, viewModel::update, canLock)
+            privacySection(settings, viewModel::update, canLock, viewModel.telemetry)
             dataSection(state.lastBackup, settings.backupTreeUri, data)
             item(key = "about") {
                 ValueRow(title = stringResource(R.string.settings_version), value = versionName, onClick = {}, enabled = false)
@@ -381,7 +382,12 @@ private fun LazyListScope.languageSection(settings: AppSettings, open: (Editor) 
     }
 }
 
-private fun LazyListScope.privacySection(settings: AppSettings, update: ((AppSettings) -> AppSettings) -> Unit, canLock: Boolean) {
+private fun LazyListScope.privacySection(
+    settings: AppSettings,
+    update: ((AppSettings) -> AppSettings) -> Unit,
+    canLock: Boolean,
+    telemetry: TelemetryOptions,
+) {
     item(key = "privacy-header") { SectionHeader(stringResource(R.string.settings_privacy)) }
     item(key = "lock") {
         SwitchRow(
@@ -392,10 +398,17 @@ private fun LazyListScope.privacySection(settings: AppSettings, update: ((AppSet
             onChange = { on -> update { it.copy(biometricLock = on) } },
         )
     }
+    // One consent for everything the build sends (tech plan §23); the text names exactly what that is.
+    if (!telemetry.any) return
     item(key = "telemetry") {
+        val (title, note) = when {
+            !telemetry.statistics -> R.string.settings_crash_reports to R.string.settings_crash_reports_note
+            !telemetry.crashReports -> R.string.settings_statistics to R.string.settings_statistics_note
+            else -> R.string.settings_crash_reports_statistics to R.string.settings_crash_reports_statistics_note
+        }
         SwitchRow(
-            title = stringResource(R.string.settings_crash_reports),
-            subtitle = stringResource(R.string.settings_crash_reports_note),
+            title = stringResource(title),
+            subtitle = stringResource(note),
             checked = settings.telemetryConsent,
             onChange = { on -> update { it.copy(telemetryConsent = on) } },
         )
