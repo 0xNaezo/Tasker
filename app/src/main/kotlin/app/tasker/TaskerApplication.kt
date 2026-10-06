@@ -1,6 +1,7 @@
 package app.tasker
 
 import android.app.Application
+import android.content.res.Configuration as AndroidConfiguration
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import app.tasker.platform.AppStartup
@@ -24,5 +25,10 @@ class TaskerApplication :
     override fun onCreate() {
         super.onCreate()
         startup.run()
+    }
+
+    override fun onConfigurationChanged(newConfig: AndroidConfiguration) {
+        super.onConfigurationChanged(newConfig)
+        startup.onConfigurationChanged(newConfig)
     }
 }

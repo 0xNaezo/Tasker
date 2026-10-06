@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="widget_label">Today</string>
+    <string name="widget_description">Today\'s plan and adding a task in one tap</string>
+    <string name="widget_title">Today</string>
+    <string name="widget_add">New task</string>
+    <string name="widget_voice">New task by voice</string>
+    <string name="widget_locked">Tasks are hidden while the app lock is on</string>
+    <string name="widget_empty">Nothing for today yet</string>
+    <string name="widget_plan_done">Everything in the plan is done</string>
+    <string name="widget_plan_progress" tools:ignore="PluralsCandidate">%1$d of %2$d done</string>
+    <string name="widget_build_plan">Build the day\'s plan</string>
+    <string name="widget_overdue">Overdue</string>
+    <string name="widget_sample_working">Draft the quarterly report</string>
+    <string name="widget_sample_overdue">Pay the electricity bill</string>
+    <string name="widget_sample_planned">Call the dentist</string>
+</resources>

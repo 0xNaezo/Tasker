@@ -1,6 +1,7 @@
 package app.tasker.core.designsystem.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
@@ -55,4 +56,12 @@ object TaskerTheme {
     val spacing: Spacing
         @Composable @ReadOnlyComposable
         get() = LocalSpacing.current
+}
+
+/** The app's colours for surfaces outside Compose UI, such as Glance widgets. */
+object TaskerColorSchemes {
+    val light: ColorScheme get() = LightScheme
+    val dark: ColorScheme get() = DarkScheme
+    val lightTokens: TaskerColors get() = LightTaskerColors
+    val darkTokens: TaskerColors get() = DarkTaskerColors
 }

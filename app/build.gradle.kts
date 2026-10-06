@@ -79,6 +79,7 @@ dependencies {
     implementation(project(":feature:done"))
     implementation(project(":feature:search"))
     implementation(project(":feature:journal"))
+    implementation(project(":widget"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
