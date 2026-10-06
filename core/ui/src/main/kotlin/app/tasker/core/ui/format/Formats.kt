@@ -24,9 +24,10 @@ object Formats {
     private const val MINUTES_PER_HOUR = 60
     private const val WEEK_DAYS = 6L
 
+    // A configuration always carries a locale; the root locale only satisfies the type.
     @Composable
     @ReadOnlyComposable
-    fun locale(): Locale = LocalConfiguration.current.locales[0] ?: Locale.getDefault()
+    fun locale(): Locale = LocalConfiguration.current.locales[0] ?: Locale.ROOT
 
     /** "4 h 54 min", "45 min", "3 h". */
     @Composable

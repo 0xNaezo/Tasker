@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -66,8 +67,9 @@ fun CapacityBar(
         },
         verticalArrangement = Arrangement.spacedBy(TaskerTheme.spacing.xs),
     ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(TaskerTheme.spacing.s)) {
-            Text(headline, style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(1f, fill = false))
+        // With large fonts the status moves under the headline instead of squeezing it into a narrow column.
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(TaskerTheme.spacing.s)) {
+            Text(headline, style = MaterialTheme.typography.labelLarge)
             if (status != null) {
                 Text(
                     text = status,
