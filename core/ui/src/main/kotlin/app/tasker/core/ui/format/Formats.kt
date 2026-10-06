@@ -57,6 +57,12 @@ object Formats {
         }
     }
 
+    /** "Tuesday, 6 October": the heading of a day. */
+    @Composable
+    @ReadOnlyComposable
+    fun fullDate(date: LocalDate): String = date.format(DateTimeFormatter.ofPattern("EEEE, d MMMM", locale()))
+        .replaceFirstChar { it.titlecase(locale()) }
+
     /** "Wed, 7 Oct": an exact date with its weekday. */
     @Composable
     @ReadOnlyComposable

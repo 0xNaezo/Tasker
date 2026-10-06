@@ -12,6 +12,7 @@ dependencies {
     api(project(":core:model"))
     api(project(":core:domain"))
     api(project(":core:designsystem"))
+    implementation(project(":core:data"))
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.kotlinx.coroutines.android)
