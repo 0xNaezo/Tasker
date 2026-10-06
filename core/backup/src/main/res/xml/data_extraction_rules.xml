@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Android Auto Backup and device-to-device transfer on Android 12+ (tech plan §16). The app manifest refers to it
+    with android:dataExtractionRules="@xml/data_extraction_rules"; Android 8-11 read backup_rules.xml instead.
+
+    The same rules for the cloud copy and for a move to a new phone: only the latest daily backup (written by
+    BackupWorker) and the settings DataStore file. Once an <include> is present nothing else is copied, so the live
+    Room database (domain "database") stays out; on first start RestoreService offers to restore the data from the
+    backup. Lint (FullBackupContent) rejects an <exclude> outside the included paths, which is why the database is
+    excluded by not being included.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="file" path="backups/latest.json.gz" />
+        <include domain="file" path="datastore/settings.json" />
+    </cloud-backup>
+    <device-transfer>
+        <include domain="file" path="backups/latest.json.gz" />
+        <include domain="file" path="datastore/settings.json" />
+    </device-transfer>
+</data-extraction-rules>
