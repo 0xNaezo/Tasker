@@ -59,7 +59,11 @@ internal fun Project.configureJava() {
 }
 
 internal fun Project.configureTests() {
+    // Gradle 9 fails a test task that finds no tests. Hilt generates test sources even for a module without tests,
+    // which is no misconfiguration; where tests exist, the check stays on.
+    val hasTests = file("src/test").exists()
     tasks.withType<Test>().configureEach {
+        failOnNoDiscoveredTests.set(hasTests)
         maxHeapSize = "2g"
         systemProperty("robolectric.logging.enabled", "false")
         // Robolectric downloads android-all jars at runtime; Maven Central rate-limits CI, the Google mirror does not.
