@@ -64,7 +64,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 
 /**
- * Key scenarios of the spec (ТЗ §10, tech plan §22.3) through the whole app: the real Hilt graph, database and
+ * Key scenarios of the spec (ТЗ §7, tech plan §22.3) through the whole app: the real Hilt graph, database and
  * screens, with the app's clock pinned to a working Monday morning and moved by days. Scenarios 6 and 7 (relevance
  * and the return after a break) run against the data layer in `core:data` (`AutomationTest`); scenario 8 is GitHub
  * (L4). Scenario 4 pauses with a typed note: voice input is not part of this build.
