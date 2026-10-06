@@ -31,4 +31,5 @@
     </plurals>
     <string name="app_restore_failed">Не вдалося відновити копію. Нічого не змінено.</string>
     <string name="app_task_gone">Це завдання вже виконано або видалено</string>
+    <string name="app_pick_task">Виберіть завдання, щоб побачити його картку</string>
 </resources>

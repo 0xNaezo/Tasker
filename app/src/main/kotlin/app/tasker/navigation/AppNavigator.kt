@@ -34,6 +34,9 @@ class AppNavigator internal constructor(
     val atTabRoot: Boolean
         get() = stack(tab).size <= 1
 
+    /** In two panes the current screen is a list or a card beside it, so the tab's frame stays (§14.1). */
+    fun inListDetail(twoPane: Boolean): Boolean = twoPane && tab.listDetail && ListDetail.isPane(stack(tab).last())
+
     fun select(target: Tab) {
         if (target == tab) popToRoot(target) else tab = target
     }
@@ -41,6 +44,12 @@ class AppNavigator internal constructor(
     fun navigate(key: NavKey) {
         val stack = stack(tab)
         if (stack.lastOrNull() != key) stack.add(key)
+    }
+
+    /** Opens a task card; beside a list, a new card takes the place of the shown one instead of stacking up. */
+    fun openDetail(key: NavKey, besideList: Boolean) {
+        val stack = stack(tab)
+        if (besideList && stack.size > 1 && ListDetail.isDetail(stack.last())) stack[stack.lastIndex] = key else navigate(key)
     }
 
     fun back() {

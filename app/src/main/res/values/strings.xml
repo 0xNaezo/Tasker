@@ -28,4 +28,5 @@
     </plurals>
     <string name="app_restore_failed">Couldn\'t restore the backup. Nothing was changed.</string>
     <string name="app_task_gone">This task is already done or removed</string>
+    <string name="app_pick_task">Choose a task to see its card here</string>
 </resources>

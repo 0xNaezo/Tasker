@@ -95,6 +95,8 @@ dependencies {
     implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
     implementation(libs.androidx.compose.material3.navigation.suite)
     implementation(libs.androidx.compose.material3.adaptive)
+    implementation(libs.androidx.compose.material3.adaptive.layout)
+    implementation(libs.androidx.compose.material3.adaptive.navigation3)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.hilt.work)
