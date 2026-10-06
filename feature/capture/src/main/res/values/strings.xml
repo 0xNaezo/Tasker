@@ -18,4 +18,8 @@
     <string name="capture_tile_label">New task</string>
     <string name="capture_share_undone">Task removed</string>
     <string name="capture_share_edit">Edit</string>
+    <string name="capture_shortcut_new">New task</string>
+    <string name="capture_shortcut_new_long">Add a task</string>
+    <string name="capture_shortcut_voice">By voice</string>
+    <string name="capture_shortcut_voice_long">Add a task by voice</string>
 </resources>

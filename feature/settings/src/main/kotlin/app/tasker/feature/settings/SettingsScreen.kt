@@ -586,8 +586,8 @@ private fun rememberCanLock(): Boolean {
     }
 }
 
-/** Biometrics or the device screen lock (the fallback when a fingerprint fails). */
-const val LOCK_AUTHENTICATORS = BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+/** Biometrics or the device screen lock (the fallback when a fingerprint fails); MainActivity unlocks with the same. */
+private const val LOCK_AUTHENTICATORS = BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL
 
 private val IMPORT_TYPES = arrayOf("application/zip", "application/json", "application/gzip", "application/octet-stream")
 private val REMINDER_PRESETS = listOf(24 * 60, 2 * 60, 60, 30, 0)

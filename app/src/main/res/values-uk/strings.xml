@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_today">Сьогодні</string>
+    <string name="tab_inbox">Вхідні</string>
+    <string name="tab_tasks">Завдання</string>
+    <string name="tab_done">Зроблено</string>
+    <string name="app_search">Пошук</string>
+    <string name="app_menu">Ще</string>
+    <string name="app_menu_review">Перевірка актуальності</string>
+    <string name="app_menu_journal">Журнал автоматики</string>
+    <string name="app_menu_archive">Архів</string>
+    <string name="app_menu_settings">Налаштування</string>
+    <string name="lock_title">Розблокуйте, щоб побачити завдання</string>
+    <string name="lock_unlock">Розблокувати</string>
+    <string name="lock_prompt_title">Розблокування Tasker</string>
+    <string name="app_restore_title">Відновити дані?</string>
+    <plurals name="app_restore_body">
+        <item quantity="one">На пристрої знайдено резервну копію від %1$s: %2$d завдання.</item>
+        <item quantity="few">На пристрої знайдено резервну копію від %1$s: %2$d завдання.</item>
+        <item quantity="many">На пристрої знайдено резервну копію від %1$s: %2$d завдань.</item>
+        <item quantity="other">На пристрої знайдено резервну копію від %1$s: %2$d завдання.</item>
+    </plurals>
+    <string name="app_restore">Відновити</string>
+    <string name="app_restore_decline">Почати заново</string>
+    <string name="app_restoring">Відновлюємо…</string>
+    <plurals name="app_restored">
+        <item quantity="one">Відновлено %d завдання</item>
+        <item quantity="few">Відновлено %d завдання</item>
+        <item quantity="many">Відновлено %d завдань</item>
+        <item quantity="other">Відновлено %d завдання</item>
+    </plurals>
+    <string name="app_restore_failed">Не вдалося відновити копію. Нічого не змінено.</string>
+    <string name="app_task_gone">Це завдання вже виконано або видалено</string>
+</resources>

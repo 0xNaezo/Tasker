@@ -48,6 +48,7 @@ class QuickCaptureActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val channel = CaptureIntents.channelOf(intent)
         val voice = intent.getBooleanExtra(CaptureIntents.EXTRA_VOICE, false)
+        if (savedInstanceState == null && channel == CaptureChannel.SHORTCUT) CaptureShortcuts.reportUsed(this, voice)
         setContent {
             TaskerTheme {
                 ProvideDayContext(clock) {

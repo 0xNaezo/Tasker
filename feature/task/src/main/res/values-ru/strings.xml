@@ -40,4 +40,5 @@
     <string name="task_delete_body">Задача, её заметки, ссылки и история будут удалены. Отменить нельзя.</string>
     <string name="task_delete_confirm">Удалить навсегда</string>
     <string name="task_deleted">Задача удалена</string>
+    <string name="task_screen_title">Задача</string>
 </resources>

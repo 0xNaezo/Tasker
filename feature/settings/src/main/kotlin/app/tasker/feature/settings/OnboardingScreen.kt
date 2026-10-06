@@ -129,20 +129,35 @@ fun OnboardingScreen(
     }
 }
 
+/** Header with the page's own margins; [content] spans the full width, as list rows bring their own padding. */
 @Composable
 private fun StepPage(icon: ImageVector, title: String, body: String, content: @Composable () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = TaskerTheme.spacing.l, vertical = TaskerTheme.spacing.xl),
+            .padding(vertical = TaskerTheme.spacing.xl),
         verticalArrangement = Arrangement.spacedBy(TaskerTheme.spacing.m),
     ) {
-        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(ICON_SIZE.dp))
-        Text(title, style = MaterialTheme.typography.headlineSmall, modifier = Modifier.semantics { heading() })
-        Text(body, style = MaterialTheme.typography.bodyLarge, color = TaskerTheme.colors.muted)
+        Column(
+            modifier = Modifier.padding(horizontal = TaskerTheme.spacing.l),
+            verticalArrangement = Arrangement.spacedBy(TaskerTheme.spacing.m),
+        ) {
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(ICON_SIZE.dp))
+            Text(title, style = MaterialTheme.typography.headlineSmall, modifier = Modifier.semantics { heading() })
+            Text(body, style = MaterialTheme.typography.bodyLarge, color = TaskerTheme.colors.muted)
+        }
         content()
     }
+}
+
+/** Content that is not a list row keeps the page margins. */
+@Composable
+private fun Padded(content: @Composable () -> Unit) {
+    Column(
+        modifier = Modifier.padding(horizontal = TaskerTheme.spacing.l),
+        verticalArrangement = Arrangement.spacedBy(TaskerTheme.spacing.m),
+    ) { content() }
 }
 
 @Composable
@@ -194,9 +209,11 @@ private fun CalendarStep(granted: Boolean, denied: Boolean) {
         title = stringResource(R.string.onboarding_calendar_title),
         body = stringResource(R.string.onboarding_calendar_body),
     ) {
-        when {
-            granted -> Note(Icons.Outlined.CheckCircle, stringResource(R.string.onboarding_calendar_granted))
-            denied -> Text(stringResource(R.string.onboarding_calendar_denied), style = MaterialTheme.typography.bodyMedium)
+        Padded {
+            when {
+                granted -> Note(Icons.Outlined.CheckCircle, stringResource(R.string.onboarding_calendar_granted))
+                denied -> Text(stringResource(R.string.onboarding_calendar_denied), style = MaterialTheme.typography.bodyMedium)
+            }
         }
     }
 }
@@ -208,8 +225,10 @@ private fun TaskStep(saved: String?, capture: @Composable () -> Unit) {
         title = stringResource(R.string.onboarding_task_title),
         body = stringResource(R.string.onboarding_task_body),
     ) {
-        capture()
-        saved?.let { Note(Icons.Outlined.CheckCircle, it) }
+        Padded {
+            capture()
+            saved?.let { Note(Icons.Outlined.CheckCircle, it) }
+        }
     }
 }
 

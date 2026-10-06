@@ -136,7 +136,19 @@ fun TaskScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text(detail?.task?.let { Formats.status(it.status) }.orEmpty()) },
+                // An open task needs no status in the title; other states (in progress, paused, done…) are news.
+                title = {
+                    val status = detail?.task?.status
+                    Text(
+                        if (status == null ||
+                            status == TaskStatus.OPEN
+                        ) {
+                            stringResource(R.string.task_screen_title)
+                        } else {
+                            Formats.status(status)
+                        },
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = stringResource(R.string.task_back))

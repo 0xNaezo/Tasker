@@ -40,4 +40,5 @@
     <string name="task_delete_body">Завдання, його нотатки, посилання й історію буде видалено. Скасувати не можна.</string>
     <string name="task_delete_confirm">Видалити назавжди</string>
     <string name="task_deleted">Завдання видалено</string>
+    <string name="task_screen_title">Завдання</string>
 </resources>

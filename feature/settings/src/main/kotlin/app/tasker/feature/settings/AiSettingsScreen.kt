@@ -86,7 +86,11 @@ fun AiSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier, viewMode
             item(key = "intro") { Paragraph(stringResource(R.string.settings_ai_intro)) }
             when {
                 ai.availableModes.isEmpty() -> item(key = "unavailable") { Paragraph(stringResource(R.string.settings_ai_unavailable)) }
-                !ai.hasConsent -> consent(ai, viewModel::giveConsent)
+                // What is sent comes first: the button below it is the consent.
+                !ai.hasConsent -> {
+                    sent(ai.availableModes.singleOrNull())
+                    consent(ai, viewModel::giveConsent)
+                }
                 else -> controls(
                     ai = ai,
                     checking = checking,
@@ -99,7 +103,7 @@ fun AiSettingsScreen(onBack: () -> Unit, modifier: Modifier = Modifier, viewMode
                     ),
                 )
             }
-            sent(ai.mode ?: ai.availableModes.singleOrNull())
+            if (ai.hasConsent) sent(ai.mode)
         }
     }
     if (editingKey) KeyDialog(onDismiss = { editingKey = false }, onSave = viewModel::saveKey)
@@ -154,8 +158,6 @@ private fun LazyListScope.consent(ai: AiState, onAccept: (AiMode) -> Unit) {
                         modifier = Modifier.selectable(selected = mode == chosen, role = Role.RadioButton) { chosen = mode },
                     )
                 }
-            } else {
-                Paragraph(modeNote(chosen))
             }
             Button(
                 onClick = { onAccept(chosen) },

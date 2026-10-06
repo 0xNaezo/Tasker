@@ -1,18 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- AI requests (with consent) and the AI proxy; everything else works offline. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--
+        Backups (tech plan §16): Auto Backup and device transfer carry only the latest daily backup and the settings,
+        never the live database (rules in core:backup).
+    -->
     <application
         android:name=".TaskerApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+        android:theme="@style/Theme.Tasker"
+        tools:targetApi="33">
+
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Tasker.Starting"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Links from notifications and the share sheet: tasker://task/{id}, postpone/{id}, plan, review. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="tasker" />
+            </intent-filter>
         </activity>
+
+        <!-- Keeps the per-app language on Android 8-12 (AppCompatDelegate.setApplicationLocales). -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
+
+        <!-- WorkManager is configured by TaskerApplication (Hilt worker factory), not by its default initializer. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
+        <!-- Sentry starts only after consent (CrashReporting), never on its own. -->
+        <meta-data
+            android:name="io.sentry.auto-init"
+            android:value="false" />
     </application>
 </manifest>

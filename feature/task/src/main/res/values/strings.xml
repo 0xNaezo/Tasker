@@ -40,4 +40,5 @@
     <string name="task_delete_body">The task, its notes, links and history will be deleted. This cannot be undone.</string>
     <string name="task_delete_confirm">Delete forever</string>
     <string name="task_deleted">Task deleted</string>
+    <string name="task_screen_title">Task</string>
 </resources>

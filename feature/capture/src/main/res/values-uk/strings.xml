@@ -18,4 +18,8 @@
     <string name="capture_tile_label">Нове завдання</string>
     <string name="capture_share_undone">Завдання скасовано</string>
     <string name="capture_share_edit">Змінити</string>
+    <string name="capture_shortcut_new">Нове завдання</string>
+    <string name="capture_shortcut_new_long">Додати завдання</string>
+    <string name="capture_shortcut_voice">Голосом</string>
+    <string name="capture_shortcut_voice_long">Додати завдання голосом</string>
 </resources>

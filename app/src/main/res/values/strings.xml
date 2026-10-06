@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Tasker</string>
+    <string name="app_name" translatable="false">Tasker</string>
+    <string name="tab_today">Today</string>
+    <string name="tab_inbox">Inbox</string>
+    <string name="tab_tasks">Tasks</string>
+    <string name="tab_done">Done</string>
+    <string name="app_search">Search</string>
+    <string name="app_menu">More</string>
+    <string name="app_menu_review">Relevance review</string>
+    <string name="app_menu_journal">Automation journal</string>
+    <string name="app_menu_archive">Archive</string>
+    <string name="app_menu_settings">Settings</string>
+    <string name="lock_title">Unlock to see your tasks</string>
+    <string name="lock_unlock">Unlock</string>
+    <string name="lock_prompt_title">Unlock Tasker</string>
+    <string name="app_restore_title">Restore your data?</string>
+    <plurals name="app_restore_body">
+        <item quantity="one">A backup from %1$s with %2$d task was found on this device.</item>
+        <item quantity="other">A backup from %1$s with %2$d tasks was found on this device.</item>
+    </plurals>
+    <string name="app_restore">Restore</string>
+    <string name="app_restore_decline">Start fresh</string>
+    <string name="app_restoring">Restoring…</string>
+    <plurals name="app_restored">
+        <item quantity="one">Restored %d task</item>
+        <item quantity="other">Restored %d tasks</item>
+    </plurals>
+    <string name="app_restore_failed">Couldn\'t restore the backup. Nothing was changed.</string>
+    <string name="app_task_gone">This task is already done or removed</string>
 </resources>
