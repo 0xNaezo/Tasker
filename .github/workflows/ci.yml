@@ -1,0 +1,91 @@
+# Checks on every pull request and on main (tech plan §24.1).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    name: Android
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v5
+        with:
+          # Only main writes the build cache; pull requests read it.
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Format and static analysis
+        run: ./gradlew ktlintCheck detekt
+
+      - name: Android Lint
+        run: ./gradlew lint
+
+      - name: Unit tests
+        run: ./gradlew unitTests
+
+      - name: Screenshots match the references
+        run: ./gradlew verifyRoborazziDebug
+
+      # The unit tests ran KSP, which exports the schema: a change must come with its committed JSON.
+      - name: Room schemas are committed
+        run: |
+          git status --porcelain -- core/database/schemas
+          test -z "$(git status --porcelain -- core/database/schemas)"
+
+      - name: Debug builds of both channels
+        run: ./gradlew :app:assembleGithubDebug :app:assemblePlayDebug
+
+      - name: Reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: |
+            **/build/reports/
+            **/build/test-results/
+            **/build/outputs/roborazzi/
+          retention-days: 14
+
+      - name: Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-github-debug
+          path: app/build/outputs/apk/github/debug/*.apk
+          retention-days: 14
+
+  backend-image:
+    name: Backend image
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: false
+          tags: tasker-backend:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
